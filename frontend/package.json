@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.7",
     "leaflet": "^1.9.4",
     "next": "14.2.12",
     "react": "^18",
