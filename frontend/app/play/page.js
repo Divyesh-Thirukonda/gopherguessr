@@ -1,4 +1,6 @@
 import EastBankMap from "./_components/EastBankMap";
+// without this, nextjs will prerender at build so the page will be static
+export const dynamic = "force-dynamic";
 
 export default function Play() {
   // since this is nextjs app router this code will not run on the client at all
