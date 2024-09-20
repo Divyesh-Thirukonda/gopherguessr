@@ -39,7 +39,7 @@ export default function BaseMap({ imgSrc, bounds, loc }) {
       center={center}
       zoom={16}
       scrollWheelZoom={true}
-      className="w-dvw h-dvh"
+      className="h-dvh w-dvw"
     >
       <BaseImageOverlay
         imgSrc={imgSrc}
