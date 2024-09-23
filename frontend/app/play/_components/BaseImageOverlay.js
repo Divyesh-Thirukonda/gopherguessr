@@ -1,14 +1,16 @@
+"use client";
+
 import { useMapEvents, ImageOverlay, Marker } from "react-leaflet";
 import L from "leaflet";
 
-export default function BaseImageOverlay({ imgSrc, bounds, guess, setGuess }) {
-  const CrosshairIcon = L.icon({
-    iconUrl: "/images/crosshair.svg",
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-  });
+const CrosshairIcon = L.icon({
+  iconUrl: "/images/crosshair.svg",
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
 
-  const map = useMapEvents({
+export default function BaseImageOverlay({ imgSrc, bounds, guess, setGuess }) {
+  useMapEvents({
     click(e) {
       setGuess([e.latlng.lat, e.latlng.lng]);
     },
@@ -22,9 +24,8 @@ export default function BaseImageOverlay({ imgSrc, bounds, guess, setGuess }) {
         bounds={bounds}
         opacity={1}
         zIndex={10}
-        onClick={(e) => console.log(e.latlng)}
       />
-      {guess ? <Marker position={guess} icon={CrosshairIcon} /> : null}
+      <Marker position={guess} icon={CrosshairIcon} />
     </>
   );
 }
