@@ -8,7 +8,7 @@ fastify.register(cors, {
 
 // In-memory locations data
 const locations = [
-  { latitude: 48.858844, longitude: 2.294351, country: 'France' },   // Eiffel Tower
+  { latitude: 48.858844, longitude: 2.294351, country: 'France'},   // Eiffel Tower
   { latitude: 40.689247, longitude: -74.044502, country: 'USA' },    // Statue of Liberty
   { latitude: 35.658581, longitude: 139.745438, country: 'Japan' },  // Tokyo Tower
   { latitude: -22.951916, longitude: -43.210487, country: 'Brazil' },// Christ the Redeemer
