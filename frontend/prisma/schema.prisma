@@ -10,3 +10,10 @@ datasource db {
 model Test {
     id Int @id @default(autoincrement())
 }
+
+model Test2 {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    imageId String
+}
