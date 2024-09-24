@@ -137,17 +137,15 @@ export default function Play() {
 
   return (
     <>
-      <div>
-        <PreviewImage
-          gameState={gameState}
-        />
-        <MapWrapper
-          mode="eastBank"
-          submitGuess={submitGuess}
-          gameState={gameState}
-        />
-      </div>
+      <MapWrapper
+        mode="eastBank"
+        submitGuess={submitGuess}
+        gameState={gameState}
+      />
       <DebugMenu />
+      <PreviewImage
+        gameState={gameState}
+      />
     </>
   );
 }
