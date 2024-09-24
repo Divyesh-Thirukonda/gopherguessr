@@ -7,8 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Test {
-    id Int @id @default(autoincrement())
+model Photo {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imageId String 
+  buildingName String 
+  description String?
+  latitude Float
+  longitude Float
+  uploader User @relation(fields: [uploaderId], references: [id])
+  uploaderId Int
+}
+
+model User {
+  id       Int     @id @default(autoincrement()) 
+  name     String
+  email    String  @unique
+  photos   Photo[]
 }
 
 model Test2 {
