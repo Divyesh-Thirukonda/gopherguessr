@@ -1,10 +1,14 @@
-import db from "../../utils/db";
+import db from "/utils/db";
 
 export default async function TestDB() {
   // create new
-  const newTest = await db.test.create();
+  const newTest2 = await db.test2.create({
+    data: {
+      imageId: "https://google.com/imageid",
+    },
+  });
   // get
-  const allTestItems = await db.test.findMany();
-  console.log(allTestItems);
+  const allTest2Items = await db.test2.findMany();
+  console.log(allTest2Items);
   return <div></div>;
 }
