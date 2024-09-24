@@ -4,7 +4,7 @@ import MapWrapper from "./_components/MapWrapper";
 export const dynamic = "force-dynamic";
 
 // this basically is an in-memory db that stores the game state until we get an actual db working
-// i have no idea how to use mongodb lol
+// I have no idea how to use mongodb lol
 const gameState = {
   loc: null,
   allLocsUsed: [],
