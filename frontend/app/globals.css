@@ -1,3 +1,10 @@
+/*
+  What is this file?:
+    A CSS File that is imported into the root layout.js file.
+  What are we using this file for?:
+    To import Tailwind CSS and set global CSS styles.
+*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

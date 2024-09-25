@@ -1,3 +1,20 @@
+/*
+  What is this file?:
+    A Next.js Page Component
+      Next.js Pages are where you put code that is unique to a specific page.
+      Since this file is located directly in the root /app directory, 
+      it is what runs when you go to the root url (just like an index.html file).
+      Think of it like a main() method in Java.
+      Learn more here: 
+        https://nextjs.org/docs/app/building-your-application/routing/pages
+  Server component or client component?:
+    Server Component
+  What are we using this file for?:
+    This is just our homepage. 
+    I'm importing framer-motion so that we can animate the button, 
+    but otherwise this is a pretty simple page with no extra logic.
+*/
+
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
