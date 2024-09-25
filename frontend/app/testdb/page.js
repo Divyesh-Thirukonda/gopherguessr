@@ -1,4 +1,10 @@
-import db from "/utils/db";
+/*
+  What is this file?:
+    This is a test page for the Database team. 
+    It will not be used in the app.
+*/
+
+import db from "@/app/_utils/db";
 
 // this is needed to prevent nextjs from statically building this page
 export const dynamic = "force-dynamic";
