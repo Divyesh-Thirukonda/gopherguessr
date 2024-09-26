@@ -12,11 +12,12 @@
     "@phosphor-icons/react": "^2.1.7",
     "@prisma/client": "^5.19.1",
     "framer-motion": "^11.5.5",
-    "leaflet": "^1.9.4",
+    "leaflet": "1.9.4",
     "next": "14.2.12",
+    "protomaps-leaflet": "4.0.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-leaflet": "^4.2.1",
+    "react-leaflet": "4.2.1",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
