@@ -31,7 +31,7 @@ import customMapTheme from "../_utils/customMapTheme";
 
 // this is how leaflet lets you set a custom icon for a map marker
 const CrosshairIcon = L.icon({
-  iconUrl: "/images/crosshair.svg",
+  iconUrl: "/cacheable/crosshair-20240927.svg",
   iconSize: [30, 30],
   iconAnchor: [15, 15],
 });
