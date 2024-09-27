@@ -11,6 +11,20 @@ const nextConfig = {
       static: 30,
     },
   },
+  async headers() {
+    return [
+      {
+        // have the browser cache static assets (our map & boundary files)
+        source: "/cacheable/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
