@@ -14,16 +14,26 @@
     I'm importing framer-motion so that we can animate the button, 
     but otherwise this is a pretty simple page with no extra logic.
 */
-
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
+import Image from "next/image";
 
-export default function Home() {
+// Function to fetch contributors data from GitHub
+async function fetchContributors() {
+  const res = await fetch("https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors");
+  const contributors = await res.json();
+  return contributors;
+}
+
+export default async function Home() {
+  const contributors = await fetchContributors();
+
   return (
     <main>
+      {/* Main section with video */}
       <section className="relative min-h-dvh w-full">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 video-background">
           <video
             className="h-full w-full object-cover"
             autoPlay
@@ -37,7 +47,7 @@ export default function Home() {
             ></source>
           </video>
         </div>
-        <div className="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur"></div>
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur video-background"></div>
         <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-12">
           <div className="max-w-md text-center">
             <h1 className="text-5xl font-bold text-white">Explore The U!</h1>
@@ -59,9 +69,25 @@ export default function Home() {
             </motion.div>
           </div>
         </div>
-        <small className="absolute bottom-0 left-0 right-0 p-2 text-center text-white">
-          Built by Social Coding.
-        </small>
+        
+        {/* Contributors Section */}
+        <div className="contributors-section absolute bottom-0 left-0 right-0 p-6 text-center text-white">
+          <hr className="border-white w-full mb-4" />
+          <h2 className="text-4xl font-bold">Contributors</h2>
+          <div className="mt-4 flex justify-center gap-4">
+            {contributors.map((contributor) => (
+              <div key={contributor.id} className="relative">
+                <Image
+                  src={contributor.avatar_url}
+                  alt={contributor.login}
+                  width={60}
+                  height={60}
+                  className="rounded-full border-2 border-white"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     </main>
   );

@@ -25,6 +25,10 @@ const nextConfig = {
       },
     ];
   },
+  // Add the images configuration here to allow external domains
+  images: {
+    domains: ['avatars.githubusercontent.com'], // Allow GitHub avatar domain
+  },
 };
 
 export default nextConfig;
