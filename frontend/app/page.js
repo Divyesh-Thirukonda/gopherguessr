@@ -53,7 +53,7 @@ export default async function Home() {
             <h1 className="text-5xl font-bold text-white">Explore The U!</h1>
             <p className="mt-3 text-white">
               Just like Geoguessr, but for the streets and buildings of the
-              beautiful University of Minnesota campus.
+              beautiful University of Minnesota campus!
             </p>
             <motion.div
               className="mx-auto mt-4 w-min rounded-full bg-rose-600"
