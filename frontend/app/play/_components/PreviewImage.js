@@ -10,7 +10,7 @@ export default function PreviewImage({gameState}) {
                 Where is this building!?
                 
               </span>
-              <img src={gameState.loc.img_url} />
+              <img class="PreviewImage" src={gameState.loc.img_url} />
             </div>
     )
 }
