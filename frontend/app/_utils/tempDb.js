@@ -28,6 +28,7 @@ const gameState = {
   round: 1,
   points: 0,
   complete: false,
+  gameStarted: false,
 };
 
 const locs = [

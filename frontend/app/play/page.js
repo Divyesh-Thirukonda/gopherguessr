@@ -28,6 +28,7 @@ import { gameState, locs } from "../_utils/tempDb";
 
 // we are importing this with a different name than usual because we need to export a variable called dynamic later
 import dynamicImport from "next/dynamic";
+import ResultsDialog from "./_components/ResultsDialog";
 // we import this a special way because Leaflet (the mapping library we are using), can't be prerendered.
 // learn more here: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#skipping-ssr
 const MapWrapper = dynamicImport(() => import("./_components/MapWrapper"), {
@@ -90,6 +91,7 @@ export default function Play() {
     gameState.points += gameState.lastGuessPoints;
     gameState.loc = null;
     gameState.round += 1;
+    gameState.gameStarted = true;
     /*
       Now that we've updated the game state in our "database", 
       we need a way to tell the client to "refresh".
