@@ -42,12 +42,13 @@ const CrosshairIcon = L.icon({
   Learn more about Protomaps here:
     https://docs.protomaps.com/basemaps/downloads
 */
-const layer = protomapsLayer({
+
+
+export default function MapImageWrapper({ mapRef, guess, setGuess }) {
+  const layer = protomapsLayer({
   url: "/cacheable/umn-20240926.pmtiles",
   paintRules: paintRules(customMapTheme),
 });
-
-export default function MapImageWrapper({ mapRef, guess, setGuess }) {
   const map = useMap();
 
   // this runs once (you can tell because that dependency array at the end is empty)

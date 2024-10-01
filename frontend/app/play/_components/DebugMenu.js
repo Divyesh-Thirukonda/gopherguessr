@@ -50,6 +50,7 @@ export default function DebugMenu() {
     gameState.points = 0;
     gameState.lastGuessD = 0;
     gameState.complete = false;
+    gameState.gameStarted = false;
     /*
       Now that we've updated the game state in our "database", 
       we need a way to tell the client to "refresh".

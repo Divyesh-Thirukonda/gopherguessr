@@ -33,7 +33,7 @@ export default async function Home() {
     <main>
       {/* Main section with video */}
       <section className="relative min-h-dvh w-full">
-        <div className="absolute inset-0 video-background">
+        <div className="fixed inset-0">
           <video
             className="h-full w-full object-cover"
             autoPlay
@@ -47,7 +47,7 @@ export default async function Home() {
             ></source>
           </video>
         </div>
-        <div className="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur video-background"></div>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur"></div>
         <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-12">
           <div className="max-w-md text-center">
             <h1 className="text-5xl font-bold text-white">Explore The U!</h1>
@@ -71,19 +71,21 @@ export default async function Home() {
         </div>
         
         {/* Contributors Section */}
-        <div className="contributors-section absolute bottom-0 left-0 right-0 p-6 text-center text-white">
+        <div className="-bottom-36 absolute left-0 right-0 p-6 text-center text-white">
           <hr className="border-white w-full mb-4" />
-          <h2 className="text-4xl font-bold">Contributors</h2>
+          <h2 className="text-2xl font-bold">Contributors</h2>
           <div className="mt-4 flex justify-center gap-4">
             {contributors.map((contributor) => (
               <div key={contributor.id} className="relative">
-                <Image
-                  src={contributor.avatar_url}
-                  alt={contributor.login}
-                  width={60}
-                  height={60}
-                  className="rounded-full border-2 border-white"
-                />
+                <a href={`https://github.com/${contributor.login}`} target="_blank" rel="noopener noreferrer">
+                  <Image
+                    src={contributor.avatar_url}
+                    alt={contributor.login}
+                    width={60}
+                    height={60}
+                    className="rounded-full border-2 border-white"
+                  />
+                </a>
               </div>
             ))}
           </div>

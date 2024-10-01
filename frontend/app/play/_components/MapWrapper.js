@@ -33,6 +33,7 @@ import * as motion from "framer-motion/client";
 import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapImageWrapper from "./MapImageWrapper";
+import ResultsDialog from "./ResultsDialog";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -42,6 +43,8 @@ export default function MapWrapper({ submitGuess, gameState }) {
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
+  const [dialogOpen, setDialogOpen] = useState(false)
+
   // we create this ref here but we actually set it in MapImageWrapper
   const mapRef = useRef(null);
 
@@ -63,6 +66,12 @@ export default function MapWrapper({ submitGuess, gameState }) {
       }
     }
   }, [gameState, viewStPaul]);
+
+  useEffect(() => {
+    if(gameState.gameStarted) {
+      setDialogOpen(true)
+    }
+  }, [gameState.round])
 
   return (
     <>
@@ -92,6 +101,7 @@ export default function MapWrapper({ submitGuess, gameState }) {
       >
         Submit Guess
       </motion.button>
+      <ResultsDialog gameState={gameState} open={dialogOpen} setDialogOpen={setDialogOpen}/>
     </>
   );
 }
