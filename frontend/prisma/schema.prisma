@@ -17,6 +17,7 @@ model Photo {
   latitude Float
   longitude Float
   uploader User @relation(fields: [uploaderId], references: [id])
+
   uploaderId Int
 }
 
@@ -27,9 +28,23 @@ model User {
   photos   Photo[]
 }
 
-model Test2 {
-    id Int @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    imageId String
+model GameState {
+  id                          Int           @id @default(autoincrement()) 
+  createdAt                   DateTime      @default(now())
+  updatedAt                   DateTime      @updatedAt
+  locX                        Float
+  locY                        Float
+  photosUsed                  Int[]
+  previousGuessAccuracy       Int
+  previousGuessPoints         Int
+  rounds                      Int
+  totalPoints                 Int
+  complete                    Boolean
 }
+
+// model Test2 {
+//     id Int @id @default(autoincrement())
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+//     imageId String
+// }

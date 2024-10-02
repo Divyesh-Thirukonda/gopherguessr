@@ -25,9 +25,18 @@ const nextConfig = {
       },
     ];
   },
-  // Add the images configuration here to allow external domains
   images: {
-    domains: ['avatars.githubusercontent.com'], // Allow GitHub avatar domain
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        pathname: "/a/e9dxf42twp/*",
+      },
+    ],
   },
 };
 

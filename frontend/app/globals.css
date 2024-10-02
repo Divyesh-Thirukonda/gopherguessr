@@ -17,4 +17,7 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  
+.PreviewImage {
+  border-radius: 10px;
 }
