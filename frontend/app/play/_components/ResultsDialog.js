@@ -33,10 +33,10 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
         return deg * (Math.PI / 180);
     }
 
-    var guessLoc = [gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.lat, gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.lng];
+    var actualLoc = [gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.lat, gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.lng];
     var userGuessLoc = [gameState.lastGuessLat, gameState.lastGuessLng]
-    var dialogCenter = [(guessLoc[0] + userGuessLoc[0]) / 2, (guessLoc[1] + userGuessLoc[1]) / 2]
-    var dist = getDistanceFromLatLonInKm(guessLoc[0], guessLoc[1], userGuessLoc[0], userGuessLoc[1])
+    var dialogCenter = [(actualLoc[0] + userGuessLoc[0]) / 2, (actualLoc[1] + userGuessLoc[1]) / 2]
+    var dist = getDistanceFromLatLonInKm(actualLoc[0], actualLoc[1], userGuessLoc[0], userGuessLoc[1])
     console.log(dist)
     var myZoom = 0;
     if (dist < .1) {
@@ -71,9 +71,9 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
                             scrollWheelZoom={true}
                             className="w-96 h-96"
                         >
-                            <MapImageWrapper mapRef={map} guess={guessLoc} setGuess={() => { }} other={userGuessLoc} />
+                            <MapImageWrapper mapRef={map} guess={userGuessLoc} setGuess={() => { }} actualLocation={actualLoc} />
                             <Polyline
-                                positions={[guessLoc, userGuessLoc]}  // Line connecting the two locations
+                                positions={[actualLoc, userGuessLoc]}  // Line connecting the two locations
                                 pathOptions={{
                                     color: 'black',  // Color of the line
                                     dashArray: '10, 10',  // Dotted line style (alternating dashes)

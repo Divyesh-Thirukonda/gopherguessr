@@ -49,7 +49,7 @@ const DestinationIcon = L.icon({
 */
 
 
-export default function MapImageWrapper({ mapRef, guess, setGuess, other }) {
+export default function MapImageWrapper({ mapRef, guess, setGuess, actualLocation }) {
   const layer = protomapsLayer({
   url: "/cacheable/umn-20240926.pmtiles",
   paintRules: paintRules(customMapTheme),
@@ -105,7 +105,7 @@ export default function MapImageWrapper({ mapRef, guess, setGuess, other }) {
       />
       <Marker position={guess} icon={CrosshairIcon} />
 
-      {other && <Marker position={other} icon={DestinationIcon} />}
+      {actualLocation && <Marker position={actualLocation} icon={DestinationIcon} />}
       
     </>
   );
