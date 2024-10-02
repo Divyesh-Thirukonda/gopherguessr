@@ -43,7 +43,7 @@ export default function MapWrapper({ submitGuess, gameState }) {
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // we create this ref here but we actually set it in MapImageWrapper
   const mapRef = useRef(null);

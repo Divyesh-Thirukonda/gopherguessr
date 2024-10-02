@@ -29,6 +29,8 @@ const gameState = {
   points: 0,
   complete: false,
   gameStarted: false,
+  lastGuessLat: 0,
+  lastGuessLng: 0
 };
 
 const locs = [
