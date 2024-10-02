@@ -85,7 +85,7 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
                 )}
 
                 <button
-                    className="mt-6 py-2 px-4 bg-amber-500 text-white rounded hover:bg-amber-600"
+                    className="mt-6 py-2 px-4 bg-rose-600 text-white rounded-full hover:bg-rose-700"
                     onClick={() => setDialogOpen(false)}
                 >
                     Continue
