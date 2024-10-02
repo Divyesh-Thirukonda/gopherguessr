@@ -47,6 +47,8 @@ export default function DebugMenu() {
     gameState.allLocsUsed = [];
     gameState.round = 1;
     gameState.lastGuessPoints = 0;
+    gameState.lastGuessLat = 0;
+    gameState.lastGuessLng = 0;
     gameState.points = 0;
     gameState.lastGuessD = 0;
     gameState.complete = false;

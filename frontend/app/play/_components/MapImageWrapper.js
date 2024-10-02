@@ -35,6 +35,11 @@ const CrosshairIcon = L.icon({
   iconSize: [30, 30],
   iconAnchor: [15, 15],
 });
+const DestinationIcon = L.icon({
+  iconUrl: "/cacheable/destination.png",
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
 
 /*
   This sets up our map images using Protomaps Basemaps.
@@ -44,7 +49,7 @@ const CrosshairIcon = L.icon({
 */
 
 
-export default function MapImageWrapper({ mapRef, guess, setGuess }) {
+export default function MapImageWrapper({ mapRef, guess, setGuess, other }) {
   const layer = protomapsLayer({
   url: "/cacheable/umn-20240926.pmtiles",
   paintRules: paintRules(customMapTheme),
@@ -99,6 +104,9 @@ export default function MapImageWrapper({ mapRef, guess, setGuess }) {
         zIndex={10}
       />
       <Marker position={guess} icon={CrosshairIcon} />
+
+      {other && <Marker position={other} icon={DestinationIcon} />}
+      
     </>
   );
 }

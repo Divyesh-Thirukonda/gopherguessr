@@ -88,10 +88,14 @@ export default function Play() {
     gameState.allLocsUsed.push(gameState.loc);
     // if guess is over 500 meters away, just make it 500 so we can calculate points easy
     gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
+    gameState.lastGuessLat = guess[0];
+    gameState.lastGuessLng = guess[1];
+    gameState.lastGuessLng
     gameState.points += gameState.lastGuessPoints;
     gameState.loc = null;
     gameState.round += 1;
     gameState.gameStarted = true;
+
     /*
       Now that we've updated the game state in our "database", 
       we need a way to tell the client to "refresh".
