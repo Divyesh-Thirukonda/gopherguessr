@@ -36,7 +36,7 @@ const CrosshairIcon = L.icon({
   iconAnchor: [15, 15],
 });
 const DestinationIcon = L.icon({
-  iconUrl: "/cacheable/destination.png",
+  iconUrl: "/cacheable/flag-20241001.svg",
   iconSize: [30, 30],
   iconAnchor: [15, 15],
 });
@@ -48,12 +48,16 @@ const DestinationIcon = L.icon({
     https://docs.protomaps.com/basemaps/downloads
 */
 
-
-export default function MapImageWrapper({ mapRef, guess, setGuess, actualLocation }) {
+export default function MapImageWrapper({
+  mapRef,
+  guess,
+  setGuess,
+  actualLocation,
+}) {
   const layer = protomapsLayer({
-  url: "/cacheable/umn-20240926.pmtiles",
-  paintRules: paintRules(customMapTheme),
-});
+    url: "/cacheable/umn-20240926.pmtiles",
+    paintRules: paintRules(customMapTheme),
+  });
   const map = useMap();
 
   // this runs once (you can tell because that dependency array at the end is empty)
@@ -105,8 +109,9 @@ export default function MapImageWrapper({ mapRef, guess, setGuess, actualLocatio
       />
       <Marker position={guess} icon={CrosshairIcon} />
 
-      {actualLocation && <Marker position={actualLocation} icon={DestinationIcon} />}
-      
+      {actualLocation && (
+        <Marker position={actualLocation} icon={DestinationIcon} />
+      )}
     </>
   );
 }
