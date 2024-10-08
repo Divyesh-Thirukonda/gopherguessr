@@ -27,7 +27,7 @@ async function fetchContributors() {
 }
 
 export default async function Home() {
-  const contributors = await fetchContributors();
+  const contributors = await fetchContributors();  // FIX THIS
 
   return (
     <main>
