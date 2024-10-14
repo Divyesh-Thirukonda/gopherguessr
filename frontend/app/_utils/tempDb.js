@@ -30,7 +30,8 @@ const gameState = {
   complete: false,
   gameStarted: false,
   lastGuessLat: 0,
-  lastGuessLng: 0
+  lastGuessLng: 0,
+  allGuessesUsed: []
 };
 
 const locs = [
