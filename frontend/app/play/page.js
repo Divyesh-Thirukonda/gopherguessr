@@ -29,6 +29,8 @@ import { gameState, locs } from "../_utils/tempDb";
 // we are importing this with a different name than usual because we need to export a variable called dynamic later
 import dynamicImport from "next/dynamic";
 import ResultsDialog from "./_components/ResultsDialog";
+import EndDialog from "./_components/EndDialog";
+
 // we import this a special way because Leaflet (the mapping library we are using), can't be prerendered.
 // learn more here: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#skipping-ssr
 const MapWrapper = dynamicImport(() => import("./_components/MapWrapper"), {
@@ -90,6 +92,7 @@ export default function Play() {
     gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
     gameState.lastGuessLat = guess[0];
     gameState.lastGuessLng = guess[1];
+    gameState.allGuessesUsed.push([guess[0], guess[1]])
     gameState.lastGuessLng
     gameState.points += gameState.lastGuessPoints;
     gameState.loc = null;
@@ -108,7 +111,12 @@ export default function Play() {
   // if the game is over we don't need to show the map anymore.
   // in the future we can put a game over / summary screen here.
   if (gameState.complete === true) {
-    return <DebugMenu />;
+    return (
+      <>
+      <EndDialog gameState={gameState}/>
+      <DebugMenu />
+      </>
+    );
   }
 
   return (
