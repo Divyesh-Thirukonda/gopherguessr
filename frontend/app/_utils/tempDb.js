@@ -31,46 +31,7 @@ const gameState = {
   gameStarted: false,
   lastGuessLat: 0,
   lastGuessLng: 0,
-  allGuessesUsed: []
+  allGuessesUsed: [],
 };
 
-const locs = [
-  {
-    name: "northrop",
-    lat: 44.97650994493952,
-    lng: -93.23534770592696,
-    img_url: "/images/northrop.jpg",
-  },
-  {
-    name: "coffman",
-    lat: 44.97292225604155,
-    lng: -93.23535508635577,
-    img_url: "/images/coffman.jpg",
-  },
-  {
-    name: "3m arena",
-    lat: 44.97816852198272,
-    lng: -93.22794192302824,
-    img_url: "/images/3m.jpg",
-  },
-  {
-    name: "burton hall",
-    lat: 44.97775706372716,
-    lng: -93.23752662716343,
-    img_url: "/images/burton.jpg",
-  },
-  {
-    name: "frontier",
-    lat: 44.97082208071483,
-    lng: -93.22784824913047,
-    img_url: "/images/frontier.jpg",
-  },
-  {
-    name: "keller",
-    lat: 44.97451854616061,
-    lng: -93.23224618664665,
-    img_url: "/images/keller.jpg",
-  },
-];
-
-export { locs, gameState };
+export { gameState };

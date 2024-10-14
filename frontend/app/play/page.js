@@ -24,12 +24,13 @@ import { revalidatePath } from "next/cache";
 import DebugMenu from "./_components/DebugMenu";
 import PreviewImage from "./_components/PreviewImage";
 import latlngToMeters from "../_utils/latlngToMeters";
-import { gameState, locs } from "../_utils/tempDb";
+import { gameState } from "../_utils/tempDb";
 
 // we are importing this with a different name than usual because we need to export a variable called dynamic later
 import dynamicImport from "next/dynamic";
 import ResultsDialog from "./_components/ResultsDialog";
 import EndDialog from "./_components/EndDialog";
+import prisma from "../_utils/db";
 
 // we import this a special way because Leaflet (the mapping library we are using), can't be prerendered.
 // learn more here: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#skipping-ssr
@@ -44,7 +45,7 @@ const MapWrapper = dynamicImport(() => import("./_components/MapWrapper"), {
 */
 export const dynamic = "force-dynamic";
 
-export default function Play() {
+export default async function Play() {
   /*
     Since this is a server component (no "use client"), this JavaScript will not run on the client at all.
     Think like a PHP file.
@@ -52,20 +53,25 @@ export default function Play() {
 
   /*
     This runs when somebody GETs this page.
-    It just gets a random location from our "database",
+    It just gets a random location from our REAL DATABASE NOW,
     and stores it in the gameState "database".
   */
   if (!gameState.loc) {
-    // don't have more rounds than the amount of locations we have
-    if (gameState.round > locs.length) {
+    const locCount = await prisma.photo.count();
+    // don't have more rounds than 5 or the amount of locations we have
+    if (gameState.round > locCount || gameState.round > 5) {
       gameState.complete = true;
     } else {
-      let newLoc = locs[Math.floor(Math.random() * locs.length)];
+      let newLocId = Math.floor(Math.random() * locCount);
       // dont use the same location twice
-      while (gameState.allLocsUsed.some((loc) => loc.name === newLoc.name)) {
-        newLoc = locs[Math.floor(Math.random() * locs.length)];
+      while (gameState.allLocsUsed.some((loc) => loc.id === newLocId)) {
+        newLocId = Math.floor(Math.random() * locCount);
       }
-      gameState.loc = newLoc;
+      // get actual loc from db
+      /* we are using findmany and skip instead of selecting by id specefically so that if we delete some, 
+      there's no chance of accidentally trying to get a deleted item */
+      const newLoc = await prisma.photo.findMany({ skip: newLocId, take: 1 });
+      gameState.loc = newLoc[0];
     }
   }
 
@@ -83,8 +89,8 @@ export default function Play() {
     const d = latlngToMeters(
       guess[0],
       guess[1],
-      gameState.loc.lat,
-      gameState.loc.lng,
+      gameState.loc.latitude,
+      gameState.loc.longitude,
     );
     gameState.lastGuessD = d;
     gameState.allLocsUsed.push(gameState.loc);
@@ -92,8 +98,8 @@ export default function Play() {
     gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
     gameState.lastGuessLat = guess[0];
     gameState.lastGuessLng = guess[1];
-    gameState.allGuessesUsed.push([guess[0], guess[1]])
-    gameState.lastGuessLng
+    gameState.allGuessesUsed.push([guess[0], guess[1]]);
+    gameState.lastGuessLng;
     gameState.points += gameState.lastGuessPoints;
     gameState.loc = null;
     gameState.round += 1;
@@ -113,8 +119,8 @@ export default function Play() {
   if (gameState.complete === true) {
     return (
       <>
-      <EndDialog gameState={gameState}/>
-      <DebugMenu />
+        <EndDialog gameState={gameState} />
+        <DebugMenu />
       </>
     );
   }
