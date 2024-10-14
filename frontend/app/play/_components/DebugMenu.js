@@ -78,7 +78,7 @@ export default function DebugMenu() {
       <br />
       current round: {gameState.round}
       <br />
-      current location name: {gameState.loc?.name}
+      current location name: {gameState.loc?.buildingName}
       <br />
       {gameState.allLocsUsed.length >= 1 && (
         <>
@@ -87,7 +87,10 @@ export default function DebugMenu() {
           points added for last guess: {gameState.lastGuessPoints}
           <br />
           last location name:{" "}
-          {gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.name}
+          {
+            gameState.allLocsUsed[gameState.allLocsUsed.length - 1]
+              ?.buildingName
+          }
           <br />
         </>
       )}
