@@ -62,15 +62,20 @@ export default async function Play() {
     if (gameState.round > locCount || gameState.round > 5) {
       gameState.complete = true;
     } else {
-      let newLocId = Math.floor(Math.random() * locCount);
-      // dont use the same location twice
-      while (gameState.allLocsUsed.some((loc) => loc.id === newLocId)) {
-        newLocId = Math.floor(Math.random() * locCount);
-      }
+      let newLocSkip = Math.floor(Math.random() * locCount);
       // get actual loc from db
       /* we are using findmany and skip instead of selecting by id specefically so that if we delete some, 
       there's no chance of accidentally trying to get a deleted item */
-      const newLoc = await prisma.photo.findMany({ skip: newLocId, take: 1 });
+      let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+      // dont use the same location twice
+      while (gameState.allLocsUsed.some((loc) => loc.id === newLoc[0].id)) {
+        newLocSkip = Math.floor(Math.random() * locCount);
+        newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+        if (!newLoc[0]) {
+          // just in case i goofied something up
+          console.log("THIS SHOULDN'T HAPPEN");
+        }
+      }
       gameState.loc = newLoc[0];
     }
   }
