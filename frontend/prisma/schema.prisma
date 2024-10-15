@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum DiffEnum {
+  ONE
+  TWO
+  THREE
+}
+
+
 model Photo {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -16,6 +23,10 @@ model Photo {
   description String?
   latitude Float
   longitude Float
+  diffRating DiffEnum?
+  campus String?
+  indoors Boolean?
+  isApproved Boolean @default(true)
   uploader User @relation(fields: [uploaderId], references: [id])
 
   uploaderId Int
@@ -42,9 +53,3 @@ model GameState {
   complete                    Boolean
 }
 
-// model Test2 {
-//     id Int @id @default(autoincrement())
-//     createdAt DateTime @default(now())
-//     updatedAt DateTime @updatedAt
-//     imageId String
-// }
