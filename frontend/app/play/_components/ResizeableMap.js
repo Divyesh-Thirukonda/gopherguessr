@@ -1,10 +1,7 @@
-// THIS IS JUST A MOCKUP
-// DELETE IN PRODUCTION
-
 "use client";
 
 import { MapTrifold, X } from "@phosphor-icons/react";
-import MapWrapper from "../../play/_components/MapWrapper";
+import MapWrapper from "./MapWrapper";
 import * as motion from "framer-motion/client";
 import { useState } from "react";
 
