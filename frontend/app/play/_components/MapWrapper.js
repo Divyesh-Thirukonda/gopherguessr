@@ -38,7 +38,11 @@ import ResultsDialog from "./ResultsDialog";
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
 
-export default function MapWrapper({ submitGuess, gameState }) {
+export default function MapWrapper({
+  submitGuess,
+  gameState,
+  onDialogContinue,
+}) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
@@ -68,10 +72,10 @@ export default function MapWrapper({ submitGuess, gameState }) {
   }, [gameState, viewStPaul]);
 
   useEffect(() => {
-    if(gameState.gameStarted) {
-      setDialogOpen(true)
+    if (gameState.gameStarted) {
+      setDialogOpen(true);
     }
-  }, [gameState.round])
+  }, [gameState.round]);
 
   return (
     <>
@@ -101,7 +105,12 @@ export default function MapWrapper({ submitGuess, gameState }) {
       >
         Submit Guess
       </motion.button>
-      <ResultsDialog gameState={gameState} open={dialogOpen} setDialogOpen={setDialogOpen}/>
+      <ResultsDialog
+        gameState={gameState}
+        open={dialogOpen}
+        setDialogOpen={setDialogOpen}
+        onContinue={onDialogContinue}
+      />
     </>
   );
 }

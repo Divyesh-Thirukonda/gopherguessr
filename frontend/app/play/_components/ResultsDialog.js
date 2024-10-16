@@ -3,7 +3,12 @@ import { MapContainer, Polyline } from "react-leaflet";
 import MapImageWrapper from "./MapImageWrapper";
 import { useEffect, useRef, useState } from "react";
 
-export default function ResultsDialog({ gameState, open, setDialogOpen }) {
+export default function ResultsDialog({
+  gameState,
+  open,
+  setDialogOpen,
+  onContinue,
+}) {
   const map = useRef(null);
   const [actuallyShow, setActuallyShow] = useState(false);
 
@@ -106,7 +111,7 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
         <button
           className="mt-6 rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
           onClick={() => {
-            setViewMap(false);
+            onContinue();
             setDialogOpen(false);
           }}
         >

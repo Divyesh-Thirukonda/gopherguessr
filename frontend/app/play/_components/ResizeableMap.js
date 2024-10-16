@@ -12,7 +12,11 @@ export default function ResizeableMap({ gameState, submitGuess }) {
     return (
       <div className="fixed inset-0 z-[900] backdrop-blur-md">
         <div className="scale-[90%] overflow-hidden rounded-xl">
-          <MapWrapper gameState={gameState} submitGuess={submitGuess} />
+          <MapWrapper
+            gameState={gameState}
+            submitGuess={submitGuess}
+            onDialogContinue={() => setViewMap(false)}
+          />
         </div>
         <motion.button
           whileHover={{ scale: 1.2 }}
