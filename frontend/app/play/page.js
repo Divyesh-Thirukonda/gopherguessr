@@ -29,7 +29,6 @@ import { gameState } from "../_utils/tempDb";
 // we are importing this with a different name than usual because we need to export a variable called dynamic later
 import dynamicImport from "next/dynamic";
 import ResultsDialog from "./_components/ResultsDialog";
-import EndDialog from "./_components/EndDialog";
 import prisma from "../_utils/db";
 
 // we import this a special way because Leaflet (the mapping library we are using), can't be prerendered.
@@ -61,23 +60,22 @@ export default async function Play() {
     // don't have more rounds than 5 or the amount of locations we have
     if (gameState.round > locCount || gameState.round > 5) {
       gameState.complete = true;
-    } else {
-      let newLocSkip = Math.floor(Math.random() * locCount);
-      // get actual loc from db
-      /* we are using findmany and skip instead of selecting by id specefically so that if we delete some, 
-      there's no chance of accidentally trying to get a deleted item */
-      let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
-      // dont use the same location twice
-      while (gameState.allLocsUsed.some((loc) => loc.id === newLoc[0].id)) {
-        newLocSkip = Math.floor(Math.random() * locCount);
-        newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
-        if (!newLoc[0]) {
-          // just in case i goofied something up
-          console.log("THIS SHOULDN'T HAPPEN");
-        }
-      }
-      gameState.loc = newLoc[0];
     }
+    let newLocSkip = Math.floor(Math.random() * locCount);
+    // get actual loc from db
+    /* we are using findmany and skip instead of selecting by id specefically so that if we delete some, 
+    there's no chance of accidentally trying to get a deleted item */
+    let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+    // dont use the same location twice
+    while (gameState.allLocsUsed.some((loc) => loc.id === newLoc[0].id)) {
+      newLocSkip = Math.floor(Math.random() * locCount);
+      newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+      if (!newLoc[0]) {
+        // just in case i goofied something up
+        console.log("THIS SHOULDN'T HAPPEN");
+      }
+    }
+    gameState.loc = newLoc[0];
   }
 
   /*
@@ -119,17 +117,6 @@ export default async function Play() {
     revalidatePath("/play");
   }
 
-  // if the game is over we don't need to show the map anymore.
-  // in the future we can put a game over / summary screen here.
-  if (gameState.complete === true) {
-    return (
-      <>
-        <EndDialog gameState={gameState} />
-        <DebugMenu />
-      </>
-    );
-  }
-
   return (
     <>
       <MapWrapper
@@ -137,7 +124,7 @@ export default async function Play() {
         submitGuess={submitGuess}
         gameState={gameState}
       />
-      <DebugMenu />
+      <DebugMenu justClear={false} />
       <PreviewImage gameState={gameState} />
     </>
   );

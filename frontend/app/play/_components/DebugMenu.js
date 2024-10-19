@@ -22,6 +22,7 @@
 import { Bug } from "@phosphor-icons/react/dist/ssr";
 import { revalidatePath } from "next/cache";
 import { gameState } from "@/app/_utils/tempDb";
+import { clearGameState } from "../_utils/gameStateUtils";
 
 export default function DebugMenu() {
   /*
@@ -41,27 +42,6 @@ export default function DebugMenu() {
     On our end, we can call the function anywhere (in a form action in this case),
     and Next.js will automatically take care of making an API endpoint and converting to JSON and back.
   */
-  async function clearGameState() {
-    "use server";
-    gameState.loc = null;
-    gameState.allLocsUsed = [];
-    gameState.round = 1;
-    gameState.lastGuessPoints = 0;
-    gameState.lastGuessLat = 0;
-    gameState.lastGuessLng = 0;
-    gameState.points = 0;
-    gameState.lastGuessD = 0;
-    gameState.complete = false;
-    gameState.gameStarted = false;
-    gameState.allGuessesUsed = [];
-    /*
-      Now that we've updated the game state in our "database", 
-      we need a way to tell the client to "refresh".
-      revalidatePath does just that by telling the server to rerender the entire page,
-      running our code to get a new random location and sending that info to the client.
-    */
-    revalidatePath("/play");
-  }
 
   return (
     <div

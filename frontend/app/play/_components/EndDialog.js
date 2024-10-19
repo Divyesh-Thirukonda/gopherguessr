@@ -1,19 +1,11 @@
 "use client";
 import { MapContainer, Polyline } from "react-leaflet";
 import MapImageWrapper from "./MapImageWrapper";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import { revalidatePath } from "next/cache";
 
-export default function EndDialog({ gameState }) {
+export default function EndDialog({ gameState, setShowEndDialog }) {
   const map = useRef(null);
-
-  // I DONT THINK WE NEED actuallyShow
-  // const [actuallyShow, setActuallyShow] = useState(false);
-
-  // useEffect(() => {
-  //     if (gameState.allLocsUsed.length > 0) {
-  //         setTimeout(() => setActuallyShow(true), 10);
-  //     }
-  // }, [gameState.allLocsUsed]);
 
   // Calculate the center of the map by averaging all the locations
   const calculateMapCenter = (locations) => {
@@ -28,12 +20,12 @@ export default function EndDialog({ gameState }) {
       : [0, 0];
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center">
       <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
 
       {/* Dialog container */}
       <dialog
-        className="relative z-[1100] mx-4 w-full max-w-md rounded-lg bg-white p-6 text-center"
+        className="relative z-[2100] mx-4 w-full max-w-md rounded-lg bg-white p-6 text-center"
         open={true}
       >
         <div className="mb-4 text-lg font-semibold">Game Over!</div>
@@ -81,17 +73,32 @@ export default function EndDialog({ gameState }) {
           </div>
         )}
 
-        {/* <button
-                    className="mt-6 py-2 px-4 bg-rose-600 text-white rounded-full hover:bg-rose-700"
-                    onClick={() => setDialogOpen(false)}
-                >
-                    Return Home
-                </button> */}
+        {/* Buttons container */}
+        <div className="mt-6 flex justify-center space-x-4">
+          <button
+            className="py-2 px-4 bg-rose-600 text-white rounded-full hover:bg-rose-700"
+            onClick={() => {
+              setShowEndDialog(false);
+              window.location.href = '/';
+            }}
+          >
+            Go Home
+          </button>
+
+          <button
+            className="py-2 px-4 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+            onClick={() => {
+              setShowEndDialog(false);
+              window.location.href = '/play';
+            }}
+          >
+            Play Again
+          </button>
+        </div>
 
         {/* TODO:
-                - implement the return home button
                 - add a full screen feature
-                - only set complete to true if the last results screen continue is done
+                - find a way to call "clear game state" when we click on either button
                  */}
       </dialog>
     </div>
