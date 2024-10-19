@@ -2,7 +2,6 @@
 import { MapContainer, Polyline } from "react-leaflet";
 import MapImageWrapper from "./MapImageWrapper";
 import { useRef } from "react";
-import { revalidatePath } from "next/cache";
 
 export default function EndDialog({ gameState, setShowEndDialog }) {
   const map = useRef(null);
@@ -25,7 +24,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
 
       {/* Dialog container */}
       <dialog
-        className="relative z-[2100] mx-4 w-full max-w-md rounded-lg bg-white p-6 text-center"
+        className="relative z-[2100] w-[90%] max-w-5xl h-[90%] rounded-lg bg-white p-6 text-center overflow-auto"
         open={true}
       >
         <div className="mb-4 text-lg font-semibold">Game Over!</div>
@@ -39,17 +38,16 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
               zoom={14}
               maxZoom={20}
               scrollWheelZoom={true}
-              className="h-96 w-96"
+              className="h-[60vh] w-[80vw]" // Responsive map size
             >
               {gameState.allLocsUsed.map((loc, index) => (
-                <>
+                <div key={index}>
                   <MapImageWrapper
-                    key={index}
                     mapRef={map}
                     guess={[
                       gameState.allGuessesUsed[index][0],
                       gameState.allGuessesUsed[index][1],
-                    ]} // Use each location's lat and lng
+                    ]}
                     setGuess={() => {}}
                     actualLocation={[loc.latitude, loc.longitude]}
                   />
@@ -60,14 +58,14 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
                         gameState.allGuessesUsed[index][1],
                       ],
                       [loc.latitude, loc.longitude],
-                    ]} // Line connecting all locations
+                    ]}
                     pathOptions={{
-                      color: "black", // Color of the line
-                      dashArray: "10, 10", // Dotted line style (alternating dashes)
-                      weight: 2, // Line thickness
+                      color: "black",
+                      dashArray: "10, 10",
+                      weight: 2,
                     }}
                   />
-                </>
+                </div>
               ))}
             </MapContainer>
           </div>
@@ -79,7 +77,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
             className="py-2 px-4 bg-rose-600 text-white rounded-full hover:bg-rose-700"
             onClick={() => {
               setShowEndDialog(false);
-              window.location.href = '/';
+              window.location.href = "/";
             }}
           >
             Go Home
@@ -89,7 +87,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
             className="py-2 px-4 bg-blue-600 text-white rounded-full hover:bg-blue-700"
             onClick={() => {
               setShowEndDialog(false);
-              window.location.href = '/play';
+              window.location.href = "/play";
             }}
           >
             Play Again
