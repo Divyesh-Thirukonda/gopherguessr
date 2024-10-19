@@ -2,6 +2,7 @@
 import { MapContainer, Polyline } from "react-leaflet";
 import MapImageWrapper from "./MapImageWrapper";
 import { useRef } from "react";
+import { clearGameState } from "../_utils/gameStateUtils";
 
 export default function EndDialog({ gameState, setShowEndDialog }) {
   const map = useRef(null);
@@ -76,6 +77,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
           <button
             className="py-2 px-4 bg-rose-600 text-white rounded-full hover:bg-rose-700"
             onClick={() => {
+              clearGameState();
               setShowEndDialog(false);
               window.location.href = "/";
             }}
@@ -86,6 +88,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
           <button
             className="py-2 px-4 bg-blue-600 text-white rounded-full hover:bg-blue-700"
             onClick={() => {
+              clearGameState();
               setShowEndDialog(false);
               window.location.href = "/play";
             }}

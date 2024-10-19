@@ -1,9 +1,9 @@
+"use server"; // Server action
+
 import { revalidatePath } from "next/cache";
 import { gameState } from "@/app/_utils/tempDb";
 
 export async function clearGameState() {
-  "use server"; // Server action
-
   // Reset game state
   gameState.loc = null;
   gameState.allLocsUsed = [];
