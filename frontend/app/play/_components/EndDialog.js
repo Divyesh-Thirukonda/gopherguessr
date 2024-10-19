@@ -95,9 +95,8 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
         </div>
 
         {/* TODO:
-                - add a full screen feature
-                - find a way to call "clear game state" when we click on either button
-                 */}
+          - find a way to call "clear game state" when we click on either button
+        */}
       </dialog>
     </div>
   );
