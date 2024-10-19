@@ -2,10 +2,12 @@
 import { MapContainer, Polyline } from "react-leaflet";
 import MapImageWrapper from "./MapImageWrapper";
 import { useEffect, useRef, useState } from "react";
+import EndDialog from "./EndDialog";
 
 export default function ResultsDialog({ gameState, open, setDialogOpen }) {
   const map = useRef(null);
   const [actuallyShow, setActuallyShow] = useState(false);
+  const [showEndDialog, setShowEndDialog] = useState(false); // Add state to handle EndDialog visibility
 
   useEffect(() => {
     if (gameState.allLocsUsed.length > 0) {
@@ -18,7 +20,7 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the Earth in kilometers
     var dLat = deg2rad(lat2 - lat1); // Difference in latitude
-    var dLon = deg2rad(lon2 - lon1); // Difference in longitude
+    var dLon = deg2rad(lon1 - lon2); // Difference in longitude (fixed direction)
     var a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) *
@@ -26,8 +28,7 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var distance = R * c; // Distance in kilometers
-    return distance;
+    return R * c;
   }
 
   function deg2rad(deg) {
@@ -47,7 +48,7 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
     actualLoc[0],
     actualLoc[1],
     userGuessLoc[0],
-    userGuessLoc[1],
+    userGuessLoc[1]
   );
   console.log(dist);
   var myZoom = 0;
@@ -61,6 +62,7 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
     myZoom = 14;
   }
 
+  // Rendering the EndDialog conditionally in the main render function
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center">
       {/* Background overlay with blur */}
@@ -105,11 +107,20 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
 
         <button
           className="mt-6 rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
-          onClick={() => setDialogOpen(false)}
+          onClick={() => {
+            if (gameState.complete) {
+              setShowEndDialog(true); // Set flag to show EndDialog
+            } else {
+              setDialogOpen(false); // Close the current dialog
+            }
+          }}
         >
           Continue
         </button>
       </dialog>
+
+      {/* Conditionally rendering the EndDialog */}
+      {showEndDialog && <EndDialog gameState={gameState} setShowEndDialog={setShowEndDialog} setActuallyShow={setActuallyShow} />}
     </div>
   );
 }
