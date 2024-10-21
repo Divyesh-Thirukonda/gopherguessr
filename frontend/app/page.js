@@ -42,14 +42,15 @@ export default async function Home() {
             loop
             muted
             playsInline
+            poster="/cacheable/umn-flyover-poster-20241021.webp"
           >
             <source
-              src="/videos/placeholder-drone-footage.mp4"
+              src="/cacheable/umn-flyover-20241021.mp4"
               type="video/mp4"
             ></source>
           </video>
         </div>
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur"></div>
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur"></div>
         <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-12">
           <div className="max-w-md text-center">
             <h1 className="text-5xl font-bold text-white">Explore The U!</h1>
