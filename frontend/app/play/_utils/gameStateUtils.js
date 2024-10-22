@@ -20,5 +20,4 @@ export async function clearGameState() {
 
   // Revalidate the /play page
   revalidatePath("/play");
-  redirect("/play");
 }

@@ -11,6 +11,20 @@ export default function EndDialog({
 }) {
   const map = useRef(null);
 
+  const handlePlayAgainClick = async (e) => {
+    setDialogOpen(false);
+    await clearGameState();
+    setShowEndDialog(false);
+    window.location.href = "/play";
+  };
+
+  const handleHomeClick = async (e) => {
+    setDialogOpen(false);
+    await clearGameState();
+    setShowEndDialog(false);
+    window.location.href = "/";
+  };
+
   // Calculate the center of the map by averaging all the locations
   const calculateMapCenter = (locations) => {
     const latSum = locations.reduce((sum, loc) => sum + loc.latitude, 0);
@@ -80,23 +94,14 @@ export default function EndDialog({
         <div className="mt-6 flex justify-center space-x-4">
           <button
             className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
-            onClick={async () => {
-              await clearGameState();
-              setShowEndDialog(false);
-              window.location.href = "/";
-            }}
+            onClick={handleHomeClick}
           >
             Go Home
           </button>
 
           <button
             className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            onClick={async () => {
-              setDialogOpen(false);
-              await clearGameState();
-              setShowEndDialog(false);
-              window.location.href = "/play";
-            }}
+            onClick={handlePlayAgainClick}
           >
             Play Again
           </button>
