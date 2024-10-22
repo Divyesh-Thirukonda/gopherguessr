@@ -78,6 +78,7 @@ export default function MapWrapper({
       console.log("happening...");
       setDialogOpen(true);
     }
+
   }, [gameState.round]);
   if (viewMap == false) {
     return null;

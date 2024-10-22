@@ -14,6 +14,7 @@
     "@uploadthing/react": "^7.0.2",
     "exifreader": "^4.23.5",
     "framer-motion": "^11.5.5",
+    "heic-convert": "^2.1.0",
     "leaflet": "1.9.4",
     "next": "14.2.12",
     "protomaps-leaflet": "4.0.1",

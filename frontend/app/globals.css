@@ -18,3 +18,12 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes loadBlur {
+  0% {
+    filter: blur(0px);
+  }
+  100% {
+    filter: blur(10px);
+  }
+}

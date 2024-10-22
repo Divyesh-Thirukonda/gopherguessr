@@ -6,6 +6,7 @@ import sharp from "sharp";
 import ExifReader from "exifreader";
 import prisma from "../_utils/db";
 import UploadForm from "./_components/UploadForm";
+import heicConvert from "heic-convert";
 
 export default async function ImageUpload() {
   // this runs on the server before rendering the page
@@ -20,14 +21,34 @@ export default async function ImageUpload() {
       throw new Error();
     }
     const file = formData.get("file");
-    const buffer = await file.arrayBuffer();
+    let buffer = await file.arrayBuffer();
+
     // pull gps coords from image
     const tags = await ExifReader.load(buffer, { expanded: true });
     if (!tags.gps) {
-      throw new Error();
+      throw Error(
+        "Uploaded photo does not contain GPS data. Please ensure camera has access to location data.",
+      );
     }
     const latitude = tags.gps.Latitude;
     const longitude = tags.gps.Longitude;
+
+    // gets last 4 characters of file name
+    const fileExtension = file.name.substring(
+      file.name.length - 4,
+      file.name.length,
+    );
+
+    // if HEIC, convert buffer to PNG
+    if (fileExtension === "HEIC") {
+      // convert function accepts Uint8Array
+      const tempBuffer = new Uint8Array(buffer);
+      buffer = await heicConvert({
+        buffer: tempBuffer,
+        format: "PNG",
+      });
+    }
+
     // compress image and convert to webp
     const optimized = await sharp(buffer)
       .rotate()
@@ -40,14 +61,18 @@ export default async function ImageUpload() {
     const newFileName = `${file.name.substring(0, file.name.lastIndexOf("."))}.webp`;
     // create the new image
     const newFile = new File([blob], newFileName, { type: "image/webp" });
+
     // upload the image
     const response = await utapi.uploadFiles(newFile);
     if (response.error) {
-      throw new Error();
+      console.log(response.error);
+      throw new Error("Unknown error in file upload.");
     }
+
     const imageId = response.data.appUrl.substring(
       response.data.appUrl.lastIndexOf("/") + 1,
     );
+
     // get rest of data from form and save to db
     const buildingName = formData.get("name");
     const uploaderId = parseInt(formData.get("uploaderId"), 10);

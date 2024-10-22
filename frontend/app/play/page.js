@@ -25,6 +25,7 @@ import latlngToMeters from "../_utils/latlngToMeters";
 import { gameState } from "../_utils/tempDb";
 import dynamicImport from "next/dynamic";
 import EndDialog from "./_components/EndDialog";
+import ResultsDialog from "./_components/ResultsDialog";
 import prisma from "../_utils/db";
 
 const ImageView = dynamicImport(() => import("./_components/ImageView"), {
@@ -38,14 +39,19 @@ export default async function Play() {
     const locCount = await prisma.photo.count();
     if (gameState.round > locCount || gameState.round > 5) {
       gameState.complete = true;
-    } else {
-      let newLocId = Math.floor(Math.random() * locCount);
-      while (gameState.allLocsUsed.some((loc) => loc.id === newLocId)) {
-        newLocId = Math.floor(Math.random() * locCount);
+  } else {
+    let newLocId = Math.floor(Math.random() * locCount);
+    let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+      
+    while (gameState.allLocsUsed.some((loc) => loc.id === newLocId)) {
+      newLocId = Math.floor(Math.random() * locCount);
+      newLoc = await prisma.photo.findMany({ skip: newLocId, take: 1 });
+      if (!newLoc[0]) {
+        // just in case i goofied something up
+        console.log("THIS SHOULDN'T HAPPEN");
       }
-      const newLoc = await prisma.photo.findMany({ skip: newLocId, take: 1 });
-      gameState.loc = newLoc[0];
     }
+    gameState.loc = newLoc[0];
   }
 
   async function submitGuess(guess) {
@@ -70,9 +76,15 @@ export default async function Play() {
     revalidatePath("/play");
   }
 
+    
   if (gameState.complete === true) {
     return <EndDialog gameState={gameState} />;
   }
 
-  return <ImageView submitGuess={submitGuess} gameState={gameState} />;
+  return (
+    <>
+      <DebugMenu justClear={false} />
+      <ImageView submitGuess={submitGuess} gameState={gameState} />;
+    </>
+  );
 }
