@@ -14,25 +14,69 @@
     I'm importing framer-motion so that we can animate the button, 
     but otherwise this is a pretty simple page with no extra logic.
 */
+
+"use client";
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import Image from "next/image";
 
-// keep contributor info fresh
+// Keep contributor info fresh
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  // fetch using cache no store to ensure the fetch isn't cached
-  // also run this in the exported function so it loads every time the page is loaded
-  const res = await fetch(
-    "https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors",
-    { cache: "no-store" },
-  );
-  const contributors = await res.json();
+export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [blurAmount, setBlurAmount] = useState(0);
+  const [isMounted, setIsMounted] = useState(false); // Track component mount status
+  const router = useRouter(); // Updated useRouter hook from next/navigation
+
+  useEffect(() => {
+    setIsMounted(true); // Mark the component as mounted
+  }, []);
+
+  const handlePlayClick = async (e) => {
+    e.preventDefault(); // Prevent default link behavior
+    if (!isMounted) return; // Avoid running if the component isn't mounted yet
+
+    setIsLoading(true); // Set loading state to true
+
+    // Simulate the background blur effect (increase over time)
+    let blurInterval = setInterval(() => {
+      setBlurAmount((prev) => {
+        if (prev >= 10) {
+          clearInterval(blurInterval);
+          return prev;
+        }
+        return prev + 1; // Slowly increase blur amount
+      });
+    }, 100);
+
+    // Simulate delay to show the loading effect
+    setTimeout(() => {
+      router.push("/play"); // Navigate to the play page
+    }, 3000);
+  };
+
+  // Fetch contributors
+  const fetchContributors = async () => {
+    const res = await fetch(
+      "https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors",
+      { cache: "no-store" },
+    );
+    return await res.json();
+  };
+
+  const [contributors, setContributors] = useState([]);
+
+  useEffect(() => {
+    fetchContributors().then(setContributors);
+  }, []);
 
   return (
-    <main>
+    <main className={`${isLoading && 'animate-[loadBlur_1s_ease-in-out_forwards]'}`}>
       {/* Main section with video */}
       <section className="relative min-h-dvh w-full">
         <div className="fixed inset-0">
@@ -47,7 +91,7 @@ export default async function Home() {
             <source
               src="/cacheable/umn-flyover-20241021.mp4"
               type="video/mp4"
-            ></source>
+            />
           </video>
         </div>
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur"></div>
@@ -62,13 +106,14 @@ export default async function Home() {
               className="mx-auto mt-4 w-min rounded-full bg-rose-600"
               whileHover={{ scale: 1.2 }}
             >
-              <Link
+              <a
                 href="/play"
+                onClick={handlePlayClick}
                 className="flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
                 Play
                 <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
-              </Link>
+              </a>
             </motion.div>
             <motion.div
               className="mx-auto mt-4 w-48 rounded-full bg-rose-600"
@@ -95,7 +140,7 @@ export default async function Home() {
             <hr className="w-full border-dashed border-gray-400" />
           </div>
           <div className="mt-4 flex flex-wrap justify-center gap-4">
-            {contributors.map((contributor) => (
+            {contributors?.map((contributor) => (
               <div key={contributor.id} className="relative">
                 <a
                   href={`https://github.com/${contributor.login}`}
@@ -115,6 +160,20 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Loading */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          {/* <p className="text-white text-lg font-semibold">Loading...</p> */}
+        </div>
+      )}
+
+      {/* Apply the blur effect dynamically */}
+      {/* <style jsx>{`
+        :global(body) {
+          filter: blur(${blurAmount}px);
+        }
+      `}</style> */}
     </main>
   );
 }
