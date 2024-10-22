@@ -73,8 +73,15 @@ export default function MapWrapper({ submitGuess, gameState }) {
     }
   }, [gameState.round])
 
+  const handleKeyDown = (event) => {
+    console.log('Key Pressed')
+    const key = event.key;
+    if (key === 'Enter') {submitGuess(guess);}
+    if (key === 'Escape') {setDialogOpen(false);}
+  }
+
   return (
-    <>
+    <div onKeyDown={handleKeyDown}>
       <MapContainer
         center={viewStPaul ? stPaulCenter : minneapolisCenter}
         minZoom={15}
@@ -102,6 +109,6 @@ export default function MapWrapper({ submitGuess, gameState }) {
         Submit Guess
       </motion.button>
       <ResultsDialog gameState={gameState} open={dialogOpen} setDialogOpen={setDialogOpen}/>
-    </>
+    </div>
   );
 }
