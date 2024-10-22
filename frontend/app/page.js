@@ -163,17 +163,8 @@ export default function Home() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          {/* <p className="text-white text-lg font-semibold">Loading...</p> */}
-        </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"/>
       )}
-
-      {/* Apply the blur effect dynamically */}
-      {/* <style jsx>{`
-        :global(body) {
-          filter: blur(${blurAmount}px);
-        }
-      `}</style> */}
     </main>
   );
 }
