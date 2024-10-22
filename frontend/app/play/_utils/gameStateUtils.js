@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { gameState } from "@/app/_utils/tempDb";
+import { redirect } from "next/navigation";
 
 export async function clearGameState() {
   // Reset game state
@@ -19,4 +20,5 @@ export async function clearGameState() {
 
   // Revalidate the /play page
   revalidatePath("/play");
+  redirect("/play");
 }

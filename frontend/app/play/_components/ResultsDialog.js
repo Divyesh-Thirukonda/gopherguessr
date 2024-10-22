@@ -48,9 +48,9 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
     actualLoc[0],
     actualLoc[1],
     userGuessLoc[0],
-    userGuessLoc[1]
+    userGuessLoc[1],
   );
-  console.log(dist);
+  // console.log(dist);
   var myZoom = 0;
   if (dist < 0.1) {
     myZoom = 18;
@@ -120,7 +120,13 @@ export default function ResultsDialog({ gameState, open, setDialogOpen }) {
       </dialog>
 
       {/* Conditionally rendering the EndDialog */}
-      {showEndDialog && <EndDialog gameState={gameState} setShowEndDialog={setShowEndDialog} setActuallyShow={setActuallyShow} />}
+      {showEndDialog && (
+        <EndDialog
+          gameState={gameState}
+          setShowEndDialog={setShowEndDialog}
+          setDialogOpen={setDialogOpen}
+        />
+      )}
     </div>
   );
 }

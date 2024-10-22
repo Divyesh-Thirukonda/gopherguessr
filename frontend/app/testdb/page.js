@@ -18,6 +18,6 @@ export default async function TestDB() {
   });
   // get
   const allTest2Items = await db.test2.findMany();
-  console.log(allTest2Items);
+  // console.log(allTest2Items);
   return <div>{allTest2Items.length} items</div>;
 }
