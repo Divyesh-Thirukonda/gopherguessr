@@ -1,25 +1,24 @@
-// THIS IS JUST A MOCKUP
-// DELETE IN PRODUCTION
+"use client";
 
 import Image from "next/image";
-import prisma from "../_utils/db";
-import { gameState } from "../_utils/tempDb";
-import ResizeableMap from "./_components/ResizeableMap";
-
-export const dynamic = "force-dynamic";
+import { useState, useEffect } from "react";
+import ResizeableMap from "./ResizeableMap";
 
 function getFullUrl(id) {
   return `https://utfs.io/a/e9dxf42twp/${id}`;
 }
 
-export default async function ImageTest() {
-  const allPhotos = await prisma.photo.findMany();
-  // get random photo
-  const photo = allPhotos[Math.floor(Math.random() * allPhotos.length)];
+export default function ImageView({ submitGuess, gameState }) {
+  const [photo, setPhoto] = useState(null);
 
-  // this doesn't do anything its just here to pass to the map
-  async function submitGuess() {
-    "use server";
+  useEffect(() => {
+    if (gameState.loc) {
+      setPhoto(gameState.loc);
+    }
+  }, [gameState.loc]);
+
+  if (!photo) {
+    return <div>Loading...</div>;
   }
 
   return (
