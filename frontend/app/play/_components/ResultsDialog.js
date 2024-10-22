@@ -112,7 +112,7 @@ export default function ResultsDialog({
           className="mt-6 rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
           onClick={() => {
             onContinue();
-            setDialogOpen(false);
+            setDialogOpen(false); // Ensuring that the dialog is closed only, without affecting the map view.
           }}
         >
           Continue

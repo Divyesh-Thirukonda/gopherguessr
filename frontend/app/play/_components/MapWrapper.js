@@ -4,9 +4,9 @@
       It is in the folder /app/play/_components because it is only used on the /play page.
       The underscore in the _components folder tells Next.js not to serve the files directly to the client.
       This prevents users from, for example, loading JUST our MapWrapper.
-      Think of it like a private method in Java, 
+      Think of it like a private method in Java,
       It needs to be part of something bigger (our page.js file) to be accessible.
-      Learn more here: 
+      Learn more here:
         https://nextjs.org/docs/app/building-your-application/routing/colocation#private-folders
   Server component or client component?:
     Client Component
@@ -14,7 +14,7 @@
       If you're keeping track, this is the first time we cross over from Server Component to Client Component.
       (remember we can't import Server Components into Client Components so unless we use a workaround,
       everything further down the tree needs to be a Client Component)
-        Learn more about the workaround here: 
+        Learn more about the workaround here:
           https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#supported-pattern-passing-server-components-to-client-components-as-props
       We need this to be a Client Component because we're using React Hooks, which need to run on the client.
       (imagine if our useState ran on the Server, every user would have the exact same state. that would be a disaster...)
@@ -74,6 +74,8 @@ export default function MapWrapper({
   useEffect(() => {
     if (gameState.gameStarted) {
       setDialogOpen(true);
+    } else {
+      setDialogOpen(false); // Ensure the dialog is closed when game isn't started.
     }
   }, [gameState.round]);
 
