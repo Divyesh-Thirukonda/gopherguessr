@@ -44,12 +44,23 @@ const MapWrapper = dynamicImport(() => import("./_components/MapWrapper"), {
 */
 export const dynamic = "force-dynamic";
 
-export default async function Play() {
+export default async function Play({searchParams}) {
   /*
     Since this is a server component (no "use client"), this JavaScript will not run on the client at all.
     Think like a PHP file.
   */
+  const params = new URLSearchParams(searchParams);
+  const gameMode = params.get('gameMode')
 
+   // Determine the filter based on gameMode
+   let diffFilter = {};
+   if (gameMode === '1') {
+     diffFilter = { diffRating: 'ONE' };
+   } else if (gameMode === '2') {
+     diffFilter = { diffRating: 'TWO' };
+   } else if (gameMode === '3') {
+     diffFilter = { diffRating: 'THREE' };
+   }
   /*
     This runs when somebody GETs this page.
     It just gets a random location from our REAL DATABASE NOW,
