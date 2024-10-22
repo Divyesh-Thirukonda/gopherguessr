@@ -1,6 +1,6 @@
 "use client";
 
-import { MapTrifold, X } from "@phosphor-icons/react";
+import { MapTrifold } from "@phosphor-icons/react";
 import MapWrapper from "./MapWrapper";
 import * as motion from "framer-motion/client";
 import { useState } from "react";

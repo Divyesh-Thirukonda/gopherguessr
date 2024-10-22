@@ -120,8 +120,8 @@ export default function MapWrapper({
         <motion.button
           whileHover={{ scale: 1.2 }}
           whileTap={{ scale: 0.8 }}
-          onClick={() => setViewMap(false)}
-          className="absolute right-4 top-4 rounded-full bg-rose-600 p-2.5"
+          onClick={onDialogContinue}
+          className="absolute right-4 top-4 z-[2000] rounded-full bg-rose-600 p-2.5"
         >
           <X className="h-6 w-6 text-white" />
         </motion.button>
