@@ -67,7 +67,7 @@ export default async function Play({searchParams}) {
     and stores it in the gameState "database".
   */
   if (!gameState.loc) {
-    const locCount = await prisma.photo.count();
+    const locCount = await prisma.photo.count({where: diffFilter});
     // don't have more rounds than 5 or the amount of locations we have
     if (gameState.round > locCount || gameState.round > 5) {
       gameState.complete = true;
@@ -76,11 +76,11 @@ export default async function Play({searchParams}) {
     // get actual loc from db
     /* we are using findmany and skip instead of selecting by id specefically so that if we delete some, 
     there's no chance of accidentally trying to get a deleted item */
-    let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+    let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1, where: diffFilter });
     // dont use the same location twice
     while (gameState.allLocsUsed.some((loc) => loc.id === newLoc[0].id)) {
       newLocSkip = Math.floor(Math.random() * locCount);
-      newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1 });
+      newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1, where: diffFilter });
       if (!newLoc[0]) {
         // just in case i goofied something up
         console.log("THIS SHOULDN'T HAPPEN");
