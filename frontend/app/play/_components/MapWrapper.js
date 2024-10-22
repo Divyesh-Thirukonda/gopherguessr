@@ -34,6 +34,7 @@ import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapImageWrapper from "./MapImageWrapper";
 import ResultsDialog from "./ResultsDialog";
+import { MapTrifold, X } from "@phosphor-icons/react";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -42,6 +43,7 @@ export default function MapWrapper({
   submitGuess,
   gameState,
   onDialogContinue,
+  viewMap,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -73,46 +75,57 @@ export default function MapWrapper({
 
   useEffect(() => {
     if (gameState.gameStarted) {
+      console.log("happening...");
       setDialogOpen(true);
-    } else {
-      setDialogOpen(false); // Ensure the dialog is closed when game isn't started.
     }
   }, [gameState.round]);
-
+  if (viewMap == false) {
+    return null;
+  }
   return (
-    <>
-      <MapContainer
-        center={viewStPaul ? stPaulCenter : minneapolisCenter}
-        minZoom={15}
-        zoom={16}
-        maxZoom={18}
-        scrollWheelZoom={true}
-        className="h-dvh w-dvw"
-      >
-        <MapImageWrapper mapRef={mapRef} setGuess={setGuess} guess={guess} />
-      </MapContainer>
-      <motion.button
-        className="fixed left-0 right-0 top-6 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
-        whileHover={{ scale: 1.2 }}
-        whileTap={{ scale: 0.8 }}
-        onClick={() => setViewStPaul((currentState) => !currentState)}
-      >
-        Go to {viewStPaul ? "Minneapolis" : "St Paul"}
-      </motion.button>
-      <motion.button
-        className="fixed bottom-6 left-0 right-0 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
-        whileHover={{ scale: 1.2 }}
-        whileTap={{ scale: 0.8 }}
-        onClick={() => submitGuess(guess)}
-      >
-        Submit Guess
-      </motion.button>
-      <ResultsDialog
-        gameState={gameState}
-        open={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        onContinue={onDialogContinue}
-      />
-    </>
+    <div className="fixed inset-0 z-[900] backdrop-blur-md">
+      <div className="scale-[90%] overflow-hidden rounded-xl">
+        <MapContainer
+          center={viewStPaul ? stPaulCenter : minneapolisCenter}
+          minZoom={15}
+          zoom={16}
+          maxZoom={18}
+          scrollWheelZoom={true}
+          className="h-dvh w-dvw"
+        >
+          <MapImageWrapper mapRef={mapRef} setGuess={setGuess} guess={guess} />
+        </MapContainer>
+        <motion.button
+          className="fixed left-0 right-0 top-6 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          onClick={() => setViewStPaul((currentState) => !currentState)}
+        >
+          Go to {viewStPaul ? "Minneapolis" : "St Paul"}
+        </motion.button>
+        <motion.button
+          className="fixed bottom-6 left-0 right-0 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          onClick={() => submitGuess(guess)}
+        >
+          Submit Guess
+        </motion.button>
+        <ResultsDialog
+          gameState={gameState}
+          open={dialogOpen}
+          setDialogOpen={setDialogOpen}
+          onContinue={onDialogContinue}
+        />
+        <motion.button
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          onClick={() => setViewMap(false)}
+          className="absolute right-4 top-4 rounded-full bg-rose-600 p-2.5"
+        >
+          <X className="h-6 w-6 text-white" />
+        </motion.button>
+      </div>
+    </div>
   );
 }
