@@ -13,6 +13,13 @@ enum DiffEnum {
   THREE
 }
 
+enum CampusEnum {
+  WestBank
+  EastBankCore
+  EastBankOuter
+  Dinkytown
+  StPaul
+}
 
 model Photo {
   id Int @id @default(autoincrement())
@@ -24,7 +31,7 @@ model Photo {
   latitude Float
   longitude Float
   diffRating DiffEnum?
-  campus String?
+  campus CampusEnum?
   indoors Boolean?
   isApproved Boolean @default(true)
   uploader User @relation(fields: [uploaderId], references: [id])
