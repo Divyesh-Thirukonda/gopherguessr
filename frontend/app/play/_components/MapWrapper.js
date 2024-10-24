@@ -76,7 +76,7 @@ export default function MapWrapper({ submitGuess, gameState }) {
   const handleKeyDown = (event) => {
     console.log('Key Pressed')
     const key = event.key;
-    if (key === 'Enter') {submitGuess(guess);}
+    if (key === 'Enter' && !dialogOpen) {submitGuess(guess);}
     if (key === 'Escape') {setDialogOpen(false);}
   }
 
