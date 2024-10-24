@@ -34,6 +34,8 @@ import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapImageWrapper from "./MapImageWrapper";
 import ResultsDialog from "./ResultsDialog";
+import { clearGameState } from "../_utils/gameStateUtils";
+
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -44,6 +46,9 @@ export default function MapWrapper({ submitGuess, gameState }) {
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [allowGuess, setAllowGuessState] = useState(false);
+  const [showEndDialog, setShowEndDialog] = useState(false);
 
   // we create this ref here but we actually set it in MapImageWrapper
   const mapRef = useRef(null);
@@ -73,15 +78,34 @@ export default function MapWrapper({ submitGuess, gameState }) {
     }
   }, [gameState.round])
 
-  const handleKeyDown = (event) => {
-    console.log('Key Pressed')
-    const key = event.key;
-    if (key === 'Enter' && !dialogOpen) {submitGuess(guess);}
-    if (key === 'Escape') {setDialogOpen(false);}
+  // Function to update allowGuess
+  function setAllowGuess(cond) {
+    setAllowGuessState(cond);
   }
 
+  const handleKeyDown = (event) => {
+    const key = event.key;
+    if (!gameState.complete) {
+      if (key === 'Enter' && !dialogOpen) {
+        if (allowGuess) {
+          submitGuess(guess);
+          setAllowGuess(false);
+        }
+        if (dialogOpen) {
+          setDialogOpen(false);
+        }
+      }
+
+      if (key === 'Escape') {
+        if (dialogOpen) {
+          setDialogOpen(false);
+        }
+      }
+    }
+  };
+
   return (
-    <div onKeyDown={handleKeyDown}>
+    <div onKeyDown={handleKeyDown} onClick={() => setAllowGuess(true)} tabIndex={0}>
       <MapContainer
         center={viewStPaul ? stPaulCenter : minneapolisCenter}
         minZoom={15}
