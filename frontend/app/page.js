@@ -57,7 +57,7 @@ export default function Home() {
     // Simulate delay to show the loading effect
     // TODO: REMOVE DELAY FOR PRODUCTION
     setTimeout(() => {
-      router.push("/play"); // Navigate to the play page
+      router.push("/login"); // Navigate to the play page
     }, 1000);
   };
 
@@ -108,7 +108,7 @@ export default function Home() {
               whileHover={{ scale: 1.2 }}
             >
               <a
-                href="/play"
+                href="/login"
                 onClick={handlePlayClick}
                 className="flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
