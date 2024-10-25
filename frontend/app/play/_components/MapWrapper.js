@@ -34,6 +34,7 @@ import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapImageWrapper from "./MapImageWrapper";
 import ResultsDialog from "./ResultsDialog";
+import { clearGameState } from "../_utils/gameStateUtils";
 import { MapTrifold, X } from "@phosphor-icons/react";
 
 const minneapolisCenter = [44.97528, -93.23538];
@@ -50,6 +51,9 @@ export default function MapWrapper({
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [allowGuess, setAllowGuessState] = useState(false);
+  const [showEndDialog, setShowEndDialog] = useState(false);
 
   // we create this ref here but we actually set it in MapImageWrapper
   const mapRef = useRef(null);
@@ -78,13 +82,36 @@ export default function MapWrapper({
       console.log("happening...");
       setDialogOpen(true);
     }
-
   }, [gameState.round]);
-  if (viewMap == false) {
-    return null;
+
+  // Function to update allowGuess
+  function setAllowGuess(cond) {
+    setAllowGuessState(cond);
   }
+
+  const handleKeyDown = (event) => {
+    const key = event.key;
+    if (!gameState.complete) {
+      if (key === 'Enter' && !dialogOpen) {
+        if (allowGuess) {
+          submitGuess(guess);
+          setAllowGuess(false);
+        }
+        if (dialogOpen) {
+          setDialogOpen(false);
+        }
+      }
+
+      if (key === 'Escape') {
+        if (dialogOpen) {
+          setDialogOpen(false);
+        }
+      }
+    }
+  };
+  
   return (
-    <div className="fixed inset-0 z-[900] backdrop-blur-md">
+    <div className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`} onKeyDown={handleKeyDown} onClick={() => setAllowGuess(true)} tabIndex={0}>
       <div className="scale-[90%] overflow-hidden rounded-xl">
         <MapContainer
           center={viewStPaul ? stPaulCenter : minneapolisCenter}
