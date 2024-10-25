@@ -4,9 +4,9 @@
       It is in the folder /app/play/_components because it is only used on the /play page.
       The underscore in the _components folder tells Next.js not to serve the files directly to the client.
       This prevents users from, for example, loading JUST our MapWrapper.
-      Think of it like a private method in Java, 
+      Think of it like a private method in Java,
       It needs to be part of something bigger (our page.js file) to be accessible.
-      Learn more here: 
+      Learn more here:
         https://nextjs.org/docs/app/building-your-application/routing/colocation#private-folders
   Server component or client component?:
     Client Component
@@ -14,7 +14,7 @@
       If you're keeping track, this is the first time we cross over from Server Component to Client Component.
       (remember we can't import Server Components into Client Components so unless we use a workaround,
       everything further down the tree needs to be a Client Component)
-        Learn more about the workaround here: 
+        Learn more about the workaround here:
           https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#supported-pattern-passing-server-components-to-client-components-as-props
       We need this to be a Client Component because we're using React Hooks, which need to run on the client.
       (imagine if our useState ran on the Server, every user would have the exact same state. that would be a disaster...)
@@ -35,12 +35,17 @@ import "leaflet/dist/leaflet.css";
 import MapImageWrapper from "./MapImageWrapper";
 import ResultsDialog from "./ResultsDialog";
 import { clearGameState } from "../_utils/gameStateUtils";
-
+import { MapTrifold, X } from "@phosphor-icons/react";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
 
-export default function MapWrapper({ submitGuess, gameState }) {
+export default function MapWrapper({
+  submitGuess,
+  gameState,
+  onDialogContinue,
+  viewMap,
+}) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
@@ -73,10 +78,11 @@ export default function MapWrapper({ submitGuess, gameState }) {
   }, [gameState, viewStPaul]);
 
   useEffect(() => {
-    if(gameState.gameStarted) {
-      setDialogOpen(true)
+    if (gameState.gameStarted) {
+      console.log("happening...");
+      setDialogOpen(true);
     }
-  }, [gameState.round])
+  }, [gameState.round]);
 
   // Function to update allowGuess
   function setAllowGuess(cond) {
@@ -103,36 +109,51 @@ export default function MapWrapper({ submitGuess, gameState }) {
       }
     }
   };
-
+  
   return (
-    <div onKeyDown={handleKeyDown} onClick={() => setAllowGuess(true)} tabIndex={0}>
-      <MapContainer
-        center={viewStPaul ? stPaulCenter : minneapolisCenter}
-        minZoom={15}
-        zoom={16}
-        maxZoom={18}
-        scrollWheelZoom={true}
-        className="h-dvh w-dvw"
-      >
-        <MapImageWrapper mapRef={mapRef} setGuess={setGuess} guess={guess} />
-      </MapContainer>
-      <motion.button
-        className="fixed left-0 right-0 top-6 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
-        whileHover={{ scale: 1.2 }}
-        whileTap={{ scale: 0.8 }}
-        onClick={() => setViewStPaul((currentState) => !currentState)}
-      >
-        Go to {viewStPaul ? "Minneapolis" : "St Paul"}
-      </motion.button>
-      <motion.button
-        className="fixed bottom-6 left-0 right-0 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
-        whileHover={{ scale: 1.2 }}
-        whileTap={{ scale: 0.8 }}
-        onClick={() => submitGuess(guess)}
-      >
-        Submit Guess
-      </motion.button>
-      <ResultsDialog gameState={gameState} open={dialogOpen} setDialogOpen={setDialogOpen}/>
+    <div className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`} onKeyDown={handleKeyDown} onClick={() => setAllowGuess(true)} tabIndex={0}>
+      <div className="scale-[90%] overflow-hidden rounded-xl">
+        <MapContainer
+          center={viewStPaul ? stPaulCenter : minneapolisCenter}
+          minZoom={15}
+          zoom={16}
+          maxZoom={18}
+          scrollWheelZoom={true}
+          className="h-dvh w-dvw"
+        >
+          <MapImageWrapper mapRef={mapRef} setGuess={setGuess} guess={guess} />
+        </MapContainer>
+        <motion.button
+          className="fixed left-0 right-0 top-6 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          onClick={() => setViewStPaul((currentState) => !currentState)}
+        >
+          Go to {viewStPaul ? "Minneapolis" : "St Paul"}
+        </motion.button>
+        <motion.button
+          className="fixed bottom-6 left-0 right-0 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          onClick={() => submitGuess(guess)}
+        >
+          Submit Guess
+        </motion.button>
+        <ResultsDialog
+          gameState={gameState}
+          open={dialogOpen}
+          setDialogOpen={setDialogOpen}
+          onContinue={onDialogContinue}
+        />
+        <motion.button
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          onClick={onDialogContinue}
+          className="absolute right-4 top-4 z-[2000] rounded-full bg-rose-600 p-2.5"
+        >
+          <X className="h-6 w-6 text-white" />
+        </motion.button>
+      </div>
     </div>
   );
 }
