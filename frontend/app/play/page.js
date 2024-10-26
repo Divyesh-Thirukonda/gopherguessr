@@ -28,6 +28,7 @@ import EndDialog from "./_components/EndDialog";
 import ResultsDialog from "./_components/ResultsDialog";
 import DebugMenu from "./_components/DebugMenu";
 import prisma from "../_utils/db";
+import { Debug } from "@prisma/client/runtime/library";
 
 const ImageView = dynamicImport(() => import("./_components/ImageView"), {
   ssr: false,
@@ -77,10 +78,9 @@ export default async function Play() {
       revalidatePath("/play");
     }
 
-    if (gameState.complete === true) {
-      return <EndDialog gameState={gameState} />;
-    }
-
-    return <ImageView submitGuess={submitGuess} gameState={gameState} />;
+    return <>
+    <ImageView submitGuess={submitGuess} gameState={gameState} />
+    <DebugMenu/>
+    </>;
   }
 }

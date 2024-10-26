@@ -4,7 +4,7 @@ import MapImageWrapper from "./MapImageWrapper";
 import { useRef } from "react";
 import { clearGameState } from "../_utils/gameStateUtils";
 
-export default function EndDialog({ gameState, setShowEndDialog }) {
+export default function EndDialog({ gameState, setShowEndDialog, setActuallyShow }) {
   const map = useRef(null);
 
   // Calculate the center of the map by averaging all the locations
@@ -25,7 +25,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
 
       {/* Dialog container */}
       <dialog
-        className="relative z-[2100] w-[90%] max-w-5xl h-[90%] rounded-lg bg-white p-6 text-center overflow-auto"
+        className="relative z-[2100] h-[90%] w-[90%] max-w-5xl overflow-auto rounded-lg bg-white p-6 text-center"
         open={true}
       >
         <div className="mb-4 text-lg font-semibold">Game Over!</div>
@@ -75,10 +75,11 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
         {/* Buttons container */}
         <div className="mt-6 flex justify-center space-x-4">
           <button
-            className="py-2 px-4 bg-rose-600 text-white rounded-full hover:bg-rose-700"
+            className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
             onClick={() => {
               clearGameState();
               setShowEndDialog(false);
+              setActuallyShow(false);
               window.location.href = "/";
             }}
           >
@@ -86,20 +87,17 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
           </button>
 
           <button
-            className="py-2 px-4 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+            className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             onClick={() => {
               clearGameState();
               setShowEndDialog(false);
+              setActuallyShow(false);
               window.location.href = "/play";
             }}
           >
             Play Again
           </button>
         </div>
-
-        {/* TODO:
-          - find a way to call "clear game state" when we click on either button
-        */}
       </dialog>
     </div>
   );

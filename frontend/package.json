@@ -11,6 +11,7 @@
   "dependencies": {
     "@phosphor-icons/react": "^2.1.7",
     "@prisma/client": "^5.19.1",
+    "@react-oauth/google": "^0.12.1",
     "@uploadthing/react": "^7.0.2",
     "exifreader": "^4.23.5",
     "framer-motion": "^11.5.5",

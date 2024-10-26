@@ -113,8 +113,12 @@ export default function ResultsDialog({
         <button
           className="mt-6 rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
           onClick={() => {
-            onContinue();
-            setDialogOpen(false); // Ensuring that the dialog is closed only, without affecting the map view.
+            if (gameState.complete) {
+              setShowEndDialog(true); // Set flag to show EndDialog
+            } else {
+              onContinue();
+              setDialogOpen(false); // Close the current dialog
+            }
           }}
         >
           Continue
