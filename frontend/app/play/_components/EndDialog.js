@@ -4,7 +4,7 @@ import MapImageWrapper from "./MapImageWrapper";
 import { useRef } from "react";
 import { clearGameState } from "../_utils/gameStateUtils";
 
-export default function EndDialog({ gameState, setShowEndDialog }) {
+export default function EndDialog({ gameState, setShowEndDialog, setActuallyShow }) {
   const map = useRef(null);
 
   // Calculate the center of the map by averaging all the locations
@@ -79,6 +79,7 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
             onClick={() => {
               clearGameState();
               setShowEndDialog(false);
+              setActuallyShow(false);
               window.location.href = "/";
             }}
           >
@@ -89,16 +90,14 @@ export default function EndDialog({ gameState, setShowEndDialog }) {
             className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             onClick={() => {
               clearGameState();
+              setShowEndDialog(false);
+              setActuallyShow(false);
               window.location.href = "/play";
             }}
           >
             Play Again
           </button>
         </div>
-
-        {/* TODO:
-          - find a way to call "clear game state" when we click on either button
-        */}
       </dialog>
     </div>
   );
