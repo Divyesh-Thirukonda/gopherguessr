@@ -77,10 +77,6 @@ export default async function Play() {
       revalidatePath("/play");
     }
 
-    if (gameState.complete === true) {
-      return <EndDialog gameState={gameState} />;
-    }
-
     return <ImageView submitGuess={submitGuess} gameState={gameState} />;
   }
 }
