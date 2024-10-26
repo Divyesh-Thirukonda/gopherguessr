@@ -4,20 +4,67 @@ import MapImageWrapper from "./MapImageWrapper";
 import { useRef } from "react";
 import { clearGameState } from "../_utils/gameStateUtils";
 
-export default function EndDialog({ gameState, setShowEndDialog, setActuallyShow }) {
+export default function EndDialog({
+  gameState,
+  setShowEndDialog,
+  setActuallyShow,
+}) {
   const map = useRef(null);
 
-  // Calculate the center of the map by averaging all the locations
-  const calculateMapCenter = (locations) => {
-    const latSum = locations.reduce((sum, loc) => sum + loc.latitude, 0);
-    const lngSum = locations.reduce((sum, loc) => sum + loc.longitude, 0);
-    return [latSum / locations.length, lngSum / locations.length];
+  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the Earth in kilometers
+    var dLat = deg2rad(lat2 - lat1);
+    var dLon = deg2rad(lon1 - lon2);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  // Calculate the average distance between guesses and actual locations
+  const calculateAverageDistance = () => {
+    if (gameState.allLocsUsed.length === 0) return 0;
+
+    const distances = gameState.allLocsUsed.map((loc, index) => {
+      return getDistanceFromLatLonInKm(
+        loc.latitude,
+        loc.longitude,
+        gameState.allGuessesUsed[index][0],
+        gameState.allGuessesUsed[index][1],
+      );
+    });
+
+    return distances.reduce((sum, dist) => sum + dist, 0) / distances.length;
   };
 
-  const mapCenter =
-    gameState.allLocsUsed.length > 0
-      ? calculateMapCenter(gameState.allLocsUsed)
-      : [0, 0];
+  // Calculate the center of the map by averaging all locations and guesses
+  const calculateMapCenter = () => {
+    if (gameState.allLocsUsed.length === 0) return [0, 0];
+
+    let allPoints = [];
+    gameState.allLocsUsed.forEach((loc, index) => {
+      allPoints.push([loc.latitude, loc.longitude]);
+      allPoints.push(gameState.allGuessesUsed[index]);
+    });
+
+    const latSum = allPoints.reduce((sum, point) => sum + point[0], 0);
+    const lngSum = allPoints.reduce((sum, point) => sum + point[1], 0);
+    return [latSum / allPoints.length, lngSum / allPoints.length];
+  };
+
+  // Calculate appropriate zoom level based on average distance
+  const dist = calculateAverageDistance();
+  const myZoom = dist < 0.1 ? 18 : dist < 0.6 ? 16 : dist < 1 ? 15 : 14;
+
+  const mapCenter = calculateMapCenter();
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center">
@@ -36,10 +83,10 @@ export default function EndDialog({ gameState, setShowEndDialog, setActuallyShow
             <MapContainer
               center={mapCenter}
               minZoom={14}
-              zoom={14}
+              zoom={myZoom}
               maxZoom={20}
               scrollWheelZoom={true}
-              className="h-[60vh] w-[80vw]" // Responsive map size
+              className="h-[60vh] w-[80vw]"
             >
               {gameState.allLocsUsed.map((loc, index) => (
                 <div key={index}>
