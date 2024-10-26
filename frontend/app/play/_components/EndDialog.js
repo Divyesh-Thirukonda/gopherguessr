@@ -44,6 +44,21 @@ export default function EndDialog({
 
     return distances.reduce((sum, dist) => sum + dist, 0) / distances.length;
   };
+  const calculateLargestDistance = () => {
+    if (gameState.allLocsUsed.length === 0) return 0;
+  
+    const distances = gameState.allLocsUsed.map((loc, index) => {
+      return getDistanceFromLatLonInKm(
+        loc.latitude,
+        loc.longitude,
+        gameState.allGuessesUsed[index][0],
+        gameState.allGuessesUsed[index][1],
+      );
+    });
+  
+    // Find the maximum distance using Math.max and the spread operator
+    return Math.max(...distances);
+  };
 
   // Calculate the center of the map by averaging all locations and guesses
   const calculateMapCenter = () => {
@@ -61,7 +76,7 @@ export default function EndDialog({
   };
 
   // Calculate appropriate zoom level based on average distance
-  const dist = calculateAverageDistance();
+  const dist = calculateLargestDistance();
   const myZoom = dist < 0.1 ? 18 : dist < 0.6 ? 16 : dist < 1 ? 15 : 14;
 
   const mapCenter = calculateMapCenter();
