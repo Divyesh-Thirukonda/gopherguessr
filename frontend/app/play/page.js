@@ -60,6 +60,8 @@ export default async function Play({searchParams}) {
      diffFilter = { diffRating: 'TWO' };
    } else if (gameMode === '3') {
      diffFilter = { diffRating: 'THREE' };
+   } else if (gameMode === 'St.Paul') {
+     diffFilter = {campus: 'St.Paul'}
    }
   /*
     This runs when somebody GETs this page.

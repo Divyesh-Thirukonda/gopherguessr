@@ -14,37 +14,26 @@
     I'm importing framer-motion so that we can animate the button, 
     but otherwise this is a pretty simple page with no extra logic.
 */
-"use client"; // Enables client-side hooks
-
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
-import { motion } from "framer-motion";
+import * as motion from "framer-motion/client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 
+// keep contributor info fresh
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-  // State to manage selected difficulty level
-  const [selectedMode, setSelectedMode] = useState("");
-  const [contributors, setContributors] = useState([]); // State for contributor data
-
-  // Fetch contributors on mount
-  useEffect(() => {
-    async function fetchContributors() {
-      const res = await fetch(
-        "https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors",
-        { cache: "no-store" }
-      );
-      const data = await res.json();
-      setContributors(data);
-    }
-
-    fetchContributors();
-  }, []);
+export default async function Home() {
+  // fetch using cache no store to ensure the fetch isn't cached
+  // also run this in the exported function so it loads every time the page is loaded
+  const res = await fetch(
+    "https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors",
+    { cache: "no-store" },
+  );
+  const contributors = await res.json();
 
   return (
     <main>
+      {/* Main section with video */}
       <section className="relative min-h-dvh w-full">
         <div className="fixed inset-0">
           <video
@@ -69,29 +58,12 @@ export default function Home() {
               Just like Geoguessr, but for the streets and buildings of the
               beautiful University of Minnesota campus!
             </p>
-
-            {/* Difficulty selection dropdown */}
-            <div className="flex items-center justify-center mt-4">
-              <label className="mr-2 text-white">Select Difficulty:</label>
-              <select
-                value={selectedMode}
-                onChange={(e) => setSelectedMode(e.target.value)}
-                className="p-2 rounded bg-gray-200 text-black"
-              >
-                <option value="">All Difficulties</option>
-                <option value="1">Easy</option>
-                <option value="2">Medium</option>
-                <option value="3">Hard</option>
-              </select>
-            </div>
-
-            {/* Play button */}
             <motion.div
               className="mx-auto mt-4 w-min rounded-full bg-rose-600"
               whileHover={{ scale: 1.2 }}
             >
               <Link
-                href={`/play?gameMode=${selectedMode}`} // Pass selectedMode in URL
+                href="/play"
                 className="flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
                 Play
