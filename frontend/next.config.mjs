@@ -10,6 +10,10 @@ const nextConfig = {
       dynamic: 0,
       static: 30,
     },
+    // limit uploads to 20 mb
+    serverActions: {
+      bodySizeLimit: "20mb",
+    },
   },
   async headers() {
     return [
