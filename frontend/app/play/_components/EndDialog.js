@@ -2,12 +2,12 @@
 import { MapContainer, Polyline } from "react-leaflet";
 import MapImageWrapper from "./MapImageWrapper";
 import { useRef } from "react";
-import { clearGameState } from "../_utils/gameStateUtils";
 
 export default function EndDialog({
   gameState,
   setShowEndDialog,
   setActuallyShow,
+  clearGameState,
 }) {
   const map = useRef(null);
 
@@ -46,7 +46,7 @@ export default function EndDialog({
   };
   const calculateLargestDistance = () => {
     if (gameState.allLocsUsed.length === 0) return 0;
-  
+
     const distances = gameState.allLocsUsed.map((loc, index) => {
       return getDistanceFromLatLonInKm(
         loc.latitude,
@@ -55,7 +55,7 @@ export default function EndDialog({
         gameState.allGuessesUsed[index][1],
       );
     });
-  
+
     // Find the maximum distance using Math.max and the spread operator
     return Math.max(...distances);
   };
@@ -138,8 +138,8 @@ export default function EndDialog({
         <div className="mt-6 flex justify-center space-x-4">
           <button
             className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
-            onClick={() => {
-              clearGameState();
+            onClick={async () => {
+              await clearGameState();
               setShowEndDialog(false);
               setActuallyShow(false);
               window.location.href = "/";
@@ -147,18 +147,14 @@ export default function EndDialog({
           >
             Go Home
           </button>
-
-          <button
-            className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            onClick={() => {
-              clearGameState();
-              setShowEndDialog(false);
-              setActuallyShow(false);
-              window.location.href = "/play";
-            }}
-          >
-            Play Again
-          </button>
+          <form action={clearGameState}>
+            <button
+              type="submit"
+              className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+              Play Again
+            </button>
+          </form>
         </div>
       </dialog>
     </div>
