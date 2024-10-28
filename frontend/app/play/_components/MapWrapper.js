@@ -28,14 +28,12 @@
 
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import * as motion from "framer-motion/client";
-import { MapContainer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import MapImageWrapper from "./MapImageWrapper";
+import { useEffect, useRef, useState } from "react";
 import ResultsDialog from "./ResultsDialog";
-import { clearGameState } from "../_utils/gameStateUtils";
-import { MapTrifold, X } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react";
+import Leaflet from "@/app/_components/Leaflet";
+import LeafletMarker from "@/app/_components/LeafletMarker";
+import MotionButton from "@/app/_components/MotionButton";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -45,114 +43,85 @@ export default function MapWrapper({
   gameState,
   onDialogContinue,
   viewMap,
+  clearGameState,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const [allowGuess, setAllowGuessState] = useState(false);
-  const [showEndDialog, setShowEndDialog] = useState(false);
-
-  // we create this ref here but we actually set it in MapImageWrapper
+  const [enableKeybinds, setEnableKeybinds] = useState(false);
   const mapRef = useRef(null);
 
-  /*
-    The array at the end of this useEffect tells React when to run the code inside of it
-    Any time something in the array (called a dependency array) changes, the code runs.
-    In our case any time the gameState is updated (when the user submits a guess)
-    or any time the viewStPaul state is updated (when the user switches to Minneapolis / St Paul),
-    we reset the guess state to the center and use the mapRef we set in MapImageWrapper to pan the Leaflet map to the center.
-  */
+  // when round changes, reset marker position, and open resultdialog
   useEffect(() => {
-    if (mapRef.current) {
-      if (viewStPaul) {
-        mapRef.current.setView(stPaulCenter, 16);
-        setGuess(stPaulCenter);
-      } else {
-        mapRef.current.setView(minneapolisCenter, 16);
-        setGuess(minneapolisCenter);
-      }
-    }
-  }, [gameState, viewStPaul]);
-
-  useEffect(() => {
+    setGuess(viewStPaul ? stPaulCenter : minneapolisCenter);
     if (gameState.gameStarted) {
-      console.log("happening...");
       setDialogOpen(true);
     }
   }, [gameState.round]);
 
-  // Function to update allowGuess
-  function setAllowGuess(cond) {
-    setAllowGuessState(cond);
-  }
-
+  // handle keybinds
   const handleKeyDown = (event) => {
     const key = event.key;
     if (!gameState.complete) {
-      if (key === 'Enter' && !dialogOpen) {
-        if (allowGuess) {
+      if (key === "Enter" && !dialogOpen) {
+        if (enableKeybinds) {
           submitGuess(guess);
-          setAllowGuess(false);
+          setEnableKeybinds(false);
         }
         if (dialogOpen) {
           setDialogOpen(false);
         }
       }
-
-      if (key === 'Escape') {
+      if (key === "Escape") {
         if (dialogOpen) {
           setDialogOpen(false);
         }
       }
     }
   };
-  
+
   return (
-    <div className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`} onKeyDown={handleKeyDown} onClick={() => setAllowGuess(true)} tabIndex={0}>
+    <div
+      className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
+      onKeyDown={handleKeyDown}
+      onClick={() => setEnableKeybinds(true)}
+      tabIndex={0}
+    >
       <div className="scale-[90%] overflow-hidden rounded-xl">
-        <MapContainer
+        <Leaflet
           center={viewStPaul ? stPaulCenter : minneapolisCenter}
-          minZoom={15}
-          zoom={16}
-          maxZoom={18}
-          scrollWheelZoom={true}
-          className="h-dvh w-dvw"
+          onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
         >
-          <MapImageWrapper mapRef={mapRef} setGuess={setGuess} guess={guess} />
-        </MapContainer>
-        <motion.button
-          className="fixed left-0 right-0 top-6 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 0.8 }}
+          <LeafletMarker position={guess} icon="crosshair" />
+        </Leaflet>
+        <MotionButton
+          className="fixed left-0 right-0 top-6 z-[1000]"
           onClick={() => setViewStPaul((currentState) => !currentState)}
         >
           Go to {viewStPaul ? "Minneapolis" : "St Paul"}
-        </motion.button>
-        <motion.button
-          className="fixed bottom-6 left-0 right-0 z-[1000] mx-auto w-min whitespace-nowrap rounded-full bg-rose-600 px-4 py-2 font-medium text-white hover:bg-rose-700"
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 0.8 }}
+        </MotionButton>
+        <MotionButton
+          className="fixed bottom-6 left-0 right-0 z-[1000]"
           onClick={() => submitGuess(guess)}
         >
           Submit Guess
-        </motion.button>
-        <ResultsDialog
-          gameState={gameState}
-          open={dialogOpen}
-          setDialogOpen={setDialogOpen}
-          onContinue={onDialogContinue}
-        />
-        <motion.button
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 0.8 }}
+        </MotionButton>
+        <MotionButton
+          className="absolute right-4 top-4 z-[2000]"
           onClick={onDialogContinue}
-          className="absolute right-4 top-4 z-[2000] rounded-full bg-rose-600 p-2.5"
         >
           <X className="h-6 w-6 text-white" />
-        </motion.button>
+        </MotionButton>
+        {dialogOpen && (
+          <ResultsDialog
+            gameState={gameState}
+            setDialogOpen={setDialogOpen}
+            onContinue={onDialogContinue}
+            clearGameState={clearGameState}
+          />
+        )}
       </div>
     </div>
   );

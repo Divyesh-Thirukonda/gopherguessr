@@ -4,15 +4,11 @@
   loading the info of all our photos from our database and passing it to the Map client component
 */
 
-import dynamicImport from "next/dynamic";
 import prisma from "../_utils/db";
-
-// import dynamic here as we can't do ssr on leaflet
-const Map = dynamicImport(() => import("./_components/Map"), {
-  ssr: false,
-});
+import MapView from "./_components/MapView";
 
 export default async function PhotosIndex() {
   const allPhotos = await prisma.photo.findMany({});
-  return <Map allPhotos={allPhotos} />;
+
+  return <MapView allPhotos={allPhotos} />;
 }

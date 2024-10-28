@@ -10,7 +10,8 @@ function getFullUrl(id) {
   return `https://utfs.io/a/e9dxf42twp/${id}`;
 }
 
-export default async function Page({ params }) {
+export default async function Page(props) {
+  const params = await props.params;
   const photo = await prisma.photo.findFirst({
     where: { id: parseInt(params.id, 10) },
   });
@@ -24,6 +25,7 @@ export default async function Page({ params }) {
           src={getFullUrl(photo.imageId)}
           className="h-full w-full object-contain object-center"
           fill
+          alt={photo.buildingName}
         />
       </div>
     </div>

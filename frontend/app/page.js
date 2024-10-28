@@ -17,8 +17,8 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
@@ -54,11 +54,7 @@ export default function Home() {
       });
     }, 100);
 
-    // Simulate delay to show the loading effect
-    // TODO: REMOVE DELAY FOR PRODUCTION
-    setTimeout(() => {
-      router.push("/play"); // Navigate to the play page
-    }, 1000);
+    router.push("/play"); // Navigate to the play page
   };
 
   // Fetch contributors
@@ -77,7 +73,9 @@ export default function Home() {
   }, []);
 
   return (
-    <main className={`${isLoading && 'animate-[loadBlur_1s_ease-in-out_forwards]'}`}>
+    <main
+      className={`${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}
+    >
       {/* Main section with video */}
       <section className="relative min-h-dvh w-full">
         <div className="fixed inset-0">
@@ -164,7 +162,7 @@ export default function Home() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"/>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" />
       )}
     </main>
   );

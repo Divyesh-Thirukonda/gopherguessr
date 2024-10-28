@@ -23,31 +23,37 @@
 import { revalidatePath } from "next/cache";
 import latlngToMeters from "../_utils/latlngToMeters";
 import { gameState } from "../_utils/tempDb";
-import dynamicImport from "next/dynamic";
-import EndDialog from "./_components/EndDialog";
-import ResultsDialog from "./_components/ResultsDialog";
 import DebugMenu from "./_components/DebugMenu";
 import prisma from "../_utils/db";
-import { Debug } from "@prisma/client/runtime/library";
-
-const ImageView = dynamicImport(() => import("./_components/ImageView"), {
-  ssr: false,
-});
+import GameView from "./_components/GameView";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function Play() {
   if (!gameState.loc) {
-    const locCount = await prisma.photo.count();
+    // FOR MVP LIMIT TO WEST BANK AND EAST BANK CORE
+    // TODO: ALLOW SELECTION OF CAMPUS
+    const locCount = await prisma.photo.count({
+      where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
+    });
     if (gameState.round > locCount || gameState.round > 5) {
       gameState.complete = true;
     } else {
       let newLocId = Math.floor(Math.random() * locCount);
-      let newLoc = await prisma.photo.findMany({ skip: newLocId, take: 1 });
+      let newLoc = await prisma.photo.findMany({
+        skip: newLocId,
+        take: 1,
+        where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
+      });
 
       while (gameState.allLocsUsed.some((loc) => loc.id === newLocId)) {
         newLocId = Math.floor(Math.random() * locCount);
-        newLoc = await prisma.photo.findMany({ skip: newLocId, take: 1 });
+        newLoc = await prisma.photo.findMany({
+          skip: newLocId,
+          take: 1,
+          where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
+        });
         if (!newLoc[0]) {
           // just in case i goofied something up
           console.log("THIS SHOULDN'T HAPPEN");
@@ -55,32 +61,58 @@ export default async function Play() {
       }
       gameState.loc = newLoc[0];
     }
-
-    async function submitGuess(guess) {
-      "use server";
-      const d = latlngToMeters(
-        guess[0],
-        guess[1],
-        gameState.loc.latitude,
-        gameState.loc.longitude,
-      );
-      gameState.lastGuessD = d;
-      gameState.allLocsUsed.push(gameState.loc);
-      gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
-      gameState.lastGuessLat = guess[0];
-      gameState.lastGuessLng = guess[1];
-      gameState.allGuessesUsed.push([guess[0], guess[1]]);
-      gameState.points += gameState.lastGuessPoints;
-      gameState.loc = null;
-      gameState.round += 1;
-      gameState.gameStarted = true;
-
-      revalidatePath("/play");
-    }
-
-    return <>
-    <ImageView submitGuess={submitGuess} gameState={gameState} />
-    <DebugMenu/>
-    </>;
   }
+
+  async function submitGuess(guess) {
+    "use server";
+    const d = latlngToMeters(
+      guess[0],
+      guess[1],
+      gameState.loc.latitude,
+      gameState.loc.longitude,
+    );
+    gameState.lastGuessD = d;
+    gameState.allLocsUsed.push(gameState.loc);
+    gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
+    gameState.lastGuessLat = guess[0];
+    gameState.lastGuessLng = guess[1];
+    gameState.allGuessesUsed.push([guess[0], guess[1]]);
+    gameState.points += gameState.lastGuessPoints;
+    gameState.loc = null;
+    gameState.round += 1;
+    gameState.gameStarted = true;
+
+    revalidatePath("/play");
+  }
+
+  async function clearGameState() {
+    "use server";
+    // Reset game state
+    gameState.loc = null;
+    gameState.allLocsUsed = [];
+    gameState.round = 1;
+    gameState.lastGuessPoints = 0;
+    gameState.lastGuessLat = 0;
+    gameState.lastGuessLng = 0;
+    gameState.points = 0;
+    gameState.lastGuessD = 0;
+    gameState.complete = false;
+    gameState.gameStarted = false;
+    gameState.allGuessesUsed = [];
+
+    // Revalidate the /play page
+    revalidatePath("/play");
+    redirect("/playagain");
+  }
+
+  return (
+    <>
+      <GameView
+        clearGameState={clearGameState}
+        submitGuess={submitGuess}
+        gameState={gameState}
+      />
+      <DebugMenu gameState={gameState} clearGameState={clearGameState} />
+    </>
+  );
 }
