@@ -22,23 +22,52 @@
 
 import { revalidatePath } from "next/cache";
 import latlngToMeters from "../_utils/latlngToMeters";
-import { gameState } from "../_utils/tempDb";
+import { gameStates, initGameState } from "../_utils/tempDb";
 import DebugMenu from "./_components/DebugMenu";
 import prisma from "../_utils/db";
 import GameView from "./_components/GameView";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
 export default async function Play() {
-  if (!gameState.loc) {
+  // for debugging
+  // TODO: REMOVE IN PROD
+  console.log(gameStates);
+
+  // store a handle for the specific gameState instance in cookies
+  // this will be EXTREMELY UNSTABLE
+  // (because everytime the deploy is updated the gamestates are cleared, and cookies aren't),
+  // but it will work for MVP and that's all we need right now
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get("clientGameStateHandle");
+
+  if (!cookie) {
+    redirect(`/createcookie?len=${Object.keys(gameStates).length}`);
+  } else if (cookie.value > Object.keys(gameStates).length) {
+    // try to make more stable by clearing any cookies that have goofy values
+    redirect(`/createcookie?len=${Object.keys(gameStates).length}`);
+  }
+
+  const clientGameStateHandle = cookie.value;
+
+  if (!gameStates[clientGameStateHandle]) {
+    // initialize new gameState and clone the initGameState so we arent inadvertantly editing it
+    gameStates[clientGameStateHandle] = structuredClone(initGameState);
+  }
+
+  if (!gameStates[clientGameStateHandle].loc) {
     // FOR MVP LIMIT TO WEST BANK AND EAST BANK CORE
     // TODO: ALLOW SELECTION OF CAMPUS
     const locCount = await prisma.photo.count({
       where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
     });
-    if (gameState.round > locCount || gameState.round > 5) {
-      gameState.complete = true;
+    if (
+      gameStates[clientGameStateHandle].round > locCount ||
+      gameStates[clientGameStateHandle].round > 5
+    ) {
+      gameStates[clientGameStateHandle].complete = true;
     } else {
       let newLocId = Math.floor(Math.random() * locCount);
       let newLoc = await prisma.photo.findMany({
@@ -47,7 +76,11 @@ export default async function Play() {
         where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
       });
 
-      while (gameState.allLocsUsed.some((loc) => loc.id === newLocId)) {
+      while (
+        gameStates[clientGameStateHandle].allLocsUsed.some(
+          (loc) => loc.id === newLocId,
+        )
+      ) {
         newLocId = Math.floor(Math.random() * locCount);
         newLoc = await prisma.photo.findMany({
           skip: newLocId,
@@ -59,7 +92,7 @@ export default async function Play() {
           console.log("THIS SHOULDN'T HAPPEN");
         }
       }
-      gameState.loc = newLoc[0];
+      gameStates[clientGameStateHandle].loc = newLoc[0];
     }
   }
 
@@ -68,19 +101,23 @@ export default async function Play() {
     const d = latlngToMeters(
       guess[0],
       guess[1],
-      gameState.loc.latitude,
-      gameState.loc.longitude,
+      gameStates[clientGameStateHandle].loc.latitude,
+      gameStates[clientGameStateHandle].loc.longitude,
     );
-    gameState.lastGuessD = d;
-    gameState.allLocsUsed.push(gameState.loc);
-    gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
-    gameState.lastGuessLat = guess[0];
-    gameState.lastGuessLng = guess[1];
-    gameState.allGuessesUsed.push([guess[0], guess[1]]);
-    gameState.points += gameState.lastGuessPoints;
-    gameState.loc = null;
-    gameState.round += 1;
-    gameState.gameStarted = true;
+    gameStates[clientGameStateHandle].lastGuessD = d;
+    gameStates[clientGameStateHandle].allLocsUsed.push(
+      gameStates[clientGameStateHandle].loc,
+    );
+    gameStates[clientGameStateHandle].lastGuessPoints =
+      (500 - (d > 500 ? 500 : d)) * 2;
+    gameStates[clientGameStateHandle].lastGuessLat = guess[0];
+    gameStates[clientGameStateHandle].lastGuessLng = guess[1];
+    gameStates[clientGameStateHandle].allGuessesUsed.push([guess[0], guess[1]]);
+    gameStates[clientGameStateHandle].points +=
+      gameStates[clientGameStateHandle].lastGuessPoints;
+    gameStates[clientGameStateHandle].loc = null;
+    gameStates[clientGameStateHandle].round += 1;
+    gameStates[clientGameStateHandle].gameStarted = true;
 
     revalidatePath("/play");
   }
@@ -88,17 +125,17 @@ export default async function Play() {
   async function clearGameState() {
     "use server";
     // Reset game state
-    gameState.loc = null;
-    gameState.allLocsUsed = [];
-    gameState.round = 1;
-    gameState.lastGuessPoints = 0;
-    gameState.lastGuessLat = 0;
-    gameState.lastGuessLng = 0;
-    gameState.points = 0;
-    gameState.lastGuessD = 0;
-    gameState.complete = false;
-    gameState.gameStarted = false;
-    gameState.allGuessesUsed = [];
+    gameStates[clientGameStateHandle].loc = null;
+    gameStates[clientGameStateHandle].allLocsUsed = [];
+    gameStates[clientGameStateHandle].round = 1;
+    gameStates[clientGameStateHandle].lastGuessPoints = 0;
+    gameStates[clientGameStateHandle].lastGuessLat = 0;
+    gameStates[clientGameStateHandle].lastGuessLng = 0;
+    gameStates[clientGameStateHandle].points = 0;
+    gameStates[clientGameStateHandle].lastGuessD = 0;
+    gameStates[clientGameStateHandle].complete = false;
+    gameStates[clientGameStateHandle].gameStarted = false;
+    gameStates[clientGameStateHandle].allGuessesUsed = [];
 
     // Revalidate the /play page
     revalidatePath("/play");
@@ -110,9 +147,12 @@ export default async function Play() {
       <GameView
         clearGameState={clearGameState}
         submitGuess={submitGuess}
-        gameState={gameState}
+        gameState={gameStates[clientGameStateHandle]}
       />
-      <DebugMenu gameState={gameState} clearGameState={clearGameState} />
+      <DebugMenu
+        gameState={gameStates[clientGameStateHandle]}
+        clearGameState={clearGameState}
+      />
     </>
   );
 }
