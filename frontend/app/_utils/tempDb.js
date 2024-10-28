@@ -20,7 +20,7 @@ import "server-only";
 
 // this basically is an in-memory db that stores the game state until we get an actual db working
 // i have no idea how to use mongodb lol
-const gameState = {
+const initGameState = {
   loc: null,
   allLocsUsed: [],
   lastGuessD: 0,
@@ -34,4 +34,6 @@ const gameState = {
   allGuessesUsed: [],
 };
 
-export { gameState };
+const gameStates = {};
+
+export { gameStates, initGameState };

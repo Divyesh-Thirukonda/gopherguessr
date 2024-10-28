@@ -14,12 +14,6 @@ export default function DevTools() {
         Upload Images (/imageupload)
       </Link>
       <Link
-        href="/imagetest"
-        className="mt-3 block text-xl text-blue-600 underline hover:text-blue-700"
-      >
-        New Layout Mockup (/imagetest)
-      </Link>
-      <Link
         href="/photos"
         className="mt-3 block text-xl text-blue-600 underline hover:text-blue-700"
       >
