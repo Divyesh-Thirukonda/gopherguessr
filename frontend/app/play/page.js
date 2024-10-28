@@ -24,11 +24,9 @@ import { revalidatePath } from "next/cache";
 import latlngToMeters from "../_utils/latlngToMeters";
 import { gameState } from "../_utils/tempDb";
 import dynamicImport from "next/dynamic";
-import EndDialog from "./_components/EndDialog";
-import ResultsDialog from "./_components/ResultsDialog";
 import DebugMenu from "./_components/DebugMenu";
 import prisma from "../_utils/db";
-import { Debug } from "@prisma/client/runtime/library";
+import { redirect } from "next/navigation";
 
 const ImageView = dynamicImport(() => import("./_components/ImageView"), {
   ssr: false,
@@ -55,32 +53,58 @@ export default async function Play() {
       }
       gameState.loc = newLoc[0];
     }
-
-    async function submitGuess(guess) {
-      "use server";
-      const d = latlngToMeters(
-        guess[0],
-        guess[1],
-        gameState.loc.latitude,
-        gameState.loc.longitude,
-      );
-      gameState.lastGuessD = d;
-      gameState.allLocsUsed.push(gameState.loc);
-      gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
-      gameState.lastGuessLat = guess[0];
-      gameState.lastGuessLng = guess[1];
-      gameState.allGuessesUsed.push([guess[0], guess[1]]);
-      gameState.points += gameState.lastGuessPoints;
-      gameState.loc = null;
-      gameState.round += 1;
-      gameState.gameStarted = true;
-
-      revalidatePath("/play");
-    }
-
-    return <>
-    <ImageView submitGuess={submitGuess} gameState={gameState} />
-    <DebugMenu/>
-    </>;
   }
+
+  async function submitGuess(guess) {
+    "use server";
+    const d = latlngToMeters(
+      guess[0],
+      guess[1],
+      gameState.loc.latitude,
+      gameState.loc.longitude,
+    );
+    gameState.lastGuessD = d;
+    gameState.allLocsUsed.push(gameState.loc);
+    gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
+    gameState.lastGuessLat = guess[0];
+    gameState.lastGuessLng = guess[1];
+    gameState.allGuessesUsed.push([guess[0], guess[1]]);
+    gameState.points += gameState.lastGuessPoints;
+    gameState.loc = null;
+    gameState.round += 1;
+    gameState.gameStarted = true;
+
+    revalidatePath("/play");
+  }
+
+  async function clearGameState() {
+    "use server";
+    // Reset game state
+    gameState.loc = null;
+    gameState.allLocsUsed = [];
+    gameState.round = 1;
+    gameState.lastGuessPoints = 0;
+    gameState.lastGuessLat = 0;
+    gameState.lastGuessLng = 0;
+    gameState.points = 0;
+    gameState.lastGuessD = 0;
+    gameState.complete = false;
+    gameState.gameStarted = false;
+    gameState.allGuessesUsed = [];
+
+    // Revalidate the /play page
+    revalidatePath("/play");
+    redirect("/playagain");
+  }
+
+  return (
+    <>
+      <ImageView
+        submitGuess={submitGuess}
+        gameState={gameState}
+        clearGameState={clearGameState}
+      />
+      <DebugMenu gameState={gameState} clearGameState={clearGameState} />
+    </>
+  );
 }
