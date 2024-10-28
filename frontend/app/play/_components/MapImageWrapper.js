@@ -36,7 +36,7 @@ const CrosshairIcon = L.icon({
   iconAnchor: [15, 15],
 });
 const DestinationIcon = L.icon({
-  iconUrl: "/cacheable/flag-20241001.svg",
+  iconUrl: "/cacheable/flag-20241027-1216.svg",
   iconSize: [30, 30],
   iconAnchor: [15, 15],
 });

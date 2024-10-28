@@ -5,7 +5,11 @@ import MapWrapper from "./MapWrapper";
 import * as motion from "framer-motion/client";
 import { useState } from "react";
 
-export default function ResizeableMap({ gameState, submitGuess }) {
+export default function ResizeableMap({
+  gameState,
+  submitGuess,
+  clearGameState,
+}) {
   const [viewMap, setViewMap] = useState(false);
 
   return (
@@ -24,6 +28,7 @@ export default function ResizeableMap({ gameState, submitGuess }) {
         submitGuess={submitGuess}
         onDialogContinue={() => setViewMap(false)}
         viewMap={viewMap}
+        clearGameState={clearGameState}
       />
     </div>
   );

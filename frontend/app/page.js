@@ -54,11 +54,7 @@ export default function Home() {
       });
     }, 100);
 
-    // Simulate delay to show the loading effect
-    // TODO: REMOVE DELAY FOR PRODUCTION
-    setTimeout(() => {
-      router.push("/play"); // Navigate to the play page
-    }, 1000);
+    router.push("/play"); // Navigate to the play page
   };
 
   // Fetch contributors

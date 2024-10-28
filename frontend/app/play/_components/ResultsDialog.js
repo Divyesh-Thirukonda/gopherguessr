@@ -9,6 +9,7 @@ export default function ResultsDialog({
   open,
   setDialogOpen,
   onContinue,
+  clearGameState,
 }) {
   const map = useRef(null);
   const [actuallyShow, setActuallyShow] = useState(false);
@@ -53,7 +54,7 @@ export default function ResultsDialog({
     actualLoc[0],
     actualLoc[1],
     userGuessLoc[0],
-    userGuessLoc[1]
+    userGuessLoc[1],
   );
   console.log(dist);
   var myZoom = 0;
@@ -126,7 +127,14 @@ export default function ResultsDialog({
       </dialog>
 
       {/* Conditionally rendering the EndDialog */}
-      {showEndDialog && <EndDialog gameState={gameState} setShowEndDialog={setShowEndDialog} setActuallyShow={setActuallyShow} />}
+      {showEndDialog && (
+        <EndDialog
+          gameState={gameState}
+          clearGameState={clearGameState}
+          setShowEndDialog={setShowEndDialog}
+          setActuallyShow={setActuallyShow}
+        />
+      )}
     </div>
   );
 }
