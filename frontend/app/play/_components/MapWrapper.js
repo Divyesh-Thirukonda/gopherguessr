@@ -109,7 +109,7 @@ export default function MapWrapper({
           Submit Guess
         </MotionButton>
         <MotionButton
-          className="absolute right-4 top-4 z-[2000]"
+          className="absolute right-4 top-4 z-[1000]"
           onClick={onDialogContinue}
         >
           <X className="h-6 w-6 text-white" />
