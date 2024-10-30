@@ -7,6 +7,7 @@ import ExifReader from "exifreader";
 import prisma from "../_utils/db";
 import UploadForm from "./_components/UploadForm";
 import heicConvert from "heic-convert";
+import { DiffEnum, CampusEnum } from "@prisma/client";
 
 export default async function ImageUpload() {
   // this runs on the server before rendering the page
@@ -76,6 +77,9 @@ export default async function ImageUpload() {
     // get rest of data from form and save to db
     const buildingName = formData.get("name");
     const uploaderId = parseInt(formData.get("uploaderId"), 10);
+    const campus = formData.get("campus");
+    const diffRating = formData.get("difficulty");
+    const indoors = formData.get("indoors");
     const newImageInPrisma = await prisma.photo.create({
       data: {
         imageId,
@@ -83,6 +87,9 @@ export default async function ImageUpload() {
         latitude,
         longitude,
         uploaderId,
+        campus,
+        diffRating,
+        indoors: indoors === "Yes" ? true : false,
       },
     });
     console.log(newImageInPrisma);
@@ -94,7 +101,11 @@ export default async function ImageUpload() {
       action={uploadFiles}
       className="m-4 flex max-w-md flex-col rounded-md border p-4"
     >
-      <UploadForm uploaders={uploaders} />
+      <UploadForm
+        uploaders={uploaders}
+        CampusEnum={CampusEnum}
+        DiffEnum={DiffEnum}
+      />
     </form>
   );
 }
