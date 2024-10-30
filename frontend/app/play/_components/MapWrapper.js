@@ -35,6 +35,7 @@ import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
 import Image from "next/image";
+import StatsMenu from "./StatsMenu";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -94,8 +95,8 @@ export default function MapWrapper({
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
     >
-      <div className="grid h-screen grid-cols-11">
-        <div className="col-span-9 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl">
+      <div className="grid h-screen grid-cols-2 grid-rows-3 md:grid-cols-11 md:grid-rows-1">
+        <div className="col-span-2 row-span-2 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl md:col-span-9">
           <Leaflet
             center={viewStPaul ? stPaulCenter : minneapolisCenter}
             onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
@@ -129,7 +130,7 @@ export default function MapWrapper({
             />
           )}
         </div>
-        <div className="relative col-span-2 flex items-center justify-around">
+        <div className="relative col-span-1 row-span-1 flex items-center justify-center md:col-span-2 md:justify-around">
           <Image
             src={getFullUrl(gameState.loc.imageId)}
             width={100}
