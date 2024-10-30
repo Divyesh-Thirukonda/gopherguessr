@@ -10,7 +10,7 @@ export default function DebugMenu({ gameState, clearGameState }) {
   if (!showDebug) {
     return (
       <MotionButton
-        className="fixed right-4 top-4 z-[1000]"
+        className="fixed right-5 top-20 z-[1000] md:right-4 md:top-4"
         onClick={() => setShowDebug(true)}
       >
         <Bug className="h-5 w-5" />

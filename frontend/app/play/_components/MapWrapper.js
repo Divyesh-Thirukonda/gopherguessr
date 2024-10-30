@@ -95,8 +95,8 @@ export default function MapWrapper({
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
     >
-      <div className="grid h-screen grid-cols-2 grid-rows-3 md:grid-cols-11 md:grid-rows-1">
-        <div className="col-span-2 row-span-2 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl md:col-span-9">
+      <div className="grid h-screen grid-cols-2 grid-rows-3 md:grid-cols-11 md:grid-rows-7">
+        <div className="col-span-2 row-span-2 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl md:col-span-9 md:row-span-7">
           <Leaflet
             center={viewStPaul ? stPaulCenter : minneapolisCenter}
             onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
@@ -130,14 +130,17 @@ export default function MapWrapper({
             />
           )}
         </div>
-        <div className="relative col-span-1 row-span-1 flex items-center justify-center md:col-span-2 md:justify-around">
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
+          <StatsMenu gameState={gameState} />
+        </div>
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-2 md:justify-start">
           <Image
             src={getFullUrl(gameState.loc.imageId)}
             width={100}
             height={100}
             layout="responsive"
             objectFit="contain"
-            className="scale-90 transition-transform duration-300 hover:scale-95"
+            className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
             onClick={onDialogContinue}
             alt="Guess image."
           />
