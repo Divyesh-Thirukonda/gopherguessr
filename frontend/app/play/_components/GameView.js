@@ -5,6 +5,7 @@ import { useState } from "react";
 import * as motion from "framer-motion/client";
 import dynamicImport from "next/dynamic";
 import { MapTrifold } from "@phosphor-icons/react";
+import StatsMenu from "./StatsMenu";
 
 const MapWrapper = dynamicImport(() => import("./MapWrapper"), {
   ssr: false,

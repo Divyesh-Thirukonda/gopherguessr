@@ -34,6 +34,7 @@ import { X } from "@phosphor-icons/react";
 import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
+import Image from "next/image";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -82,6 +83,10 @@ export default function MapWrapper({
     }
   };
 
+  function getFullUrl(id) {
+    return `https://utfs.io/a/e9dxf42twp/${id}`;
+  }
+
   return (
     <div
       className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
@@ -89,39 +94,53 @@ export default function MapWrapper({
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
     >
-      <div className="scale-[90%] overflow-hidden rounded-xl">
-        <Leaflet
-          center={viewStPaul ? stPaulCenter : minneapolisCenter}
-          onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
-        >
-          <LeafletMarker position={guess} icon="crosshair" />
-        </Leaflet>
-        <MotionButton
-          className="fixed left-0 right-0 top-6 z-[1000]"
-          onClick={() => setViewStPaul((currentState) => !currentState)}
-        >
-          Go to {viewStPaul ? "Minneapolis" : "St Paul"}
-        </MotionButton>
-        <MotionButton
-          className="fixed bottom-6 left-0 right-0 z-[1000]"
-          onClick={() => submitGuess(guess)}
-        >
-          Submit Guess
-        </MotionButton>
-        <MotionButton
-          className="absolute right-4 top-4 z-[1000]"
-          onClick={onDialogContinue}
-        >
-          <X className="h-6 w-6 text-white" />
-        </MotionButton>
-        {dialogOpen && (
-          <ResultsDialog
-            gameState={gameState}
-            setDialogOpen={setDialogOpen}
-            onContinue={onDialogContinue}
-            clearGameState={clearGameState}
+      <div className="grid h-screen grid-cols-11">
+        <div className="col-span-9 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl">
+          <Leaflet
+            center={viewStPaul ? stPaulCenter : minneapolisCenter}
+            onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
+          >
+            <LeafletMarker position={guess} icon="crosshair" />
+          </Leaflet>
+          <MotionButton
+            className="fixed left-0 right-0 top-6 z-[1000]"
+            onClick={() => setViewStPaul((currentState) => !currentState)}
+          >
+            Go to {viewStPaul ? "Minneapolis" : "St Paul"}
+          </MotionButton>
+          <MotionButton
+            className="fixed bottom-6 left-0 right-0 z-[1000]"
+            onClick={() => submitGuess(guess)}
+          >
+            Submit Guess
+          </MotionButton>
+          <MotionButton
+            className="absolute right-4 top-4 z-[1000]"
+            onClick={onDialogContinue}
+          >
+            <X className="h-6 w-6 text-white" />
+          </MotionButton>
+          {dialogOpen && (
+            <ResultsDialog
+              gameState={gameState}
+              setDialogOpen={setDialogOpen}
+              onContinue={onDialogContinue}
+              clearGameState={clearGameState}
+            />
+          )}
+        </div>
+        <div className="relative col-span-2 flex items-center justify-around">
+          <Image
+            src={getFullUrl(gameState.loc.imageId)}
+            width={100}
+            height={100}
+            layout="responsive"
+            objectFit="contain"
+            className="scale-90 transition-transform duration-300 hover:scale-95"
+            onClick={onDialogContinue}
+            alt="Guess image."
           />
-        )}
+        </div>
       </div>
     </div>
   );

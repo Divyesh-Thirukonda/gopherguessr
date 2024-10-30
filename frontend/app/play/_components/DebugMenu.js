@@ -10,7 +10,7 @@ export default function DebugMenu({ gameState, clearGameState }) {
   if (!showDebug) {
     return (
       <MotionButton
-        className="fixed left-4 top-4 z-[1000]"
+        className="fixed right-4 top-4 z-[1000]"
         onClick={() => setShowDebug(true)}
       >
         <Bug className="h-5 w-5" />
@@ -20,7 +20,7 @@ export default function DebugMenu({ gameState, clearGameState }) {
 
   return (
     <div
-      className={`fixed left-0 top-0 z-[1000] px-4 py-2 ${gameState.complete ? "bg-emerald-50" : "bg-white"} w-72 rounded-br-lg shadow-inner`}
+      className={`fixed right-0 top-0 z-[1000] px-4 py-2 ${gameState.complete ? "bg-emerald-50" : "bg-white"} w-72 rounded-br-lg shadow-inner`}
     >
       <span className="flex items-center gap-1.5 text-lg font-medium">
         <Bug className="h-5 w-5" />
