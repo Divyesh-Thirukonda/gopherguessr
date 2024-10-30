@@ -65,7 +65,7 @@ export default function ResultsDialog({
       <div className="absolute bottom-28 left-0 right-0 mx-4 pointer-events-none z-[1200] backdrop-blur-md bg-opacity-40 shadow-xl">
         <div className="relative bg-slate-500 h-6 rounded-full shadow-xl">
           <div
-            className="absolute top-0 left-0 h-6 rounded-full bg-red-600 transition-[width] duration-700 ease-out shadow-lg z-[1300]"
+            className="absolute top-0 left-0 h-6 rounded-full bg-rose-600 transition-[width] duration-700 ease-out shadow-lg z-[1300]"
             style={{ width: `${progress}%` }}
           >
             {gameState && gameState.points > 50 && (
