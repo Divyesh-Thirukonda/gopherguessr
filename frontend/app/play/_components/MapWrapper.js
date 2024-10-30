@@ -88,6 +88,25 @@ export default function MapWrapper({
     return `https://utfs.io/a/e9dxf42twp/${id}`;
   }
 
+  const getPreviewImage = () => {
+    if (gameState.loc != null && gameState.loc.imageId != null) {
+      return (
+        <Image
+          src={getFullUrl(gameState.loc.imageId)}
+          width={100}
+          height={100}
+          layout="responsive"
+          objectFit="contain"
+          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
+          onClick={onDialogContinue}
+          alt="Guess image."
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div
       className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
@@ -133,17 +152,8 @@ export default function MapWrapper({
         <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
           <StatsMenu gameState={gameState} />
         </div>
-        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-2 md:justify-start">
-          <Image
-            src={getFullUrl(gameState.loc.imageId)}
-            width={100}
-            height={100}
-            layout="responsive"
-            objectFit="contain"
-            className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
-            onClick={onDialogContinue}
-            alt="Guess image."
-          />
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-2 md:justify-center">
+          {getPreviewImage()}
         </div>
       </div>
     </div>
