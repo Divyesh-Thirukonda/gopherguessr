@@ -28,6 +28,7 @@ import prisma from "../_utils/db";
 import GameView from "./_components/GameView";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import StatsMenu from "./_components/StatsMenu";
 
 export const dynamic = "force-dynamic";
 

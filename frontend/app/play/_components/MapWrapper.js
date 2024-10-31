@@ -34,6 +34,8 @@ import { X } from "@phosphor-icons/react";
 import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
+import Image from "next/image";
+import StatsMenu from "./StatsMenu";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -82,6 +84,29 @@ export default function MapWrapper({
     }
   };
 
+  function getFullUrl(id) {
+    return `https://utfs.io/a/e9dxf42twp/${id}`;
+  }
+
+  const getPreviewImage = () => {
+    if (gameState.loc != null && gameState.loc.imageId != null) {
+      return (
+        <Image
+          src={getFullUrl(gameState.loc.imageId)}
+          width={100}
+          height={100}
+          layout="responsive"
+          objectFit="contain"
+          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
+          onClick={onDialogContinue}
+          alt="Guess image."
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div
       className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
@@ -89,39 +114,47 @@ export default function MapWrapper({
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
     >
-      <div className="scale-[90%] overflow-hidden rounded-xl">
-        <Leaflet
-          center={viewStPaul ? stPaulCenter : minneapolisCenter}
-          onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
-        >
-          <LeafletMarker position={guess} icon="crosshair" />
-        </Leaflet>
-        <MotionButton
-          className="fixed left-0 right-0 top-6 z-[1000]"
-          onClick={() => setViewStPaul((currentState) => !currentState)}
-        >
-          Go to {viewStPaul ? "Minneapolis" : "St Paul"}
-        </MotionButton>
-        <MotionButton
-          className="fixed bottom-6 left-0 right-0 z-[1000]"
-          onClick={() => submitGuess(guess)}
-        >
-          Submit Guess
-        </MotionButton>
-        <MotionButton
-          className="absolute right-4 top-4 z-[1000]"
-          onClick={onDialogContinue}
-        >
-          <X className="h-6 w-6 text-white" />
-        </MotionButton>
-        {dialogOpen && (
-          <ResultsDialog
-            gameState={gameState}
-            setDialogOpen={setDialogOpen}
-            onContinue={onDialogContinue}
-            clearGameState={clearGameState}
-          />
-        )}
+      <div className="grid h-screen grid-cols-2 grid-rows-3 md:grid-cols-11 md:grid-rows-7">
+        <div className="col-span-2 row-span-2 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl md:col-span-9 md:row-span-7">
+          <Leaflet
+            center={viewStPaul ? stPaulCenter : minneapolisCenter}
+            onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
+          >
+            <LeafletMarker position={guess} icon="crosshair" />
+          </Leaflet>
+          <MotionButton
+            className="fixed left-0 right-0 top-6 z-[1000]"
+            onClick={() => setViewStPaul((currentState) => !currentState)}
+          >
+            Go to {viewStPaul ? "Minneapolis" : "St Paul"}
+          </MotionButton>
+          <MotionButton
+            className="fixed bottom-6 left-0 right-0 z-[1000]"
+            onClick={() => submitGuess(guess)}
+          >
+            Submit Guess
+          </MotionButton>
+          <MotionButton
+            className="absolute right-4 top-4 z-[1000]"
+            onClick={onDialogContinue}
+          >
+            <X className="h-6 w-6 text-white" />
+          </MotionButton>
+          {dialogOpen && (
+            <ResultsDialog
+              gameState={gameState}
+              setDialogOpen={setDialogOpen}
+              onContinue={onDialogContinue}
+              clearGameState={clearGameState}
+            />
+          )}
+        </div>
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
+          <StatsMenu gameState={gameState} />
+        </div>
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-center">
+          {getPreviewImage()}
+        </div>
       </div>
     </div>
   );
