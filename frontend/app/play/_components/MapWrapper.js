@@ -152,7 +152,7 @@ export default function MapWrapper({
         <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
           <StatsMenu gameState={gameState} />
         </div>
-        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-2 md:justify-center">
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-center">
           {getPreviewImage()}
         </div>
       </div>
