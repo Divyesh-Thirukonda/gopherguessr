@@ -89,7 +89,7 @@ export default function MapWrapper({
   }
 
   const getPreviewImage = () => {
-    if (gameState.loc != null && gameState.loc.imageId != null) {
+    if (gameState.loc != null && gameState.loc.imageId != null && !dialogOpen) {
       return (
         <Image
           src={getFullUrl(gameState.loc.imageId)}
