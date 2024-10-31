@@ -78,7 +78,7 @@ export default function ResultsDialog({
             )}
           </div>
 
-          {Array.from({ length: 5 }, (_, i) => (
+          {Array.from({ length: 4 }, (_, i) => (
             <div
               key={i}
               className="absolute top-0 z-[1250] h-6 border-r border-slate-200 opacity-50"
