@@ -4,7 +4,7 @@
 import { authorizeAdminRoute } from "../_utils/adminSession";
 
 export default async function AdminLayout({ children }) {
-  const { session } = authorizeAdminRoute();
+  const { session } = await authorizeAdminRoute();
 
   return (
     <>

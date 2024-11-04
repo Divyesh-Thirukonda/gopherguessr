@@ -1,7 +1,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { getIronSession, sealData } from "iron-session";
-import { redirect } from "next/dist/server/api-utils";
+import { redirect } from "next/navigation";
 import { DateTime } from "luxon";
 
 // gets encrypted data from the session stored in the cookie
@@ -34,6 +34,7 @@ async function saveAdminSession(data) {
   );
   cookieStore.set("admin_s", sealed, {
     path: "/",
+    maxAge: 60 * 60 * 24 * 7,
   });
   redirect("/admin/");
 }
