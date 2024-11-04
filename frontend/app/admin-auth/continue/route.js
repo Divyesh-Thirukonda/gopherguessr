@@ -1,4 +1,5 @@
 // this runs after a successful google login
+// runs on server
 
 import { OAuth2Client } from "google-auth-library";
 import { cookies } from "next/headers";

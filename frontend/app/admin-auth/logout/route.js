@@ -1,4 +1,5 @@
 // runs when logout button clicked
+// runs on server
 
 import { deleteAdminSession } from "@/app/_utils/adminSession";
 

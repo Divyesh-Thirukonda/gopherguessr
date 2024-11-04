@@ -1,4 +1,6 @@
+// all these should run on the server ONLY as they deal with cookies and encrypted sessions
 import "server-only";
+
 import { cookies } from "next/headers";
 import { getIronSession, sealData } from "iron-session";
 import { redirect } from "next/navigation";

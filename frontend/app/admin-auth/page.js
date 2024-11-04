@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 export default async function AdminAuth() {
   const session = await getAdminSession();
   // if already logged in, redirect to admin home page
+  // runs on server
   if (session.email) redirect("/admin");
 
   return (
