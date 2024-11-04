@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { getAdminSession } from "../_utils/adminSession";
+import { redirect } from "next/navigation";
 
 export default async function AdminAuth() {
   const session = await getAdminSession();
@@ -9,17 +10,17 @@ export default async function AdminAuth() {
   if (session.email) redirect("/admin");
 
   return (
-    <div>
+    <div className="p-3">
+      <h1 className="mb-1.5 text-3xl font-bold">Admin Login</h1>
+      <p className="mb-3 text-sm text-gray-600">
+        You will not be able to continue unless you have been authorized.
+      </p>
       <div
         id="g_id_onload"
         data-client_id={process.env.NEXT_PUBLIC_GOOGLE_ADMIN}
         data-context="signin"
         data-ux_mode="popup"
-        data-login_uri={
-          process.env.NODE_ENV === "production"
-            ? "https://gopher.nimbus.page/admin-auth/continue"
-            : "http://localhost:3000/admin-auth/continue"
-        }
+        data-login_uri={`${process.env.ROOT}/admin-auth/continue`}
         data-auto_prompt="false"
         data-use_fedcm_for_prompt="true"
       ></div>
