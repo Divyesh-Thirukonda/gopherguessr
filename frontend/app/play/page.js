@@ -48,6 +48,8 @@ const prismaGameStateInclude = {
 };
 
 export default async function Play() {
+  const params = new URLSearchParams(searchParams);
+  const gameMode = params.get('gameMode')
   const cookieStore = await cookies();
 
   let curState = null;
@@ -76,6 +78,17 @@ export default async function Play() {
       redirect(`/createprismacookie?id=${curState.id}`);
     }
   }
+  // diff filter
+  let diffFilter = {};
+   if (gameMode === '1') {
+     diffFilter = { diffRating: 'ONE' };
+   } else if (gameMode === '2') {
+     diffFilter = { diffRating: 'TWO' };
+   } else if (gameMode === '3') {
+     diffFilter = { diffRating: 'THREE' };
+   } else if (gameMode === 'St.Paul') {
+     diffFilter = {campus: 'St.Paul'}
+   }
   // check if guesses initialized
   if (curState.guesses.length === 0) {
     // get all locations that are in the filter
@@ -86,6 +99,7 @@ export default async function Play() {
           { campus: "EastBankCore" },
           { campus: "EastBankOuter" },
         ],
+        diffRating: diffFilter,
       },
       select: { id: true },
     });
