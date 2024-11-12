@@ -37,7 +37,7 @@ async function saveUserSession(data) {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
-  redirect("/"); // May be changed to profile, post, etc.  Do not know yet
+  redirect("/profile"); // May be changed to profile, post, etc.  Do not know yet
 }
 
 // for logout

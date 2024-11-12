@@ -48,12 +48,13 @@ export async function POST(req) {
 
   if (!existingUser) {
     createUser();
-    console.log("Successfully registered!");
-  } else {
-    console.log("Successfully logged in!");
   }
 
-  console.log(payload);
+  if (cookieStore.has("admin_s")) {
+    // Delete admin session if logging into standard
+    // NEED TO CONSOLIDATE USER / ADMIN LOGIN
+    cookieStore.delete("admin_s");
+  }
 
   // if passed the 3 steps, store the user's email in the session data
   // this redirects home once finished

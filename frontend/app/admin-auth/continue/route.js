@@ -32,6 +32,11 @@ export async function POST(req) {
   if (payload.email_verified !== true || !adminEmails.includes(payload.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  if (cookieStore.has("user_s")) {
+    // Delete admin session if logging into standard
+    // NEED TO CONSOLIDATE USER / ADMIN LOGIN
+    cookieStore.delete("user_s");
+  }
   // if passed the 3 steps, store the user's email in the session data
   // this redirects to /admin once finished
   await saveAdminSession({
