@@ -84,7 +84,7 @@ export default function ResultsDialog({
               className="absolute top-0 z-[1250] h-6 border-r border-slate-200 opacity-50"
               style={{ left: `${(i + 1) * 20}%` }}
             >
-              <span className="absolute ml-1">{`${(i + 1) * 1000}`}</span>
+              {/* <span className="text-white absolute ml-1">{`${(i + 1) * 1000}`}</span> */}
             </div>
           ))}
 
