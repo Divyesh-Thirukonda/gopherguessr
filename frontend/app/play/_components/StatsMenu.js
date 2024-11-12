@@ -22,7 +22,7 @@ export default function StatsMenu({ curState }) {
 
   return (
     <div
-      className={`${curState.complete ? "bg-emerald-50 text-emerald-600" : "bg-rose-600 text-white"} w-full min-w-48 max-w-[10rem] rounded-lg p-4 shadow-inner md:max-w-[12rem] lg:max-w-[16rem]`}
+      className={`${curState.complete ? "bg-emerald-50 text-emerald-600" : "bg-rose-600 text-white"} w-full min-w-40 max-w-[10rem] rounded-lg p-4 shadow-inner md:max-w-[12rem] lg:max-w-[16rem]`} 
     >
       <span className="flex items-center gap-1.5 text-lg font-medium">
         {curState.complete ? (
