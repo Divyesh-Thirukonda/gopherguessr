@@ -13,6 +13,13 @@ export default async function ProfileLayout({ children }) {
         </Link>
         <div className="flex items-center gap-3">
           {session.email}
+          {session.isAdmin && (
+            <form action="/admin">
+              <button type="submit" className="underline">
+                admin
+              </button>
+            </form>
+          )}
           <form action="/login/logout" method="POST">
             <button type="submit" className="underline">
               logout

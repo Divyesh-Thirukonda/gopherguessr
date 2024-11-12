@@ -17,6 +17,11 @@ export default async function AdminLayout({ children }) {
         </Link>
         <div className="flex items-center gap-3">
           {session.email}
+          <form action="/profile">
+            <button type="submit" className="underline">
+              my profile
+            </button>
+          </form>
           <form action="/admin-auth/logout" method="POST">
             <button type="submit" className="underline">
               logout
