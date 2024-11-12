@@ -22,138 +22,161 @@
 
 import { revalidatePath } from "next/cache";
 import latlngToMeters from "../_utils/latlngToMeters";
-import { gameStates, initGameState } from "../_utils/tempDb";
-import DebugMenu from "./_components/DebugMenu";
 import prisma from "../_utils/db";
 import GameView from "./_components/GameView";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import StatsMenu from "./_components/StatsMenu";
 
 export const dynamic = "force-dynamic";
 
+const prismaGameStateInclude = {
+  guesses: {
+    include: {
+      photo: {
+        select: {
+          id: true,
+          imageId: true,
+          latitude: true,
+          longitude: true,
+        },
+      },
+    },
+    orderBy: {
+      id: "asc",
+    },
+  },
+};
+
 export default async function Play() {
-  // for debugging
-  // TODO: REMOVE IN PROD
-  console.log(gameStates);
-
-  // store a handle for the specific gameState instance in cookies
-  // this will be EXTREMELY UNSTABLE
-  // (because everytime the deploy is updated the gamestates are cleared, and cookies aren't),
-  // but it will work for MVP and that's all we need right now
   const cookieStore = await cookies();
-  const cookie = cookieStore.get("clientGameStateHandle");
 
-  if (!cookie) {
-    redirect(`/createcookie?len=${Object.keys(gameStates).length}`);
-  } else if (cookie.value > Object.keys(gameStates).length) {
-    // try to make more stable by clearing any cookies that have goofy values
-    redirect(`/createcookie?len=${Object.keys(gameStates).length}`);
-  }
-
-  const clientGameStateHandle = cookie.value;
-
-  if (!gameStates[clientGameStateHandle]) {
-    // initialize new gameState and clone the initGameState so we arent inadvertantly editing it
-    gameStates[clientGameStateHandle] = structuredClone(initGameState);
-  }
-
-  if (!gameStates[clientGameStateHandle].loc) {
-    // FOR MVP LIMIT TO WEST BANK AND EAST BANK CORE
-    // TODO: ALLOW SELECTION OF CAMPUS
-    const locCount = await prisma.photo.count({
-      where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
+  let curState = null;
+  // TODO: this should be encrypted in the future to prevent people from playing games that are not their own
+  const prismaCookie = cookieStore.get("prismaGameStateId");
+  const prismaGameStateId = prismaCookie?.value;
+  if (!prismaCookie) {
+    // create db state if no cookie
+    curState = await prisma.gameState.create({
+      data: {},
+      include: prismaGameStateInclude,
     });
-    if (
-      gameStates[clientGameStateHandle].round > locCount ||
-      gameStates[clientGameStateHandle].round > 5
-    ) {
-      gameStates[clientGameStateHandle].complete = true;
-    } else {
-      let newLocId = Math.floor(Math.random() * locCount);
-      let newLoc = await prisma.photo.findMany({
-        skip: newLocId,
-        take: 1,
-        where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
+    redirect(`/createprismacookie?id=${curState.id}`);
+  } else {
+    // if cookie exists, make sure it's valid
+    curState = await prisma.gameState.findUnique({
+      where: { id: parseInt(prismaGameStateId, 10) },
+      include: prismaGameStateInclude,
+    });
+    // if not valid, make new state and create new cookie
+    if (!curState) {
+      curState = await prisma.gameState.create({
+        data: {},
+        include: prismaGameStateInclude,
       });
-
-      while (
-        gameStates[clientGameStateHandle].allLocsUsed.some(
-          (loc) => loc.id === newLocId,
-        )
-      ) {
-        newLocId = Math.floor(Math.random() * locCount);
-        newLoc = await prisma.photo.findMany({
-          skip: newLocId,
-          take: 1,
-          where: { OR: [{ campus: "WestBank" }, { campus: "EastBankCore" }] },
-        });
-        if (!newLoc[0]) {
-          // just in case i goofied something up
-          console.log("THIS SHOULDN'T HAPPEN");
-        }
-      }
-      gameStates[clientGameStateHandle].loc = newLoc[0];
+      redirect(`/createprismacookie?id=${curState.id}`);
     }
   }
+  // check if guesses initialized
+  if (curState.guesses.length === 0) {
+    // get all locations that are in the filter
+    const possibleLocations = await prisma.photo.findMany({
+      where: {
+        OR: [
+          { campus: "WestBank" },
+          { campus: "EastBankCore" },
+          { campus: "EastBankOuter" },
+        ],
+      },
+      select: { id: true },
+    });
+    // get 5 random indexes of the possibleLocations array
+    const indexes = new Set();
+    while (indexes.size !== 5) {
+      indexes.add(Math.floor(Math.random() * possibleLocations.length));
+    }
+    // create Guess items in the db
+    indexes.forEach(async (index) => {
+      await prisma.guess.create({
+        data: {
+          gameStateId: parseInt(prismaGameStateId, 10),
+          photoId: parseInt(possibleLocations[index].id, 10),
+        },
+      });
+    });
+    // update guess state after creating guesses
+    curState = await prisma.gameState.findUnique({
+      where: { id: parseInt(prismaGameStateId, 10) },
+      include: prismaGameStateInclude,
+    });
+  }
+  // sanitize latitude and longitude data for guesses that havent been made yet
+  curState.guesses = curState.guesses.slice(0, 5);
+  curState.guesses.forEach((guess) => {
+    if (!guess.guessComplete) {
+      guess.photo.longitude = null;
+      guess.photo.latitude = null;
+    }
+  });
+  // inject current guess, completed guesses, last guess data for easier parsing on frontend
+  curState.curGuess = curState.guesses[curState.round - 1];
+  curState.completedGuesses = curState.guesses.filter(
+    (guess) => guess.guessComplete,
+  );
+  curState.lastGuess =
+    curState.completedGuesses[curState.completedGuesses.length - 1];
 
   async function submitGuess(guess) {
     "use server";
-    const d = latlngToMeters(
-      guess[0],
-      guess[1],
-      gameStates[clientGameStateHandle].loc.latitude,
-      gameStates[clientGameStateHandle].loc.longitude,
-    );
-    gameStates[clientGameStateHandle].lastGuessD = d;
-    gameStates[clientGameStateHandle].allLocsUsed.push(
-      gameStates[clientGameStateHandle].loc,
-    );
-    gameStates[clientGameStateHandle].lastGuessPoints =
-      (500 - (d > 500 ? 500 : d)) * 2;
-    gameStates[clientGameStateHandle].lastGuessLat = guess[0];
-    gameStates[clientGameStateHandle].lastGuessLng = guess[1];
-    gameStates[clientGameStateHandle].allGuessesUsed.push([guess[0], guess[1]]);
-    gameStates[clientGameStateHandle].points +=
-      gameStates[clientGameStateHandle].lastGuessPoints;
-    gameStates[clientGameStateHandle].loc = null;
-    gameStates[clientGameStateHandle].round += 1;
-    gameStates[clientGameStateHandle].gameStarted = true;
-
+    // don't let users submit twice
+    if (!curState.curGuess || !curState.curGuess?.guessComplete) {
+      // get full photo/location data
+      const photo = await prisma.photo.findUnique({
+        where: { id: curState.curGuess.photo.id },
+      });
+      // calculate distance from guess and points
+      const roundDistance = latlngToMeters(
+        guess[0],
+        guess[1],
+        photo.latitude,
+        photo.longitude,
+      );
+      const roundPoints =
+        (500 - (roundDistance > 500 ? 500 : roundDistance)) * 2;
+      // update in db
+      await prisma.guess.update({
+        where: { id: curState.curGuess.id },
+        data: {
+          guessComplete: true,
+          latitude: guess[0],
+          longitude: guess[1],
+          distance: roundDistance,
+          points: roundPoints,
+        },
+      });
+      await prisma.gameState.update({
+        where: { id: curState.id },
+        data: {
+          points: curState.points + roundPoints,
+          started: true,
+          round: curState.round + 1,
+          complete: curState.round === 5,
+        },
+      });
+    }
+    // make sure frontend has latest data
     revalidatePath("/play");
   }
 
   async function clearGameState() {
     "use server";
-    // Reset game state
-    gameStates[clientGameStateHandle].loc = null;
-    gameStates[clientGameStateHandle].allLocsUsed = [];
-    gameStates[clientGameStateHandle].round = 1;
-    gameStates[clientGameStateHandle].lastGuessPoints = 0;
-    gameStates[clientGameStateHandle].lastGuessLat = 0;
-    gameStates[clientGameStateHandle].lastGuessLng = 0;
-    gameStates[clientGameStateHandle].points = 0;
-    gameStates[clientGameStateHandle].lastGuessD = 0;
-    gameStates[clientGameStateHandle].complete = false;
-    gameStates[clientGameStateHandle].gameStarted = false;
-    gameStates[clientGameStateHandle].allGuessesUsed = [];
-
-    // Revalidate the /play page
-    revalidatePath("/play");
     redirect("/playagain");
   }
 
   return (
-    <>
-      <GameView
-        clearGameState={clearGameState}
-        submitGuess={submitGuess}
-        gameState={gameStates[clientGameStateHandle]}
-      />
-      <DebugMenu
-        gameState={gameStates[clientGameStateHandle]}
-        clearGameState={clearGameState}
-      />
-    </>
+    <GameView
+      clearGameState={clearGameState}
+      submitGuess={submitGuess}
+      curState={curState}
+    />
   );
 }

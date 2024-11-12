@@ -7,10 +7,10 @@ import LeafletPolyline from "@/app/_components/LeafletPolyline";
 import latlngToMeters from "@/app/_utils/latlngToMeters";
 
 export default function ResultsDialog({
-  gameState,
   setDialogOpen,
   onContinue,
   clearGameState,
+  curState,
 }) {
   const [showEndDialog, setShowEndDialog] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -19,13 +19,13 @@ export default function ResultsDialog({
   const maxPointsPerRound = 1000;
 
   const actualLoc = [
-    gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.latitude,
-    gameState.allLocsUsed[gameState.allLocsUsed.length - 1]?.longitude,
+    curState.lastGuess.photo.latitude,
+    curState.lastGuess.photo.longitude,
   ];
-  const [userGuessLoc, setUserGuessLoc] = useState([
-    gameState.lastGuessLat,
-    gameState.lastGuessLng,
-  ]);
+  const userGuessLoc = [
+    curState.lastGuess.latitude,
+    curState.lastGuess.longitude,
+  ];
   const dialogCenter = [
     (actualLoc[0] + userGuessLoc[0]) / 2,
     (actualLoc[1] + userGuessLoc[1]) / 2,
@@ -41,18 +41,18 @@ export default function ResultsDialog({
   const myZoom = dist < 100 ? 18 : dist < 600 ? 16 : dist < 1000 ? 15 : 14;
 
   useEffect(() => {
-    let start = gameState.points - gameState.lastGuessPoints;
+    let start = curState.points - curState.lastGuess.points;
     const increment = (timestamp) => {
       const incrementValue = Math.min(maxPointsPerRound / 30, 30);
-      start = Math.min(start + incrementValue, gameState.points);
+      start = Math.min(start + incrementValue, curState.points);
       setProgress((start / totalPoints) * 100);
 
-      if (start < gameState.points) {
+      if (start < curState.points) {
         requestAnimationFrame(increment);
       }
     };
     requestAnimationFrame(increment);
-  }, [gameState.points]);
+  }, [curState.points]);
 
   return (
     <div className="fixed inset-0 z-[1000]">
@@ -68,12 +68,12 @@ export default function ResultsDialog({
             className="absolute left-0 top-0 z-[1300] h-6 rounded-full bg-rose-600 shadow-lg transition-[width] duration-700 ease-out"
             style={{ width: `${progress}%` }}
           >
-            {gameState && gameState.points > 50 && (
+            {curState.points > 50 && (
               <div
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}
               >
-                +{gameState.lastGuessPoints}
+                +{curState.lastGuess.points}
               </div>
             )}
           </div>
@@ -100,7 +100,7 @@ export default function ResultsDialog({
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}
           >
-            ^ You have {gameState.points} points!
+            ^ You have {curState.points} points!
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@ export default function ResultsDialog({
         <button
           className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
           onClick={() => {
-            if (gameState.complete) {
+            if (curState.complete) {
               setShowEndDialog(true);
             } else {
               onContinue();
@@ -123,7 +123,7 @@ export default function ResultsDialog({
 
       {showEndDialog && (
         <EndDialog
-          gameState={gameState}
+          curState={curState}
           setShowEndDialog={setShowEndDialog}
           clearGameState={clearGameState}
         />

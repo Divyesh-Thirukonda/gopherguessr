@@ -15,14 +15,14 @@ function getFullUrl(id) {
   return `https://utfs.io/a/e9dxf42twp/${id}`;
 }
 
-export default function GameView({ submitGuess, gameState, clearGameState }) {
+export default function GameView({ submitGuess, clearGameState, curState }) {
   const [viewMap, setViewMap] = useState(false);
 
   const getStatsMenu = () => {
     if (!viewMap) {
       return (
         <div className="fixed bottom-6 left-3 md:left-auto md:right-4 md:top-1/2 md:-translate-y-1/2 md:transform">
-          <StatsMenu gameState={gameState} />
+          <StatsMenu curState={curState} />
         </div>
       );
     }
@@ -46,19 +46,19 @@ export default function GameView({ submitGuess, gameState, clearGameState }) {
   return (
     <>
       <div className="relative flex h-dvh w-dvw items-center justify-center bg-gray-500">
-        {!gameState.complete && (
+        {!curState.complete && (
           <>
             <div>
               <Image
                 fill
-                src={getFullUrl(gameState.loc.imageId)}
+                src={getFullUrl(curState.curGuess.photo.imageId)}
                 className="blur-xl"
                 alt="Blurry guess image."
               />
             </div>
             <Image
               fill
-              src={getFullUrl(gameState.loc.imageId)}
+              src={getFullUrl(curState.curGuess.photo.imageId)}
               className="h-full w-full object-contain object-center"
               alt="Guess image."
             />
@@ -69,11 +69,11 @@ export default function GameView({ submitGuess, gameState, clearGameState }) {
       <div>
         {getOpenMap()}
         <MapWrapper
-          gameState={gameState}
           submitGuess={submitGuess}
           onDialogContinue={() => setViewMap(false)}
           viewMap={viewMap}
           clearGameState={clearGameState}
+          curState={curState}
         />
       </div>
     </>
