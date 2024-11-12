@@ -20,7 +20,7 @@ export default function MapView({ allPhotos }) {
           position={[loc.latitude, loc.longitude]}
           icon="destination"
           key={loc.id}
-          onClick={(e) => window.open(`/photos/${e.target.id}`)}
+          onClick={(e) => window.open(`/admin/photos/${e.target.id}`)}
           id={loc.id}
         />
       ))}

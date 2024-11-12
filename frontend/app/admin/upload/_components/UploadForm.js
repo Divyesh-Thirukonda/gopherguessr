@@ -88,15 +88,6 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
           required
         />
       </div>
-      <label htmlFor="password" className="mb-1 text-lg font-medium">
-        Password (in the Discord)
-      </label>
-      <input
-        name="password"
-        id="password"
-        type="password"
-        className="mb-3 rounded border-gray-300"
-      />
       <button type="submit" className="rounded bg-rose-600 p-3 text-white">
         Upload
       </button>

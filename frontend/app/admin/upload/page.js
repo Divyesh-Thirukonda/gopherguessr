@@ -1,15 +1,16 @@
 // this is a server component page route that handles the serverside part of uplading images
 // we import in a client component (UploadForm) so that we can show when the form is processing
 
-import { utapi } from "../_utils/ut";
+import { utapi } from "@/app/_utils/ut";
 import sharp from "sharp";
 import ExifReader from "exifreader";
-import prisma from "../_utils/db";
+import prisma from "@/app/_utils/db";
 import UploadForm from "./_components/UploadForm";
 import heicConvert from "heic-convert";
 import { DiffEnum, CampusEnum } from "@prisma/client";
+import { authorizeAdminRoute } from "@/app/_utils/adminSession";
 
-export default async function ImageUpload() {
+export default async function Uploader() {
   // this runs on the server before rendering the page
   // and gets the users from the db to use when rendring the dropdown
   const uploaders = await prisma.user.findMany();
@@ -17,10 +18,9 @@ export default async function ImageUpload() {
   // this runs on the backend when the user submits the form
   async function uploadFiles(formData) {
     "use server";
-    const password = formData.get("password");
-    if (password !== process.env.UPLOAD_PASSWORD) {
-      throw new Error();
-    }
+    // check admmin auth, redirects if not authorized
+    await authorizeAdminRoute();
+
     const file = formData.get("file");
     let buffer = await file.arrayBuffer();
 
