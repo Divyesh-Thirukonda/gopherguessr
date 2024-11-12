@@ -42,10 +42,10 @@ const stPaulCenter = [44.98655, -93.18201];
 
 export default function MapWrapper({
   submitGuess,
-  gameState,
   onDialogContinue,
   viewMap,
   clearGameState,
+  curState,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -53,20 +53,19 @@ export default function MapWrapper({
   );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [enableKeybinds, setEnableKeybinds] = useState(false);
-  const mapRef = useRef(null);
 
   // when round changes, reset marker position, and open resultdialog
   useEffect(() => {
     setGuess(viewStPaul ? stPaulCenter : minneapolisCenter);
-    if (gameState.gameStarted) {
+    if (curState.started) {
       setDialogOpen(true);
     }
-  }, [gameState.round]);
+  }, [curState.round]);
 
   // handle keybinds
   const handleKeyDown = (event) => {
     const key = event.key;
-    if (!gameState.complete) {
+    if (!curState.complete) {
       if (key === "Enter" && !dialogOpen) {
         if (enableKeybinds) {
           submitGuess(guess);
@@ -89,10 +88,10 @@ export default function MapWrapper({
   }
 
   const getPreviewImage = () => {
-    if (gameState.loc != null && gameState.loc.imageId != null && !dialogOpen) {
+    if (!curState.complete && !dialogOpen) {
       return (
         <Image
-          src={getFullUrl(gameState.loc.imageId)}
+          src={getFullUrl(curState.curGuess.photo.imageId)}
           width={100}
           height={100}
           layout="responsive"
@@ -142,7 +141,7 @@ export default function MapWrapper({
           </MotionButton>
           {dialogOpen && (
             <ResultsDialog
-              gameState={gameState}
+              curState={curState}
               setDialogOpen={setDialogOpen}
               onContinue={onDialogContinue}
               clearGameState={clearGameState}
@@ -150,7 +149,7 @@ export default function MapWrapper({
           )}
         </div>
         <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
-          <StatsMenu gameState={gameState} />
+          <StatsMenu curState={curState} />
         </div>
         <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-center">
           {getPreviewImage()}
