@@ -16,6 +16,16 @@ async function getUserSession() {
   return session;
 }
 
+async function authorizeUserRoute() {
+  const session = await getUserSession();
+
+  if (!session.email) redirect("/login");
+
+  // check expiry as well
+  if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
+  return { session };
+}
+
 // for login
 async function saveUserSession(data) {
   const cookieStore = await cookies();
@@ -37,4 +47,9 @@ async function deleteUserSession() {
   redirect("/login");
 }
 
-export { getUserSession, saveUserSession, deleteUserSession };
+export {
+  getUserSession,
+  saveUserSession,
+  deleteUserSession,
+  authorizeUserRoute,
+};

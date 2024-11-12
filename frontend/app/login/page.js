@@ -6,6 +6,9 @@ import { getUserSession } from "../_utils/userSession";
 
 export default async function UserAuth() {
   const session = await getUserSession();
+
+  if (session.email) redirect("/profile");
+
   return (
     <div className="p-3">
       <h1 className="mb-1.5 text-3xl font-bold">User Login</h1>
