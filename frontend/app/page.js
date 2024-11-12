@@ -63,7 +63,7 @@ export default async function Home() {
               whileHover={{ scale: 1.2 }}
             >
               <Link
-                href="/play"
+                href="/play?gameMode=3"
                 className="flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
                 Play
