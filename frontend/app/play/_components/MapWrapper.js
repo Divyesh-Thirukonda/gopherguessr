@@ -51,7 +51,7 @@ export default function MapWrapper({
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [resultsDialogOpen, setDialogOpen] = useState(false);
   const [enableKeybinds, setEnableKeybinds] = useState(false);
 
   // when round changes, reset marker position, and open resultdialog
@@ -66,17 +66,17 @@ export default function MapWrapper({
   const handleKeyDown = (event) => {
     const key = event.key;
     if (!curState.complete) {
-      if (key === "Enter" && !dialogOpen) {
+      if (key === "Enter" && !resultsDialogOpen) {
         if (enableKeybinds) {
           submitGuess(guess);
           setEnableKeybinds(false);
         }
-        if (dialogOpen) {
+        if (resultsDialogOpen) {
           setDialogOpen(false);
         }
       }
       if (key === "Escape") {
-        if (dialogOpen) {
+        if (resultsDialogOpen) {
           setDialogOpen(false);
         }
       }
@@ -88,10 +88,35 @@ export default function MapWrapper({
   }
 
   const getPreviewImage = () => {
-    if (!curState.complete && !dialogOpen) {
+    if (!curState.complete && !resultsDialogOpen) {
       return (
         <Image
           src={getFullUrl(curState.curGuess.photo.imageId)}
+          width={100}
+          height={100}
+          layout="responsive"
+          objectFit="contain"
+          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
+          onClick={onDialogContinue}
+          alt="Guess image."
+        />
+      );
+    } else if (resultsDialogOpen) {
+      return (
+        <Image
+          src={getFullUrl(curState.lastGuess.photo.imageId)}
+          width={100}
+          height={100}
+          layout="responsive"
+          objectFit="contain"
+          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
+          alt="Guess image."
+        />
+      );
+    } else {
+      return (
+        <Image
+          src={getFullUrl(curState.lastGuess.photo.imageId)}
           width={100}
           height={100}
           layout="responsive"
@@ -139,7 +164,7 @@ export default function MapWrapper({
           >
             <X className="h-6 w-6 text-white" />
           </MotionButton>
-          {dialogOpen && (
+          {resultsDialogOpen && (
             <ResultsDialog
               curState={curState}
               setDialogOpen={setDialogOpen}
