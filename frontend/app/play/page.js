@@ -21,39 +21,65 @@
 */
 
 import { revalidatePath } from "next/cache";
-import DebugMenu from "./_components/DebugMenu";
-import PreviewImage from "./_components/PreviewImage";
 import latlngToMeters from "../_utils/latlngToMeters";
-import { gameState } from "../_utils/tempDb";
-
-// we are importing this with a different name than usual because we need to export a variable called dynamic later
-import dynamicImport from "next/dynamic";
-import ResultsDialog from "./_components/ResultsDialog";
 import prisma from "../_utils/db";
+import GameView from "./_components/GameView";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-// we import this a special way because Leaflet (the mapping library we are using), can't be prerendered.
-// learn more here: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#skipping-ssr
-const MapWrapper = dynamicImport(() => import("./_components/MapWrapper"), {
-  ssr: false,
-});
-
-/*
-  this tells next.js to not cache our page.
-  if our page was cached, new data would not make it to the user immediately
-  which would lead to outdated state and a broken UI.
-*/
 export const dynamic = "force-dynamic";
 
-export default async function Play({searchParams}) {
-  /*
-    Since this is a server component (no "use client"), this JavaScript will not run on the client at all.
-    Think like a PHP file.
-  */
+const prismaGameStateInclude = {
+  guesses: {
+    include: {
+      photo: {
+        select: {
+          id: true,
+          imageId: true,
+          latitude: true,
+          longitude: true,
+        },
+      },
+    },
+    orderBy: {
+      id: "asc",
+    },
+  },
+};
+
+export default async function Play() {
   const params = new URLSearchParams(searchParams);
   const gameMode = params.get('gameMode')
+  const cookieStore = await cookies();
 
-   // Determine the filter based on gameMode
-   let diffFilter = {};
+  let curState = null;
+  // TODO: this should be encrypted in the future to prevent people from playing games that are not their own
+  const prismaCookie = cookieStore.get("prismaGameStateId");
+  const prismaGameStateId = prismaCookie?.value;
+  if (!prismaCookie) {
+    // create db state if no cookie
+    curState = await prisma.gameState.create({
+      data: {},
+      include: prismaGameStateInclude,
+    });
+    redirect(`/createprismacookie?id=${curState.id}`);
+  } else {
+    // if cookie exists, make sure it's valid
+    curState = await prisma.gameState.findUnique({
+      where: { id: parseInt(prismaGameStateId, 10) },
+      include: prismaGameStateInclude,
+    });
+    // if not valid, make new state and create new cookie
+    if (!curState) {
+      curState = await prisma.gameState.create({
+        data: {},
+        include: prismaGameStateInclude,
+      });
+      redirect(`/createprismacookie?id=${curState.id}`);
+    }
+  }
+  // diff filter
+  let diffFilter = {};
    if (gameMode === '1') {
      diffFilter = { diffRating: 'ONE' };
    } else if (gameMode === '2') {
@@ -63,82 +89,108 @@ export default async function Play({searchParams}) {
    } else if (gameMode === 'St.Paul') {
      diffFilter = {campus: 'St.Paul'}
    }
-  /*
-    This runs when somebody GETs this page.
-    It just gets a random location from our REAL DATABASE NOW,
-    and stores it in the gameState "database".
-  */
-  if (!gameState.loc) {
-    const locCount = await prisma.photo.count({where: diffFilter});
-    // don't have more rounds than 5 or the amount of locations we have
-    if (gameState.round > locCount || gameState.round > 5) {
-      gameState.complete = true;
+  // check if guesses initialized
+  if (curState.guesses.length === 0) {
+    // get all locations that are in the filter
+    const possibleLocations = await prisma.photo.findMany({
+      where: {
+        OR: [
+          { campus: "WestBank" },
+          { campus: "EastBankCore" },
+          { campus: "EastBankOuter" },
+        ],
+        diffRating: diffFilter,
+      },
+      select: { id: true },
+    });
+    // get 5 random indexes of the possibleLocations array
+    const indexes = new Set();
+    while (indexes.size !== 5) {
+      indexes.add(Math.floor(Math.random() * possibleLocations.length));
     }
-    let newLocSkip = Math.floor(Math.random() * locCount);
-    // get actual loc from db
-    /* we are using findmany and skip instead of selecting by id specefically so that if we delete some, 
-    there's no chance of accidentally trying to get a deleted item */
-    let newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1, where: diffFilter });
-    // dont use the same location twice
-    while (gameState.allLocsUsed.some((loc) => loc.id === newLoc[0].id)) {
-      newLocSkip = Math.floor(Math.random() * locCount);
-      newLoc = await prisma.photo.findMany({ skip: newLocSkip, take: 1, where: diffFilter });
-      if (!newLoc[0]) {
-        // just in case i goofied something up
-        console.log("THIS SHOULDN'T HAPPEN");
-      }
-    }
-    gameState.loc = newLoc[0];
+    // create Guess items in the db
+    indexes.forEach(async (index) => {
+      await prisma.guess.create({
+        data: {
+          gameStateId: parseInt(prismaGameStateId, 10),
+          photoId: parseInt(possibleLocations[index].id, 10),
+        },
+      });
+    });
+    // update guess state after creating guesses
+    curState = await prisma.gameState.findUnique({
+      where: { id: parseInt(prismaGameStateId, 10) },
+      include: prismaGameStateInclude,
+    });
   }
+  // sanitize latitude and longitude data for guesses that havent been made yet
+  curState.guesses = curState.guesses.slice(0, 5);
+  curState.guesses.forEach((guess) => {
+    if (!guess.guessComplete) {
+      guess.photo.longitude = null;
+      guess.photo.latitude = null;
+    }
+  });
+  // inject current guess, completed guesses, last guess data for easier parsing on frontend
+  curState.curGuess = curState.guesses[curState.round - 1];
+  curState.completedGuesses = curState.guesses.filter(
+    (guess) => guess.guessComplete,
+  );
+  curState.lastGuess =
+    curState.completedGuesses[curState.completedGuesses.length - 1];
 
-  /*
-    This is a Server Action (you know because the first line of the function is "use server").
-      Learn more here: https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
-    Once compiled, this runs on the server when somebody sends a POST request 
-    (except we can have an unlimited amount of Server Actions on a page vs just one POST handler on a traditional Express server).
-    On our end, we can call the function anywhere (in an onClick handler in this case),
-    just like you would any other function,
-    and Next.js will automatically take care of making an API endpoint and converting to JSON and back.
-  */
   async function submitGuess(guess) {
     "use server";
-    const d = latlngToMeters(
-      guess[0],
-      guess[1],
-      gameState.loc.latitude,
-      gameState.loc.longitude,
-    );
-    gameState.lastGuessD = d;
-    gameState.allLocsUsed.push(gameState.loc);
-    // if guess is over 500 meters away, just make it 500 so we can calculate points easy
-    gameState.lastGuessPoints = (500 - (d > 500 ? 500 : d)) * 2;
-    gameState.lastGuessLat = guess[0];
-    gameState.lastGuessLng = guess[1];
-    gameState.allGuessesUsed.push([guess[0], guess[1]]);
-    gameState.lastGuessLng;
-    gameState.points += gameState.lastGuessPoints;
-    gameState.loc = null;
-    gameState.round += 1;
-    gameState.gameStarted = true;
-
-    /*
-      Now that we've updated the game state in our "database", 
-      we need a way to tell the client to "refresh".
-      revalidatePath does just that by telling the server to rerender the entire page,
-      running our code to get a new random location and sending that info to the client.
-    */
+    // don't let users submit twice
+    if (!curState.curGuess || !curState.curGuess?.guessComplete) {
+      // get full photo/location data
+      const photo = await prisma.photo.findUnique({
+        where: { id: curState.curGuess.photo.id },
+      });
+      // calculate distance from guess and points
+      const roundDistance = latlngToMeters(
+        guess[0],
+        guess[1],
+        photo.latitude,
+        photo.longitude,
+      );
+      const roundPoints =
+        (500 - (roundDistance > 500 ? 500 : roundDistance)) * 2;
+      // update in db
+      await prisma.guess.update({
+        where: { id: curState.curGuess.id },
+        data: {
+          guessComplete: true,
+          latitude: guess[0],
+          longitude: guess[1],
+          distance: roundDistance,
+          points: roundPoints,
+        },
+      });
+      await prisma.gameState.update({
+        where: { id: curState.id },
+        data: {
+          points: curState.points + roundPoints,
+          started: true,
+          round: curState.round + 1,
+          complete: curState.round === 5,
+        },
+      });
+    }
+    // make sure frontend has latest data
     revalidatePath("/play");
   }
 
+  async function clearGameState() {
+    "use server";
+    redirect("/playagain");
+  }
+
   return (
-    <>
-      <MapWrapper
-        mode="eastBank"
-        submitGuess={submitGuess}
-        gameState={gameState}
-      />
-      <DebugMenu justClear={false} />
-      <PreviewImage gameState={gameState} />
-    </>
+    <GameView
+      clearGameState={clearGameState}
+      submitGuess={submitGuess}
+      curState={curState}
+    />
   );
 }

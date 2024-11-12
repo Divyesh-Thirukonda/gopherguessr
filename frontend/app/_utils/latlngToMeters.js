@@ -12,10 +12,6 @@
     We import it when we need to calculate user scores.
 */
 
-// This prevents us from accidentally importing this in a Client Component.
-// We should be calculating this on the Server to prevent cheating.
-import "server-only";
-
 // taken from https://stackoverflow.com/questions/639695/how-to-convert-latitude-or-longitude-to-meters
 export default function latlngToMeters(lat1, lon1, lat2, lon2) {
   var R = 6378.137; // Radius of earth in KM
