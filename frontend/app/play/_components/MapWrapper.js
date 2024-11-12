@@ -51,14 +51,14 @@ export default function MapWrapper({
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
   );
-  const [resultsDialogOpen, setDialogOpen] = useState(false);
+  const [resultsDialogOpen, setResultsDialogOpen] = useState(false);
   const [enableKeybinds, setEnableKeybinds] = useState(false);
 
   // when round changes, reset marker position, and open resultdialog
   useEffect(() => {
     setGuess(viewStPaul ? stPaulCenter : minneapolisCenter);
     if (curState.started) {
-      setDialogOpen(true);
+      setResultsDialogOpen(true);
     }
   }, [curState.round]);
 
@@ -72,12 +72,12 @@ export default function MapWrapper({
           setEnableKeybinds(false);
         }
         if (resultsDialogOpen) {
-          setDialogOpen(false);
+          setResultsDialogOpen(false);
         }
       }
       if (key === "Escape") {
         if (resultsDialogOpen) {
-          setDialogOpen(false);
+          setResultsDialogOpen(false);
         }
       }
     }
@@ -167,7 +167,7 @@ export default function MapWrapper({
           {resultsDialogOpen && (
             <ResultsDialog
               curState={curState}
-              setDialogOpen={setDialogOpen}
+              setDialogOpen={setResultsDialogOpen}
               onContinue={onDialogContinue}
               clearGameState={clearGameState}
             />
