@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function GET(req) {
+  const url = new URL(req.url);
   const cookieStore = await cookies();
   cookieStore.delete("prismaGameStateId");
-  redirect("/play");
+  const gameMode = url.searchParams.get("gameMode");
+  redirect(`/play?gameMode=${gameMode}`);
 }

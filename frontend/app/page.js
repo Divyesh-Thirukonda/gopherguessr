@@ -54,7 +54,7 @@ export default function Home() {
       });
     }, 100);
 
-    router.push("/play?gameMode=3"); // Navigate to the play page
+    router.push("/play"); // Navigate to the play page
   };
 
   // Fetch contributors
