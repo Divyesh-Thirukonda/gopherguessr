@@ -38,7 +38,6 @@ async function saveAdminSession(data) {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
-  redirect("/admin/");
 }
 
 // for logout

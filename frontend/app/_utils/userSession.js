@@ -44,6 +44,9 @@ async function saveUserSession(data) {
 async function deleteUserSession() {
   const cookieStore = await cookies();
   cookieStore.delete("user_s");
+  if (cookieStore.has("admin_s")) {
+    cookieStore.delete("admin_s");
+  }
   redirect("/login");
 }
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { authorizeUserRoute } from "../_utils/userSession";
 
-export default async function AdminLayout({ children }) {
+export default async function ProfileLayout({ children }) {
   // redirects to /login if not logged in
   const { session } = await authorizeUserRoute();
 
