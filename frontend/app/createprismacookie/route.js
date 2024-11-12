@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 export async function GET(req) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
+  const gameMode = url.searchParams.get("gameMode");
   const cookieStore = await cookies();
   cookieStore.set("prismaGameStateId", id, {
     path: "/",
   });
-  redirect("/play");
+  redirect(`/play?gameMode=${gameMode}`);
 }

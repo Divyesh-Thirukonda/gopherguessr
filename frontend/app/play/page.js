@@ -62,7 +62,7 @@ export default async function Play({ searchParams }) {
       data: {},
       include: prismaGameStateInclude,
     });
-    redirect(`/createprismacookie?id=${curState.id}`);
+    redirect(`/createprismacookie?id=${curState.id}&gameMode=${gameMode}`);
   } else {
     // if cookie exists, make sure it's valid
     curState = await prisma.gameState.findUnique({
@@ -75,7 +75,7 @@ export default async function Play({ searchParams }) {
         data: {},
         include: prismaGameStateInclude,
       });
-      redirect(`/createprismacookie?id=${curState.id}`);
+      redirect(`/createprismacookie?id=${curState.id}&gameMode=${gameMode}`);
     }
   }
   let filter = {
@@ -86,6 +86,7 @@ export default async function Play({ searchParams }) {
     ],
   };
   if (gameMode === "1") {
+    console.log("YESSS");
     filter = { diffRating: "ONE" };
   } else if (gameMode === "2") {
     filter = { diffRating: "TWO" };
@@ -181,7 +182,7 @@ export default async function Play({ searchParams }) {
 
   async function clearGameState() {
     "use server";
-    redirect("/playagain");
+    redirect(`/playagain?gameMode=${gameMode}`);
   }
 
   return (
