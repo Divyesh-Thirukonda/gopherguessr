@@ -47,9 +47,9 @@ const prismaGameStateInclude = {
   },
 };
 
-export default async function Play() {
-  const params = new URLSearchParams(searchParams);
-  const gameMode = params.get('gameMode')
+export default async function Play({ searchParams }) {
+  const params = new URLSearchParams(await searchParams);
+  const gameMode = params.get("gameMode");
   const cookieStore = await cookies();
 
   let curState = null;
@@ -78,29 +78,27 @@ export default async function Play() {
       redirect(`/createprismacookie?id=${curState.id}`);
     }
   }
-  // diff filter
-  let diffFilter = {};
-   if (gameMode === '1') {
-     diffFilter = { diffRating: 'ONE' };
-   } else if (gameMode === '2') {
-     diffFilter = { diffRating: 'TWO' };
-   } else if (gameMode === '3') {
-     diffFilter = { diffRating: 'THREE' };
-   } else if (gameMode === 'St.Paul') {
-     diffFilter = {campus: 'St.Paul'}
-   }
+  let filter = {
+    OR: [
+      { campus: "WestBank" },
+      { campus: "EastBankCore" },
+      { campus: "EastBankOuter" },
+    ],
+  };
+  if (gameMode === "1") {
+    filter = { diffRating: "ONE" };
+  } else if (gameMode === "2") {
+    filter = { diffRating: "TWO" };
+  } else if (gameMode === "3") {
+    filter = { diffRating: "THREE" };
+  } else if (gameMode === "St.Paul") {
+    filter = { campus: "St.Paul" };
+  }
   // check if guesses initialized
   if (curState.guesses.length === 0) {
     // get all locations that are in the filter
     const possibleLocations = await prisma.photo.findMany({
-      where: {
-        OR: [
-          { campus: "WestBank" },
-          { campus: "EastBankCore" },
-          { campus: "EastBankOuter" },
-        ],
-        diffRating: diffFilter,
-      },
+      where: filter,
       select: { id: true },
     });
     // get 5 random indexes of the possibleLocations array
