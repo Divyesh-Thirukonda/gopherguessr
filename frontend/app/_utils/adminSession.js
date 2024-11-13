@@ -21,9 +21,9 @@ async function authorizeAdminRoute() {
   const session = await getAdminSession();
   // use email stored in session for now, use id later
   // this is secure enough for now as the session is encrypted
-  if (!session.email) redirect("/admin-auth");
+  if (!session.email) redirect("/login");
   // check expiry as well
-  if (session.expiry < DateTime.now().toSeconds()) redirect("/admin-auth");
+  if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
   return { session };
 }
 
@@ -38,13 +38,14 @@ async function saveAdminSession(data) {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
+  redirect("/profile");
 }
 
 // for logout
 async function deleteAdminSession() {
   const cookieStore = await cookies();
   cookieStore.delete("admin_s");
-  redirect("/admin/");
+  redirect("/login");
 }
 
 export {

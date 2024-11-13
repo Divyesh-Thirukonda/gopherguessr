@@ -19,6 +19,7 @@ async function createUser(payload) {
 
 export async function POST(req) {
   const cookieStore = await cookies();
+
   // 1. validate csrf token
   const csrfCookieToken = cookieStore.get("g_csrf_token").value;
   const formData = await req.formData();
@@ -29,6 +30,7 @@ export async function POST(req) {
       { status: 500 },
     );
   }
+
   // 2. verify token sent by client with google oauth server
   const credential = formData.get("credential");
   const client = new OAuth2Client();
@@ -37,23 +39,22 @@ export async function POST(req) {
     audience: process.env.NEXT_PUBLIC_GOOGLE_ADMIN,
   });
   const payload = ticket.getPayload();
+  if (payload.email_verified !== true) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   // 3. check if user exists in DB, add if not
   let existingUser = await prisma.user.findFirst({
     where: { email: payload.email },
   });
-
-  // 4. Find existing user, or create new one and record it
   if (!existingUser) {
     createUser(payload);
-    existingUser = await prisma.user.findFirst({
-      where: { email: payload.email },
-    });
   }
 
   // Save user session according to admin status
-  const data = { email: payload.email, isAdmin: Boolean(existingUser.isAdmin) };
-  if (existingUser.isAdmin) {
-    await saveAdminSession(data);
+  if (existingUser && existingUser.isAdmin) {
+    await saveAdminSession({ email: payload.email, isAdmin: true });
+  } else {
+    await saveUserSession({ email: payload.email, isAdmin: false });
   }
-  await saveUserSession(data);
 }

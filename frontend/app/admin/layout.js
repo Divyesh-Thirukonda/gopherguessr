@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }) {
               my profile
             </button>
           </form>
-          <form action="/admin-auth/logout" method="POST">
+          <form action="/login/logout" method="POST">
             <button type="submit" className="underline">
               logout
             </button>
