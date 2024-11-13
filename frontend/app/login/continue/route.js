@@ -4,10 +4,21 @@
 import { OAuth2Client } from "google-auth-library";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { saveAdminSession } from "@/app/_utils/adminSession";
+import { saveUserSession } from "@/app/_utils/userSession";
+import prisma from "@/app/_utils/db";
+
+async function createUser(payload) {
+  const user = await prisma.user.create({
+    data: {
+      name: payload.name,
+      email: payload.email,
+    },
+  });
+}
 
 export async function POST(req) {
   const cookieStore = await cookies();
+
   // 1. validate csrf token
   const csrfCookieToken = cookieStore.get("g_csrf_token").value;
   const formData = await req.formData();
@@ -18,6 +29,7 @@ export async function POST(req) {
       { status: 500 },
     );
   }
+
   // 2. verify token sent by client with google oauth server
   const credential = formData.get("credential");
   const client = new OAuth2Client();
@@ -26,15 +38,23 @@ export async function POST(req) {
     audience: process.env.NEXT_PUBLIC_GOOGLE_ADMIN,
   });
   const payload = ticket.getPayload();
-  // 3. make sure the user's email is verified and is in the admin email list
-  const adminEmailsCSV = process.env.ADMIN_EMAILS;
-  const adminEmails = adminEmailsCSV.split(",");
-  if (payload.email_verified !== true || !adminEmails.includes(payload.email)) {
+  if (payload.email_verified !== true) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  // if passed the 3 steps, store the user's email in the session data
-  // this redirects to /admin once finished
-  await saveAdminSession({
-    email: payload.email,
+
+  // 3. check if user exists in DB, add if not
+  let existingUser = await prisma.user.findFirst({
+    where: { email: payload.email },
   });
+
+  // 4. Record admin status
+  let isAdmin = false;
+  if (!existingUser) {
+    createUser(payload);
+  } else {
+    isAdmin = existingUser.isAdmin;
+  }
+
+  // Save user session according to admin status
+  await saveUserSession({ email: payload.email, isAdmin: isAdmin });
 }

@@ -7,50 +7,63 @@ import { redirect } from "next/navigation";
 import { DateTime } from "luxon";
 
 // gets encrypted data from the session stored in the cookie
-async function getAdminSession() {
+async function getUserSession() {
   const cookieStore = await cookies();
   const session = await getIronSession(cookieStore, {
     password: process.env.SESSION_SECRET,
-    cookieName: "admin_s",
+    cookieName: "user_s",
   });
   return session;
 }
 
-// use on all pages that need to be admin only
+async function authorizeUserRoute() {
+  const session = await getUserSession();
+
+  if (!session.email) redirect("/login");
+
+  // check expiry as well
+  if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
+  return { session };
+}
+
 async function authorizeAdminRoute() {
-  const session = await getAdminSession();
+  const session = await getUserSession();
   // use email stored in session for now, use id later
   // this is secure enough for now as the session is encrypted
-  if (!session.email) redirect("/admin-auth");
+  if (!session.email) redirect("/login");
   // check expiry as well
-  if (session.expiry < DateTime.now().toSeconds()) redirect("/admin-auth");
+  if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
+
+  if (!session.isAdmin) redirect("/login");
   return { session };
 }
 
 // for login
-async function saveAdminSession(data) {
+async function saveUserSession(data) {
   const cookieStore = await cookies();
   const sealed = await sealData(
     { ...data, expiry: DateTime.now().plus({ days: 7 }).toSeconds() },
     { password: process.env.SESSION_SECRET },
   );
-  cookieStore.set("admin_s", sealed, {
+  cookieStore.set("user_s", sealed, {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
-  redirect("/admin/");
+  redirect("/profile"); // May be changed to profile, post, etc.  Do not know yet
 }
 
 // for logout
-async function deleteAdminSession() {
+async function deleteUserSession() {
   const cookieStore = await cookies();
-  cookieStore.delete("admin_s");
-  redirect("/admin/");
+  cookieStore.delete("user_s");
+  cookieStore.delete("prismaGameStateId");
+  redirect("/login");
 }
 
 export {
-  getAdminSession,
+  getUserSession,
+  saveUserSession,
+  deleteUserSession,
+  authorizeUserRoute,
   authorizeAdminRoute,
-  saveAdminSession,
-  deleteAdminSession,
 };

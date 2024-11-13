@@ -119,10 +119,10 @@ export default function Home() {
               whileHover={{ scale: 1.2 }}
             >
               <Link
-                href="/admin"
+                href="/login"
                 className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
-                Admin
+                My Profile
                 <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
               </Link>
             </motion.div>

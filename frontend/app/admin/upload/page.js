@@ -8,7 +8,7 @@ import prisma from "@/app/_utils/db";
 import UploadForm from "./_components/UploadForm";
 import heicConvert from "heic-convert";
 import { DiffEnum, CampusEnum } from "@prisma/client";
-import { authorizeAdminRoute } from "@/app/_utils/adminSession";
+import { authorizeAdminRoute } from "@/app/_utils/userSession";
 
 export default async function Uploader() {
   // this runs on the server before rendering the page
