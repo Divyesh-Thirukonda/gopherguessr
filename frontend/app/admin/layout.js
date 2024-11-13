@@ -12,16 +12,21 @@ export default async function AdminLayout({ children }) {
   return (
     <>
       <header className="flex flex-wrap items-center justify-between bg-gray-50 p-3">
-        <Link className="font-medium underline" href="/admin">
-          Admin
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link className="font-medium underline" href="/profile">
+            profile
+          </Link>
+          <Link className="font-medium underline" href="/">
+            home
+          </Link>
+        </div>
         <div className="flex items-center gap-3">
           {session.email}
-          <form action="/profile">
-            <button type="submit" className="underline">
-              my profile
-            </button>
-          </form>
+          {session.isAdmin && (
+            <Link className="font-medium underline" href="/admin">
+              admin
+            </Link>
+          )}
           <form action="/login/logout" method="POST">
             <button type="submit" className="underline">
               logout
