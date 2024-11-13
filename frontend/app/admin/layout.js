@@ -5,7 +5,7 @@ import Link from "next/link";
 import { authorizeAdminRoute } from "../_utils/adminSession";
 
 export default async function AdminLayout({ children }) {
-  // redirects to /admin-auth if not logged in
+  // redirects to /login if not logged in
   // runs on server
   const { session } = await authorizeAdminRoute();
 
