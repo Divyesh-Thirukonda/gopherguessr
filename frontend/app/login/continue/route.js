@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { saveUserSession } from "@/app/_utils/userSession";
 import prisma from "@/app/_utils/db";
-import { saveAdminSession } from "@/app/_utils/adminSession";
 
 async function createUser(payload) {
   const user = await prisma.user.create({

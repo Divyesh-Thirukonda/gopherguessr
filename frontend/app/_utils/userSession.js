@@ -56,6 +56,7 @@ async function saveUserSession(data) {
 async function deleteUserSession() {
   const cookieStore = await cookies();
   cookieStore.delete("user_s");
+  cookieStore.delete("prismaGameStateId");
   redirect("/login");
 }
 
