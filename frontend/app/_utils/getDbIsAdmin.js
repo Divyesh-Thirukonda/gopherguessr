@@ -11,10 +11,7 @@
     This is the function that returns the current user's isAdmin status in the database
 */
 
-"use server";
-
-import { redirect } from "next/navigation";
-import { authorizeUserRoute, deleteUserSession } from "./userSession";
+import { authorizeUserRoute } from "./userSession";
 
 export default async function getDbIsAdmin() {
   const { session } = await authorizeUserRoute();
@@ -22,6 +19,6 @@ export default async function getDbIsAdmin() {
     where: { email: session.email },
   });
 
-  // Retrieve DB isAdmin value for given user. No redirect because of wide use case
+  // Retrieve DB isAdmin value for given user. No redirect to widen use case
   return userInDB.isAdmin;
 }
