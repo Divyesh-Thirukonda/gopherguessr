@@ -23,7 +23,8 @@ export default async function Uploader() {
     await authorizeAdminRoute();
 
     // verify isAdmin status in DB for all actions modifying database
-    if (!getDbIsAdmin()) {
+    const adminVerified = await getDbIsAdmin();
+    if (!adminVerified) {
       throw Error("Sorry. You must have admin authorization to upload images.");
     }
 

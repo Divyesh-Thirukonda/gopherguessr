@@ -11,6 +11,11 @@
     This is the function that returns the current user's isAdmin status in the database
 */
 
+"use server";
+
+import { redirect } from "next/navigation";
+import { authorizeUserRoute, deleteUserSession } from "./userSession";
+
 export default async function getDbIsAdmin() {
   const { session } = await authorizeUserRoute();
   const userInDB = await prisma.user.findFirst({
