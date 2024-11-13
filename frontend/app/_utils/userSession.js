@@ -26,6 +26,18 @@ async function authorizeUserRoute() {
   return { session };
 }
 
+async function authorizeAdminRoute() {
+  const session = await getUserSession();
+  // use email stored in session for now, use id later
+  // this is secure enough for now as the session is encrypted
+  if (!session.email) redirect("/login");
+  // check expiry as well
+  if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
+
+  if (!session.isAdmin) redirect("/login");
+  return { session };
+}
+
 // for login
 async function saveUserSession(data) {
   const cookieStore = await cookies();
@@ -44,9 +56,6 @@ async function saveUserSession(data) {
 async function deleteUserSession() {
   const cookieStore = await cookies();
   cookieStore.delete("user_s");
-  if (cookieStore.has("admin_s")) {
-    cookieStore.delete("admin_s");
-  }
   redirect("/login");
 }
 
@@ -55,4 +64,5 @@ export {
   saveUserSession,
   deleteUserSession,
   authorizeUserRoute,
+  authorizeAdminRoute,
 };

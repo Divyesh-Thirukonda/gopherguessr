@@ -47,14 +47,15 @@ export async function POST(req) {
   let existingUser = await prisma.user.findFirst({
     where: { email: payload.email },
   });
+
+  // 4. Record admin status
+  let isAdmin = false;
   if (!existingUser) {
     createUser(payload);
+  } else {
+    isAdmin = existingUser.isAdmin;
   }
 
   // Save user session according to admin status
-  if (existingUser && existingUser.isAdmin) {
-    await saveAdminSession({ email: payload.email, isAdmin: true });
-  } else {
-    await saveUserSession({ email: payload.email, isAdmin: false });
-  }
+  await saveUserSession({ email: payload.email, isAdmin: isAdmin });
 }
