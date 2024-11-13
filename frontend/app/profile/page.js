@@ -7,10 +7,12 @@ export default async function ProfileIndex() {
     where: { email: session.email },
   });
 
+  const name = userInDB ? userInDB.name : "";
+
   return (
     <main>
       <div>
-        <p>{"Thanks for joining Gopher Guessr, " + userInDB.name + "!"}</p>
+        <p>{"Thanks for joining Gopher Guessr, " + name + "!"}</p>
       </div>
     </main>
   );
