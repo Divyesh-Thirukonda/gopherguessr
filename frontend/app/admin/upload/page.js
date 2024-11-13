@@ -9,6 +9,7 @@ import UploadForm from "./_components/UploadForm";
 import heicConvert from "heic-convert";
 import { DiffEnum, CampusEnum } from "@prisma/client";
 import { authorizeAdminRoute } from "@/app/_utils/userSession";
+import getDbIsAdmin from "@/app/_utils/getDbIsAdmin";
 
 export default async function Uploader() {
   // this runs on the server before rendering the page
@@ -20,6 +21,12 @@ export default async function Uploader() {
     "use server";
     // check admmin auth, redirects if not authorized
     await authorizeAdminRoute();
+
+    // verify isAdmin status in DB for all actions modifying database
+    const adminVerified = await getDbIsAdmin();
+    if (!adminVerified) {
+      throw Error("Sorry. You must have admin authorization to upload images.");
+    }
 
     const file = formData.get("file");
     let buffer = await file.arrayBuffer();
