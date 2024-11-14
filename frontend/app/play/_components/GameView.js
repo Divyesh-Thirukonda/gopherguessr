@@ -15,7 +15,6 @@ function getFullUrl(id) {
   return `https://utfs.io/a/e9dxf42twp/${id}`;
 }
 
-
 export default function GameView({ submitGuess, clearGameState, curState }) {
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -36,14 +35,11 @@ export default function GameView({ submitGuess, clearGameState, curState }) {
     requestAnimationFrame(increment);
   }, [curState.points]);
 
-
-
-
   const getStatsMenu = () => {
     if (!viewMap) {
       return (
-        <div className="pointer-events-none absolute top-14 left-0 right-0 z-[1200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
-          <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
+        <div className="absolute left-0 right-0 top-4 z-[1200] mx-4 flex flex-col justify-center">
+          <div className="h-6 overflow-hidden rounded-full border border-gray-400 bg-gray-900 bg-opacity-50 backdrop-blur">
             <div
               className="absolute left-0 top-0 z-[1300] h-6 rounded-full bg-rose-600 shadow-lg transition-[width] duration-700 ease-out"
               style={{ width: `${progress}%` }}
@@ -61,28 +57,15 @@ export default function GameView({ submitGuess, clearGameState, curState }) {
             {Array.from({ length: 4 }, (_, i) => (
               <div
                 key={i}
-                className="absolute top-0 z-[1250] h-6 border-r border-slate-200 opacity-50"
+                className="absolute top-0 z-[1250] h-6 border-r border-gray-400 opacity-50"
                 style={{ left: `${(i + 1) * 20}%` }}
               >
                 {/* <span className="text-white absolute ml-1">{`${(i + 1) * 1000}`}</span> */}
               </div>
             ))}
-
-            {/* Text below the triangle */}
-            <div
-              className="absolute z-[1260] px-4 text-center font-semibold text-red-700"
-              style={{
-                left: `50%`,
-                transform: "translateX(-50%)",
-                bottom: "-5vh",
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-                borderRadius: "10px",
-                backdropFilter: "blur(10px)",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              Round {curState.round} / 5
-            </div>
+          </div>
+          <div className="mx-auto mt-3 inline-block rounded-full border border-gray-400 bg-gray-900 bg-opacity-50 px-4 text-center font-semibold text-white backdrop-blur">
+            Round {curState.round} / 5
           </div>
         </div>
       );

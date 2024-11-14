@@ -2,7 +2,7 @@
 // still need to check authentication on every server action!!
 
 import Link from "next/link";
-import { authorizeUserRoute, authorizeAdminRoute } from "../_utils/userSession";
+import { authorizeAdminRoute } from "../_utils/userSession";
 
 export default async function AdminLayout({ children }) {
   // redirects to /login if not logged in

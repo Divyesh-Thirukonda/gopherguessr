@@ -18,11 +18,12 @@ async function getUserSession() {
 
 async function authorizeUserRoute() {
   const session = await getUserSession();
-
+  // use email stored in session for now, use id later
+  // this is secure enough for now as the session is encrypted
   if (!session.email) redirect("/login");
-
   // check expiry as well
   if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
+
   return { session };
 }
 
@@ -33,9 +34,27 @@ async function authorizeAdminRoute() {
   if (!session.email) redirect("/login");
   // check expiry as well
   if (session.expiry < DateTime.now().toSeconds()) redirect("/login");
-
+  // make sure they are admin
   if (!session.isAdmin) redirect("/login");
+
   return { session };
+}
+
+// for server actions in admin to double verify
+export default async function authorizeAdminAction() {
+  const { session } = await authorizeUserRoute();
+  // make sure the user exists in the database before allowing them to do admin actions
+  const userInDB = await prisma.user.findFirst({
+    where: { email: session.email },
+  });
+
+  if (!userInDB || !userInDB.isAdmin) {
+    // log the user out because something goofy is def happening if this runs
+    await deleteUserSession();
+  }
+
+  // just return the user data i guess
+  return userInDB;
 }
 
 // for login
@@ -66,4 +85,5 @@ export {
   deleteUserSession,
   authorizeUserRoute,
   authorizeAdminRoute,
+  authorizeAdminAction,
 };

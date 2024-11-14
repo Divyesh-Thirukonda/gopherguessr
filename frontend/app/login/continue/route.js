@@ -50,7 +50,7 @@ export async function POST(req) {
   // 4. Record admin status
   let isAdmin = false;
   if (!existingUser) {
-    createUser(payload);
+    await createUser(payload);
   } else {
     isAdmin = existingUser.isAdmin;
   }
