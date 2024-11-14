@@ -24,8 +24,9 @@ import { revalidatePath } from "next/cache";
 import latlngToMeters from "../_utils/latlngToMeters";
 import prisma from "../_utils/db";
 import GameView from "./_components/GameView";
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { getIronSession, sealData } from "iron-session";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -47,37 +48,52 @@ const prismaGameStateInclude = {
   },
 };
 
+function getFullUrl(id) {
+  return `https://utfs.io/a/e9dxf42twp/${id}`;
+}
+
 export default async function Play({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const gameMode = params.get("gameMode");
   const cookieStore = await cookies();
 
+  let { id: gameStateId } = await getIronSession(cookieStore, {
+    password: process.env.SESSION_SECRET,
+    cookieName: "game_s",
+  });
+
   let curState = null;
-  // TODO: this should be encrypted in the future to prevent people from playing games that are not their own
-  const prismaCookie = cookieStore.get("prismaGameStateId");
-  const prismaGameStateId = prismaCookie?.value;
-  if (!prismaCookie) {
-    // create db state if no cookie
-    curState = await prisma.gameState.create({
-      data: {},
-      include: prismaGameStateInclude,
-    });
-    redirect(`/createprismacookie?id=${curState.id}&gameMode=${gameMode}`);
-  } else {
-    // if cookie exists, make sure it's valid
+  if (gameStateId) {
+    // check if game state is in the db
     curState = await prisma.gameState.findUnique({
-      where: { id: parseInt(prismaGameStateId, 10) },
+      where: { id: parseInt(gameStateId, 10) },
       include: prismaGameStateInclude,
     });
-    // if not valid, make new state and create new cookie
     if (!curState) {
+      // if not in db, create game state
       curState = await prisma.gameState.create({
         data: {},
         include: prismaGameStateInclude,
       });
-      redirect(`/createprismacookie?id=${curState.id}&gameMode=${gameMode}`);
+      gameStateId = curState.id;
     }
+  } else {
+    // if no session stored in browser, create game state
+    curState = await prisma.gameState.create({
+      data: {},
+      include: prismaGameStateInclude,
+    });
+    gameStateId = curState.id;
   }
+
+  // to persist state in browser as session cookie
+  const sealedSession = await sealData(
+    { id: curState.id },
+    {
+      password: process.env.SESSION_SECRET,
+    },
+  );
+
   let filter = {
     OR: [
       { campus: "WestBank" },
@@ -111,14 +127,14 @@ export default async function Play({ searchParams }) {
     indexes.forEach(async (index) => {
       await prisma.guess.create({
         data: {
-          gameStateId: parseInt(prismaGameStateId, 10),
+          gameStateId: parseInt(gameStateId, 10),
           photoId: parseInt(possibleLocations[index].id, 10),
         },
       });
     });
     // update guess state after creating guesses
     curState = await prisma.gameState.findUnique({
-      where: { id: parseInt(prismaGameStateId, 10) },
+      where: { id: parseInt(gameStateId, 10) },
       include: prismaGameStateInclude,
     });
   }
@@ -137,6 +153,16 @@ export default async function Play({ searchParams }) {
   );
   curState.lastGuess =
     curState.completedGuesses[curState.completedGuesses.length - 1];
+
+  // SERVER ACTION
+  async function persistGameState() {
+    "use server";
+    const cookieStore = await cookies();
+    // persist as cookie
+    cookieStore.set("game_s", sealedSession, {
+      path: "/",
+    });
+  }
 
   // SERVER ACTION
   async function submitGuess(guess) {
@@ -176,25 +202,41 @@ export default async function Play({ searchParams }) {
           complete: curState.round === 5,
         },
       });
+      // make sure frontend has latest data
+      revalidatePath("/play");
     }
-    // make sure frontend has latest data
-    revalidatePath("/play");
   }
 
   // SERVER ACTION
   async function clearGameState() {
     "use server";
     const cookieStore = await cookies();
-    cookieStore.delete("prismaGameStateId");
-    revalidatePath("/play");
-    redirect(`/play?gameMode=${gameMode}`);
+    cookieStore.delete("game_s");
   }
 
   return (
-    <GameView
-      clearGameState={clearGameState}
-      submitGuess={submitGuess}
-      curState={curState}
-    />
+    <>
+      <div className="pointer-events-none invisible fixed inset-0 h-dvh w-dvw">
+        {/* preloading images for better perf */}
+        {curState.guesses.map((guess) => (
+          <div className="absolute inset-0">
+            <Image
+              fill
+              src={getFullUrl(guess.photo.imageId)}
+              alt=""
+              className="h-full w-full object-contain object-center"
+              loading="eager"
+            />
+          </div>
+        ))}
+      </div>
+      <GameView
+        clearGameState={clearGameState}
+        submitGuess={submitGuess}
+        curState={curState}
+        key={curState.id}
+        persistGameState={persistGameState}
+      />
+    </>
   );
 }

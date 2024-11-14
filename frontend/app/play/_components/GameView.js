@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import * as motion from "framer-motion/client";
 import dynamicImport from "next/dynamic";
 import { MapTrifold } from "@phosphor-icons/react";
+import Loading from "@/app/_components/Loading";
 // import StatsMenu from "./StatsMenu";
 
 const MapWrapper = dynamicImport(() => import("./MapWrapper"), {
@@ -15,9 +16,22 @@ function getFullUrl(id) {
   return `https://utfs.io/a/e9dxf42twp/${id}`;
 }
 
-export default function GameView({ submitGuess, clearGameState, curState }) {
+export default function GameView({
+  submitGuess,
+  clearGameState,
+  curState,
+  persistGameState,
+}) {
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [ready, setReady] = useState(false);
+
+  // trigger server action to save cookie on mount
+  useEffect(() => {
+    persistGameState();
+    const timeout = setTimeout(() => setReady(true), 500);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const totalPoints = 5000;
   const maxPointsPerRound = 1000;
@@ -86,6 +100,11 @@ export default function GameView({ submitGuess, clearGameState, curState }) {
       );
     }
   };
+
+  // allow for a little time to prefetch images
+  if (!ready) {
+    return <Loading />;
+  }
 
   return (
     <div className="fixed inset-0">
