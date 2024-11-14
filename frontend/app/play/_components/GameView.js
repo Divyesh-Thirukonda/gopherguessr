@@ -88,7 +88,7 @@ export default function GameView({ submitGuess, clearGameState, curState }) {
   };
 
   return (
-    <>
+    <div className="fixed inset-0">
       <div className="relative flex h-dvh w-dvw items-center justify-center bg-gray-500">
         {!curState.complete && (
           <>
@@ -120,6 +120,6 @@ export default function GameView({ submitGuess, clearGameState, curState }) {
           curState={curState}
         />
       </div>
-    </>
+    </div>
   );
 }
