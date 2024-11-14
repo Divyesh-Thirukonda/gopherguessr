@@ -138,6 +138,7 @@ export default async function Play({ searchParams }) {
   curState.lastGuess =
     curState.completedGuesses[curState.completedGuesses.length - 1];
 
+  // SERVER ACTION
   async function submitGuess(guess) {
     "use server";
     // don't let users submit twice
@@ -180,9 +181,13 @@ export default async function Play({ searchParams }) {
     revalidatePath("/play");
   }
 
+  // SERVER ACTION
   async function clearGameState() {
     "use server";
-    redirect(`/playagain?gameMode=${gameMode}`);
+    const cookieStore = await cookies();
+    cookieStore.delete("prismaGameStateId");
+    revalidatePath("/play");
+    redirect(`/play?gameMode=${gameMode}`);
   }
 
   return (
