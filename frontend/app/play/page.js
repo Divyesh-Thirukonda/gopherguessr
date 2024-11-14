@@ -219,7 +219,7 @@ export default async function Play({ searchParams }) {
       <div className="pointer-events-none invisible fixed inset-0 h-dvh w-dvw">
         {/* preloading images for better perf */}
         {curState.guesses.map((guess) => (
-          <div className="absolute inset-0">
+          <div className="absolute inset-0" key={guess.photo.imageId}>
             <Image
               fill
               src={getFullUrl(guess.photo.imageId)}
