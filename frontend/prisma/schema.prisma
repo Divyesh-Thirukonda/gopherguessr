@@ -35,8 +35,8 @@ model Photo {
   indoors Boolean?
   isApproved Boolean @default(true)
   uploader User @relation(fields: [uploaderId], references: [id])
-
   uploaderId Int
+  guesses Guess[]
 }
 
 model User {
@@ -44,19 +44,31 @@ model User {
   name     String
   email    String  @unique
   photos   Photo[]
+  isAdmin  Boolean @default(false)
 }
 
 model GameState {
-  id                          Int           @id @default(autoincrement()) 
-  createdAt                   DateTime      @default(now())
-  updatedAt                   DateTime      @updatedAt
-  locX                        Float
-  locY                        Float
-  photosUsed                  Int[]
-  previousGuessAccuracy       Int
-  previousGuessPoints         Int
-  rounds                      Int
-  totalPoints                 Int
-  complete                    Boolean
+  id Int @id @default(autoincrement()) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  guesses Guess[]
+  round Int @default(1)
+  points Int @default(0)
+  started Boolean @default(false)
+  complete Boolean @default(false)
 }
 
+model Guess {
+  id Int @id @default(autoincrement()) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  gameStateId Int
+  gameState GameState @relation(fields: [gameStateId], references: [id])
+  photoId Int
+  photo Photo @relation(fields: [photoId], references: [id])
+  guessComplete Boolean @default(false)
+  latitude Float?
+  longitude Float?
+  distance Float?
+  points Float?
+}

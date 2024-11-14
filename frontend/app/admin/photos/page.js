@@ -4,7 +4,7 @@
   loading the info of all our photos from our database and passing it to the Map client component
 */
 
-import prisma from "../_utils/db";
+import prisma from "@/app/_utils/db";
 import MapView from "./_components/MapView";
 
 export default async function PhotosIndex() {

@@ -115,14 +115,14 @@ export default function Home() {
               </a>
             </motion.div>
             <motion.div
-              className="mx-auto mt-4 w-48 rounded-full bg-rose-600"
+              className="mx-auto mt-4 inline-block rounded-full bg-rose-600"
               whileHover={{ scale: 1.2 }}
             >
               <Link
-                href="/dev"
-                className="flex items-center justify-center px-4 py-2 text-2xl font-medium text-white"
+                href="/login"
+                className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
-                Dev Tools
+                Login
                 <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
               </Link>
             </motion.div>

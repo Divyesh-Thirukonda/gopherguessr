@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "GameState" ALTER COLUMN "complete" SET DEFAULT false,
+ALTER COLUMN "points" SET DEFAULT 0,
+ALTER COLUMN "round" SET DEFAULT 1,
+ALTER COLUMN "started" SET DEFAULT false;

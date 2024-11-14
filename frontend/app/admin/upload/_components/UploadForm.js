@@ -4,7 +4,7 @@
 
 import { useFormStatus } from "react-dom";
 
-export default function UploadForm({ uploaders }) {
+export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
   const { pending } = useFormStatus();
 
   // show uploading... if the form is currently submitting
@@ -23,6 +23,45 @@ export default function UploadForm({ uploaders }) {
         type="text"
         className="mb-3 rounded border-gray-300"
       />
+      <label htmlFor="difficulty" className="mb-1 text-lg font-medium">
+        Difficulty
+      </label>
+      <select
+        name="difficulty"
+        id="difficulty"
+        className="mb-3 rounded border-gray-300"
+      >
+        {Object.keys(DiffEnum).map((key) => (
+          <option value={DiffEnum[key]} key={key}>
+            {DiffEnum[key]}
+          </option>
+        ))}
+      </select>
+      <label htmlFor="difficulty" className="mb-1 text-lg font-medium">
+        Campus
+      </label>
+      <select
+        name="campus"
+        id="campus"
+        className="mb-3 rounded border-gray-300"
+      >
+        {Object.keys(CampusEnum).map((key) => (
+          <option value={CampusEnum[key]} key={key}>
+            {CampusEnum[key]}
+          </option>
+        ))}
+      </select>
+      <label htmlFor="indoors" className="mb-1 text-lg font-medium">
+        Indoors
+      </label>
+      <select
+        name="indoors"
+        id="indoors"
+        className="mb-3 rounded border-gray-300"
+      >
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
       <label htmlFor="uploaderId" className="mb-1 text-lg font-medium">
         Photo Source
       </label>
@@ -49,15 +88,6 @@ export default function UploadForm({ uploaders }) {
           required
         />
       </div>
-      <label htmlFor="password" className="mb-1 text-lg font-medium">
-        Password (in the Discord)
-      </label>
-      <input
-        name="password"
-        id="password"
-        type="password"
-        className="mb-3 rounded border-gray-300"
-      />
       <button type="submit" className="rounded bg-rose-600 p-3 text-white">
         Upload
       </button>
