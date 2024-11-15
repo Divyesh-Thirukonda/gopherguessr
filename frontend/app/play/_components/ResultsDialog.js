@@ -68,7 +68,24 @@ export default function ResultsDialog({
             className="absolute left-0 top-0 z-[1300] h-6 rounded-full bg-rose-600 shadow-lg transition-[width] duration-700 ease-out"
             style={{ width: `${progress}%` }}
           >
-            {curState.points > 50 && (
+            {/* UNCOMMENT THE BELOW OUT IF YOU WANT MORE DETAIL */}
+            {/* {(curState.points > 50 && curState.points < 500) && (
+              <div
+                className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
+                style={{ right: "10px" }}
+              >
+                +{curState.lastGuess.points} points
+              </div>
+            )}
+            {(curState.points >= 500) && (
+              <div
+                className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
+                style={{ right: "10px" }}
+              >
+                +{curState.lastGuess.points} points ({curState.lastGuess.distance}m away)
+              </div>
+            )} */}
+            {(curState.points > 50) && (
               <div
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}

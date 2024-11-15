@@ -173,10 +173,10 @@ export default function MapWrapper({
             />
           )}
         </div>
-        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
+        {/* <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
           <StatsMenu curState={curState} />
-        </div>
-        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-center">
+        </div> */}
+        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center w-screen md:col-span-2 md:row-span-3 md:justify-center lg:min-h-screen md:w-full">
           {getPreviewImage()}
         </div>
       </div>
