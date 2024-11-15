@@ -45,6 +45,7 @@ model User {
   email    String  @unique
   photos   Photo[]
   isAdmin  Boolean @default(false)
+  highScore Int @default(0)
 }
 
 model GameState {
