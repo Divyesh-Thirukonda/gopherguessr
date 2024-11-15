@@ -102,14 +102,13 @@ export default async function Play({ searchParams }) {
     ],
   };
   if (gameMode === "1") {
-    console.log("YESSS");
     filter = { diffRating: "ONE" };
   } else if (gameMode === "2") {
     filter = { diffRating: "TWO" };
   } else if (gameMode === "3") {
     filter = { diffRating: "THREE" };
   } else if (gameMode === "St.Paul") {
-    filter = { campus: "St.Paul" };
+    filter = { campus: "StPaul" };
   }
   // check if guesses initialized
   if (curState.guesses.length === 0) {

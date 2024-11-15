@@ -31,6 +31,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [blurAmount, setBlurAmount] = useState(0);
   const [isMounted, setIsMounted] = useState(false); // Track component mount status
+  const [gameMode, setGameMode] = useState("default"); // Selected game mode
   const router = useRouter(); // Updated useRouter hook from next/navigation
 
   useEffect(() => {
@@ -54,7 +55,11 @@ export default function Home() {
       });
     }, 100);
 
-    router.push("/play"); // Navigate to the play page
+    router.push(`/play?gameMode=${gameMode}`); // Navigate to the play page
+  };
+
+  const handleGameModeChange = (event) => {
+    setGameMode(event.target.value);
   };
 
   // Fetch contributors
@@ -114,6 +119,27 @@ export default function Home() {
                 <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
               </a>
             </motion.div>
+
+            <div className="mt-4">
+              <label htmlFor="gameMode" className="text-white mr-2">
+                Game Mode:
+              </label>
+              <select
+                id="gameMode"
+                value={gameMode}
+                onChange={handleGameModeChange}
+                className="rounded px-4 py-2 pr-8 text-base"
+              >
+                <option value="default">Select a mode</option>
+                <option value="1">Easy</option>
+                <option value="2">Medium</option>
+                <option value="3">Hard</option>
+                <option value="St.Paul">St.Paul</option>
+              </select>
+            </div>
+
+
+
             <motion.div
               className="mx-auto mt-4 inline-block rounded-full bg-rose-600"
               whileHover={{ scale: 1.2 }}
