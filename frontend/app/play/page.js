@@ -27,6 +27,8 @@ import GameView from "./_components/GameView";
 import { cookies } from "next/headers";
 import { getIronSession, sealData } from "iron-session";
 import Image from "next/image";
+import { getUserSession } from "../_utils/userSession";
+import { DateTime } from "luxon";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +64,19 @@ export default async function Play({ searchParams }) {
     cookieName: "game_s",
   });
 
+  // check if user is logged in and get user id if they are
+  let userId = 29; // default user id
+  const session = await getUserSession();
+  // make sure not expired
+  if (session.expiry > DateTime.now().toSeconds()) {
+    const userInDB = await prisma.user.findFirst({
+      where: { email: session.email },
+    });
+    if (userInDB) {
+      userId = userInDB.id;
+    }
+  }
+
   let curState = null;
   if (gameStateId) {
     // check if game state is in the db
@@ -72,7 +87,9 @@ export default async function Play({ searchParams }) {
     if (!curState) {
       // if not in db, create game state
       curState = await prisma.gameState.create({
-        data: {},
+        data: {
+          userId,
+        },
         include: prismaGameStateInclude,
       });
       gameStateId = curState.id;
@@ -80,7 +97,9 @@ export default async function Play({ searchParams }) {
   } else {
     // if no session stored in browser, create game state
     curState = await prisma.gameState.create({
-      data: {},
+      data: {
+        userId,
+      },
       include: prismaGameStateInclude,
     });
     gameStateId = curState.id;

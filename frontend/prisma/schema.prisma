@@ -46,6 +46,7 @@ model User {
   photos   Photo[]
   isAdmin  Boolean @default(false)
   highScore Int @default(0)
+  games GameState[]
 }
 
 model GameState {
@@ -57,6 +58,8 @@ model GameState {
   points Int @default(0)
   started Boolean @default(false)
   complete Boolean @default(false)
+  user User @relation(fields: [userId], references: [id])
+  userId Int @default(29) // default user
 }
 
 model Guess {

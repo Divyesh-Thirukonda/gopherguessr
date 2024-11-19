@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "GameState" ADD COLUMN     "userId" INTEGER NOT NULL DEFAULT 29;
+
+-- AddForeignKey
+ALTER TABLE "GameState" ADD CONSTRAINT "GameState_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
