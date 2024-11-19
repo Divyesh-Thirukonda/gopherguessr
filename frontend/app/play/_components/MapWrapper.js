@@ -97,9 +97,7 @@ export default function MapWrapper({
       return (
         <Image
           src={getFullUrl(curState.curGuess.photo.imageId)}
-          width={100}
-          height={100}
-          layout="responsive"
+          fill="true"
           objectFit="contain"
           className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
           onClick={onDialogContinue}
@@ -110,9 +108,7 @@ export default function MapWrapper({
       return (
         <Image
           src={getFullUrl(curState.lastGuess.photo.imageId)}
-          width={100}
-          height={100}
-          layout="responsive"
+          fill="true"
           objectFit="contain"
           className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
           alt="Guess image."
@@ -122,9 +118,7 @@ export default function MapWrapper({
       return (
         <Image
           src={getFullUrl(curState.lastGuess.photo.imageId)}
-          width={100}
-          height={100}
-          layout="responsive"
+          fill="true"
           objectFit="contain"
           className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
           onClick={onDialogContinue}
@@ -181,7 +175,7 @@ export default function MapWrapper({
         {/* <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
           <StatsMenu curState={curState} />
         </div> */}
-        <div className="relative col-span-1 row-span-1 flex w-screen flex-col items-center justify-center md:col-span-2 md:row-span-3 md:w-full md:justify-center lg:min-h-screen">
+        <div className="relative col-span-2 row-span-1 flex items-center justify-center md:col-span-2 md:row-span-7">
           {getPreviewImage()}
         </div>
       </div>
