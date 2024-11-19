@@ -119,15 +119,16 @@ export default async function Play({ searchParams }) {
       { campus: "EastBankCore" },
       { campus: "EastBankOuter" },
     ],
+    isApproved: true,
   };
   if (gameMode === "1") {
-    filter = { diffRating: "ONE" };
+    filter = { diffRating: "ONE", isApproved: true };
   } else if (gameMode === "2") {
-    filter = { diffRating: "TWO" };
+    filter = { diffRating: "TWO", isApproved: true };
   } else if (gameMode === "3") {
-    filter = { diffRating: "THREE" };
+    filter = { diffRating: "THREE", isApproved: true };
   } else if (gameMode === "St.Paul") {
-    filter = { campus: "StPaul" };
+    filter = { campus: "StPaul", isApproved: true };
   }
   // check if guesses initialized
   if (curState.guesses.length === 0) {
