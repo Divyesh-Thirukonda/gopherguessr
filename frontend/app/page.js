@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [gameMode, setGameMode] = useState("default"); // Index for carousel navigation
+  const [gameMode, setGameMode] = useState(0); // Index for carousel navigation
   const router = useRouter();
 
   const gameModes = [
