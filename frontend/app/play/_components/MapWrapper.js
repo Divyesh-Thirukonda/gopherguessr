@@ -54,6 +54,11 @@ export default function MapWrapper({
   const [resultsDialogOpen, setResultsDialogOpen] = useState(false);
   const [enableKeybinds, setEnableKeybinds] = useState(false);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => setResultsDialogOpen(false), 50);
+    return () => clearTimeout(timeout);
+  }, []);
+
   // when round changes, reset marker position, and open resultdialog
   useEffect(() => {
     setGuess(viewStPaul ? stPaulCenter : minneapolisCenter);
@@ -176,7 +181,7 @@ export default function MapWrapper({
         {/* <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
           <StatsMenu curState={curState} />
         </div> */}
-        <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center w-screen md:col-span-2 md:row-span-3 md:justify-center lg:min-h-screen md:w-full">
+        <div className="relative col-span-1 row-span-1 flex w-screen flex-col items-center justify-center md:col-span-2 md:row-span-3 md:w-full md:justify-center lg:min-h-screen">
           {getPreviewImage()}
         </div>
       </div>
