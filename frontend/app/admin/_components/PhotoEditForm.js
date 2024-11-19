@@ -1,16 +1,12 @@
-// this is a client component that handles the frontend form logic for the image uploader
+// this is a client component that handles the frontend form logic for the image editor
 
 "use client";
 
 import { useFormStatus } from "react-dom";
+import Loading from "@/app/_components/Loading";
 
-export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
+export default function EditForm({ initial, CampusEnum, DiffEnum }) {
   const { pending } = useFormStatus();
-
-  // show uploading... if the form is currently submitting
-  if (pending) {
-    return <div>uploading...</div>;
-  }
 
   return (
     <>
@@ -21,6 +17,18 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
         name="name"
         id="name"
         type="text"
+        defaultValue={initial.buildingName}
+        className="mb-3 rounded border-gray-300"
+      />
+      <label htmlFor="description" className="mb-1 text-lg font-medium">
+        Description
+      </label>
+      <textarea
+        name="description"
+        id="description"
+        type="text"
+        defaultValue={initial.description}
+        rows="3"
         className="mb-3 rounded border-gray-300"
       />
       <label htmlFor="difficulty" className="mb-1 text-lg font-medium">
@@ -29,6 +37,7 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
       <select
         name="difficulty"
         id="difficulty"
+        defaultValue={initial.diffRating}
         className="mb-3 rounded border-gray-300"
       >
         {Object.keys(DiffEnum).map((key) => (
@@ -43,6 +52,7 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
       <select
         name="campus"
         id="campus"
+        defaultValue={initial.campus}
         className="mb-3 rounded border-gray-300"
       >
         {Object.keys(CampusEnum).map((key) => (
@@ -57,26 +67,32 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
       <select
         name="indoors"
         id="indoors"
+        defaultValue={initial.indoors}
         className="mb-3 rounded border-gray-300"
       >
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
       </select>
-      <label htmlFor="file" className="mb-1 text-lg font-medium">
-        Image Upload
+      <label htmlFor="approved" className="mb-1 text-lg font-medium">
+        Approved
       </label>
-      <div className="mb-3 rounded border p-2">
-        <input
-          name="file"
-          type="file"
-          id="file"
-          className="file:cursor-pointer file:appearance-none file:rounded-lg file:border-none file:bg-rose-600 file:text-white hover:file:bg-rose-700"
-          required
-        />
-      </div>
+      <select
+        name="approved"
+        id="approved"
+        defaultValue={initial.isApproved}
+        className="mb-3 rounded border-gray-300"
+      >
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
       <button type="submit" className="rounded bg-rose-600 p-3 text-white">
-        Upload
+        Save
       </button>
+      {pending && (
+        <div className="absolute inset-0 z-[1100] flex items-center justify-center bg-white bg-opacity-50 backdrop-blur">
+          <Loading />
+        </div>
+      )}
     </>
   );
 }

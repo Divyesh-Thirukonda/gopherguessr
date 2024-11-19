@@ -14,17 +14,13 @@ import {
 } from "@/app/_utils/userSession";
 
 export default async function Uploader() {
-  // this runs on the server before rendering the page
-  // and gets the users from the db to use when rendring the dropdown
-  const uploaders = await prisma.user.findMany();
-
   // this runs on the backend when the user submits the form
   async function uploadFiles(formData) {
     "use server";
     // check admmin auth, redirects if not authorized
     await authorizeAdminRoute();
     // checks db, logs the user out if not actually admin
-    await authorizeAdminAction();
+    const user = await authorizeAdminAction();
 
     const file = formData.get("file");
     let buffer = await file.arrayBuffer();
@@ -81,7 +77,6 @@ export default async function Uploader() {
 
     // get rest of data from form and save to db
     const buildingName = formData.get("name");
-    const uploaderId = parseInt(formData.get("uploaderId"), 10);
     const campus = formData.get("campus");
     const diffRating = formData.get("difficulty");
     const indoors = formData.get("indoors");
@@ -91,7 +86,7 @@ export default async function Uploader() {
         buildingName,
         latitude,
         longitude,
-        uploaderId,
+        uploaderId: user.id,
         campus,
         diffRating,
         indoors: indoors === "Yes" ? true : false,
@@ -106,11 +101,7 @@ export default async function Uploader() {
       action={uploadFiles}
       className="m-4 flex max-w-md flex-col rounded-md border p-4"
     >
-      <UploadForm
-        uploaders={uploaders}
-        CampusEnum={CampusEnum}
-        DiffEnum={DiffEnum}
-      />
+      <UploadForm CampusEnum={CampusEnum} DiffEnum={DiffEnum} />
     </form>
   );
 }

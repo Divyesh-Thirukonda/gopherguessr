@@ -1,14 +1,20 @@
-// page to render the map of all photos
-/* 
-  this is a server component and all its doing is
-  loading the info of all our photos from our database and passing it to the Map client component
-*/
+// page to show a table of all the images
 
 import prisma from "@/app/_utils/db";
-import MapView from "./_components/MapView";
+import Table from "./_components/Table";
 
 export default async function PhotosIndex() {
-  const allPhotos = await prisma.photo.findMany({});
+  const allPhotos = await prisma.photo.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      uploader: true,
+      _count: {
+        select: { guesses: true },
+      },
+    },
+  });
 
-  return <MapView allPhotos={allPhotos} />;
+  return <Table allPhotos={allPhotos} />;
 }

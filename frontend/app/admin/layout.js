@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { authorizeAdminRoute } from "../_utils/userSession";
 
-export default async function AdminLayout({ children }) {
+export default async function AdminLayout({ children, modal }) {
   // redirects to /login if not logged in
   // runs on server
   const { session } = await authorizeAdminRoute();
@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }) {
         <div className="flex items-center gap-3">
           {session.email}
           {session.isAdmin && (
-            <Link className="font-medium underline" href="/admin">
+            <Link className="font-medium text-rose-600 underline" href="/admin">
               admin
             </Link>
           )}
@@ -35,6 +35,7 @@ export default async function AdminLayout({ children }) {
         </div>
       </header>
       {children}
+      {modal}
     </>
   );
 }
