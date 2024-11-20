@@ -2,7 +2,6 @@
 import Loading from "@/app/_components/Loading";
 import MotionButton from "@/app/_components/MotionButton";
 import { FloppyDisk } from "@phosphor-icons/react/dist/ssr";
-import "leaflet/dist/leaflet.css";
 import dynamicImport from "next/dynamic";
 import { useMemo, useState, useTransition } from "react";
 

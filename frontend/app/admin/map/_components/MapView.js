@@ -1,5 +1,4 @@
 "use client";
-import "leaflet/dist/leaflet.css";
 import dynamicImport from "next/dynamic";
 import { useRouter } from "next/navigation";
 
