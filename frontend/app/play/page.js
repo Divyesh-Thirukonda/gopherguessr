@@ -29,6 +29,7 @@ import { getIronSession, sealData } from "iron-session";
 import Image from "next/image";
 import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -127,7 +128,7 @@ export default async function Play({ searchParams }) {
     filter = { diffRating: "TWO", isApproved: true };
   } else if (gameMode === "3") {
     filter = { diffRating: "THREE", isApproved: true };
-  } else if (gameMode === "St.Paul") {
+  } else if (gameMode === "stpaul") {
     filter = { campus: "StPaul", isApproved: true };
   }
   // check if guesses initialized
@@ -233,6 +234,14 @@ export default async function Play({ searchParams }) {
     cookieStore.delete("game_s");
   }
 
+  // SERVER ACTION
+  async function goHome() {
+    "use server";
+    const cookieStore = await cookies();
+    cookieStore.delete("game_s");
+    redirect("/");
+  }
+
   return (
     <>
       <div className="pointer-events-none invisible fixed inset-0 h-dvh w-dvw">
@@ -251,6 +260,7 @@ export default async function Play({ searchParams }) {
       </div>
       <GameView
         clearGameState={clearGameState}
+        goHome={goHome}
         submitGuess={submitGuess}
         curState={curState}
         key={curState.id}

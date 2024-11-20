@@ -2,16 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowArcLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import Image from "next/image";
 import MotionButton from "./MotionButton";
 
-// Keep contributor info fresh
-export const dynamic = "force-dynamic";
-
-export default function HomeWrapper() {
+export default function HomeWrapper({ clearGameState, contributors, inProgressGame }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [gameMode, setGameMode] = useState(0); // Index for carousel navigation
@@ -26,7 +23,7 @@ export default function HomeWrapper() {
     },
     {
       title: "St. Paul",
-      mode: "St.Paul",
+      mode: "stpaul",
       description: "Cows may be coolest thing here-",
       bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMdevHFUSzhAB4JjrVfnMDw1C0o37tcFgSuP2K",
     },
@@ -84,20 +81,6 @@ export default function HomeWrapper() {
     setGameMode((prev) => (prev + newDirection + gameModes.length) % gameModes.length);
   };
 
-  const contributorsFetch = async () => {
-    const res = await fetch(
-      "https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors",
-      { cache: "no-store" }
-    );
-    return await res.json();
-  };
-
-  const [contributors, setContributors] = useState([]);
-
-  useEffect(() => {
-    contributorsFetch().then(setContributors);
-  }, []);
-
   return (
     <main className={`${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}>
       <section className="relative min-h-dvh w-full">
@@ -121,64 +104,75 @@ export default function HomeWrapper() {
               Just like Geoguessr, but for the streets and buildings of the
               beautiful University of Minnesota campus!
             </p>
-
-            {/* Carousel Section */}
-            <div className="relative mt-6 w-full">
-              <motion.div
-                className="relative flex w-full items-center justify-center overflow-hidden rounded-lg border border-gray-500 bg-gray-500"
-                key={gameMode}
-              >
+            {inProgressGame && (
+              <div className="flex flex-col gap-3 mt-3">
+                <MotionButton onClick={handlePlayClick} className="text-xl">
+                  Continue Game <ArrowRight className="ml-2 inline-block h-6 w-6" weight="bold" />
+                </MotionButton>
+                <MotionButton onClick={clearGameState} className="text-xl">
+                  New Game <ArrowArcLeft className="ml-2 inline-block h-6 w-6" weight="bold" />
+                </MotionButton>
+              </div>
+            )}
+            {/* game mode selector */}
+            {!inProgressGame && (
+              <div className="relative mt-6 w-full">
                 <motion.div
-                  className="relative h-64 w-full text-center"
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  custom={direction}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="relative flex w-full items-center justify-center overflow-hidden rounded-lg border border-gray-500 bg-gray-500"
+                  key={gameMode}
                 >
-                  <Image
-                    fill
-                    alt=""
-                    src={gameModes[gameMode].bg}
-                    className='object-cover'
-                  />
-                  <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
-                    <h2 className="text-3xl font-bold text-white">
-                      {gameModes[gameMode].title}
-                    </h2>
-                    <p className="text-white">
-                      {gameModes[gameMode].description}
-                    </p>
-                    <MotionButton onClick={handlePlayClick} className="mt-2">
-                      Play {gameModes[gameMode].title}
-                      <ArrowRight className="ml-2 inline-block h-5 w-5" />
-                    </MotionButton>
-                  </div>
+                  <motion.div
+                    className="relative h-64 w-full text-center"
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    custom={direction}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  >
+                    <Image
+                      fill
+                      alt=""
+                      src={gameModes[gameMode].bg}
+                      className='object-cover'
+                    />
+                    <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
+                      <h2 className="text-3xl font-bold text-white">
+                        {gameModes[gameMode].title}
+                      </h2>
+                      <p className="text-white">
+                        {gameModes[gameMode].description}
+                      </p>
+                      <MotionButton onClick={handlePlayClick} className="mt-2">
+                        Play {gameModes[gameMode].title}
+                        <ArrowRight className="ml-2 inline-block h-5 w-5" />
+                      </MotionButton>
+                    </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
 
-              {/* Navigation Buttons */}
-              <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
-                <motion.button
-                  className="rounded-full bg-white p-2 text-gray-800"
-                  whileHover={{ scale: 1.2 }}
-                  onClick={() => paginate(-1)}
-                >
-                  &larr;
-                </motion.button>
+                {/* Navigation Buttons */}
+                <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+                  <motion.button
+                    className="rounded-full bg-white p-2 text-gray-800"
+                    whileHover={{ scale: 1.2 }}
+                    onClick={() => paginate(-1)}
+                  >
+                    &larr;
+                  </motion.button>
+                </div>
+                <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+                  <motion.button
+                    className="rounded-full bg-white p-2 text-gray-800"
+                    whileHover={{ scale: 1.2 }}
+                    onClick={() => paginate(1)}
+                  >
+                    &rarr;
+                  </motion.button>
+                </div>
               </div>
-              <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
-                <motion.button
-                  className="rounded-full bg-white p-2 text-gray-800"
-                  whileHover={{ scale: 1.2 }}
-                  onClick={() => paginate(1)}
-                >
-                  &rarr;
-                </motion.button>
-              </div>
-            </div>
+            )}
 
             <motion.div
               className="absolute top-0 right-0 mx-auto mt-4 inline-block rounded-full bg-rose-600 mr-3"

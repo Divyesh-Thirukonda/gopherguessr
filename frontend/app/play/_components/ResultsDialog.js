@@ -11,6 +11,7 @@ export default function ResultsDialog({
   onContinue,
   clearGameState,
   curState,
+  goHome,
 }) {
   const [showEndDialog, setShowEndDialog] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -85,7 +86,7 @@ export default function ResultsDialog({
                 +{curState.lastGuess.points} points ({curState.lastGuess.distance}m away)
               </div>
             )} */}
-            {(curState.points > 50) && (
+            {curState.points > 50 && (
               <div
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}
@@ -143,6 +144,7 @@ export default function ResultsDialog({
           curState={curState}
           setShowEndDialog={setShowEndDialog}
           clearGameState={clearGameState}
+          goHome={goHome}
         />
       )}
     </div>
