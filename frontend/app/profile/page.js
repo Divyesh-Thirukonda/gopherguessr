@@ -7,6 +7,7 @@ export default async function ProfileIndex() {
     where: { email: session.email },
   });
 
+  // ternary prevents errors with deleted/edited profiles
   const name = userInDB ? userInDB.name : "";
   const highScore = userInDB ? userInDB.highScore : 0;
 
