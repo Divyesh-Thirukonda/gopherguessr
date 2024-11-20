@@ -95,6 +95,14 @@ export default async function PhotoEditWrapper({ id, inModal }) {
       <small>
         Edited: {DateTime.fromJSDate(photo.updatedAt).toLocaleString()}
       </small>
+      <br />
+      <a
+        href={getFullUrl(photo.imageId)}
+        target="_blank"
+        className="text-sm underline"
+      >
+        Direct Image Link
+      </a>
       <div className="relative mt-3 w-[28rem] max-w-full overflow-hidden rounded-xl">
         <Image
           src={getFullUrl(photo.imageId)}
