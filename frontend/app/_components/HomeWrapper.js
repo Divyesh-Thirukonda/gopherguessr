@@ -116,60 +116,63 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
             )}
             {/* game mode selector */}
             {!inProgressGame && (
-              <div className="relative mt-6 w-full">
-                <motion.div
-                  className="relative flex w-full items-center justify-center overflow-hidden rounded-lg border border-gray-500 bg-gray-500"
-                  key={gameMode}
-                >
+              <div className='mt-6 bg-white rounded-xl w-full border border-gray-500 overflow-hidden'>
+                <div className='py-2 font-medium text-lg border-b border-gray-500'>Select a Game Mode to Play</div>
+                <div className="relative w-full">
                   <motion.div
-                    className="relative h-64 w-full text-center"
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    custom={direction}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="relative flex w-full items-center justify-center bg-gray-500"
+                    key={gameMode}
                   >
-                    <Image
-                      fill
-                      alt=""
-                      src={gameModes[gameMode].bg}
-                      className='object-cover'
-                    />
-                    <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
-                      <h2 className="text-3xl font-bold text-white">
-                        {gameModes[gameMode].title}
-                      </h2>
-                      <p className="text-white">
-                        {gameModes[gameMode].description}
-                      </p>
-                      <MotionButton onClick={handlePlayClick} className="mt-2">
-                        Play {gameModes[gameMode].title}
-                        <ArrowRight className="ml-2 inline-block h-5 w-5" />
-                      </MotionButton>
-                    </div>
+                    <motion.div
+                      className="relative h-64 w-full text-center"
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      custom={direction}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    >
+                      <Image
+                        fill
+                        alt=""
+                        src={gameModes[gameMode].bg}
+                        className='object-cover'
+                      />
+                      <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
+                        <h2 className="text-3xl font-bold text-white">
+                          {gameModes[gameMode].title}
+                        </h2>
+                        <p className="text-white">
+                          {gameModes[gameMode].description}
+                        </p>
+                        <MotionButton onClick={handlePlayClick} className="mt-2">
+                          Play {gameModes[gameMode].title}
+                          <ArrowRight className="ml-2 inline-block h-5 w-5" />
+                        </MotionButton>
+                      </div>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
 
-                {/* Navigation Buttons */}
-                <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
-                  <motion.button
-                    className="rounded-full bg-white p-2 text-gray-800"
-                    whileHover={{ scale: 1.2 }}
-                    onClick={() => paginate(-1)}
-                  >
-                    &larr;
-                  </motion.button>
-                </div>
-                <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
-                  <motion.button
-                    className="rounded-full bg-white p-2 text-gray-800"
-                    whileHover={{ scale: 1.2 }}
-                    onClick={() => paginate(1)}
-                  >
-                    &rarr;
-                  </motion.button>
+                  {/* Navigation Buttons */}
+                  <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+                    <motion.button
+                      className="rounded-full bg-white p-2 text-gray-800"
+                      whileHover={{ scale: 1.2 }}
+                      onClick={() => paginate(-1)}
+                    >
+                      &larr;
+                    </motion.button>
+                  </div>
+                  <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+                    <motion.button
+                      className="rounded-full bg-white p-2 text-gray-800"
+                      whileHover={{ scale: 1.2 }}
+                      onClick={() => paginate(1)}
+                    >
+                      &rarr;
+                    </motion.button>
+                  </div>
                 </div>
               </div>
             )}
