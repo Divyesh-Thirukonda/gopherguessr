@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import MotionButton from "@/app/_components/MotionButton";
 import { useEffect, useState } from "react";
 
-export default function EndDialog({ clearGameState, curState }) {
+export default function EndDialog({ clearGameState, curState, goHome }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
 
@@ -127,13 +127,21 @@ export default function EndDialog({ clearGameState, curState }) {
         </div>
       </div>
 
-      <div className="pointer-events-auto absolute bottom-8 left-0 right-0 z-[2300] flex justify-center">
+      <div className="pointer-events-auto absolute bottom-8 left-0 right-0 z-[2300] flex justify-center gap-3">
         <form action={clearGameState}>
           <MotionButton
             className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
             type="submit"
           >
             Play Again
+          </MotionButton>
+        </form>
+        <form action={goHome}>
+          <MotionButton
+            className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
+            type="submit"
+          >
+            Go Home
           </MotionButton>
         </form>
       </div>

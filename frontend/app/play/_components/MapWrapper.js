@@ -46,6 +46,7 @@ export default function MapWrapper({
   viewMap,
   clearGameState,
   curState,
+  goHome,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -55,7 +56,7 @@ export default function MapWrapper({
   const [enableKeybinds, setEnableKeybinds] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setResultsDialogOpen(false), 50);
+    const timeout = setTimeout(() => setResultsDialogOpen(false), 500);
     return () => clearTimeout(timeout);
   }, []);
 
@@ -169,6 +170,7 @@ export default function MapWrapper({
               setDialogOpen={setResultsDialogOpen}
               onContinue={onDialogContinue}
               clearGameState={clearGameState}
+              goHome={goHome}
             />
           )}
         </div>
