@@ -50,6 +50,13 @@ export default function GameView({
     requestAnimationFrame(increment);
   }, [curState.points]);
 
+  // on first load, if game complete, open map to show results dialog
+  useEffect(() => {
+    if (curState.complete) {
+      setViewMap(true);
+    }
+  }, []);
+
   const getStatsMenu = () => {
     if (!viewMap) {
       return (

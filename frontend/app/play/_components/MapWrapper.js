@@ -55,8 +55,12 @@ export default function MapWrapper({
   const [resultsDialogOpen, setResultsDialogOpen] = useState(false);
   const [enableKeybinds, setEnableKeybinds] = useState(false);
 
+  // on first load, hide results dialog if in the middle of game
   useEffect(() => {
-    const timeout = setTimeout(() => setResultsDialogOpen(false), 500);
+    const timeout = setTimeout(
+      () => !curState.complete && setResultsDialogOpen(false),
+      500,
+    );
     return () => clearTimeout(timeout);
   }, []);
 
