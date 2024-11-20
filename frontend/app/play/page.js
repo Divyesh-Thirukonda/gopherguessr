@@ -213,6 +213,7 @@ export default async function Play({ searchParams }) {
           points: roundPoints,
         },
       });
+
       await prisma.gameState.update({
         where: { id: curState.id },
         data: {
@@ -222,6 +223,9 @@ export default async function Play({ searchParams }) {
           complete: curState.round === 5,
         },
       });
+
+      // NOTE:
+      // Eventually, we will want specific high scores for game modes / difficulties
 
       // update user (or default user) high score
       if (curState.round === 5) {
