@@ -8,11 +8,13 @@ export default async function ProfileIndex() {
   });
 
   const name = userInDB ? userInDB.name : "";
+  const highScore = userInDB ? userInDB.highScore : 0;
 
   return (
     <main>
       <div>
         <p>{"Thanks for joining Gopher Guessr, " + name + "!"}</p>
+        <p>{"Your current high score is " + highScore + " points."}</p>
       </div>
     </main>
   );
