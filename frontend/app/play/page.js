@@ -254,7 +254,7 @@ export default async function Play({ searchParams }) {
       );
       
       const maxDistance = 1000;
-      const minDistance = 6;
+      const minDistance = 2;
 
       // Ensure roundDistance is within bounds
       const clampedDistance = Math.min(Math.max(roundDistance, minDistance), maxDistance);

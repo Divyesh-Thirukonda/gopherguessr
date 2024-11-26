@@ -7,7 +7,7 @@ export default async function ProfileLayout({ children }) {
 
   return (
     <>
-      <header className="flex flex-wrap items-center justify-between bg-gray-50 p-3">
+      <header className="flex flex-wrap items-center justify-between bg-rose-800 p-3 text-white">
         <div className="flex items-center gap-3">
           <Link className="font-medium underline" href="/profile">
             profile
