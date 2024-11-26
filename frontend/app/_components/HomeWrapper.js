@@ -7,6 +7,7 @@ import * as motion from "framer-motion/client";
 import Link from "next/link";
 import Image from "next/image";
 import MotionButton from "./MotionButton";
+import { useSwipeable } from 'react-swipeable';
 
 export default function HomeWrapper({ clearGameState, contributors, inProgressGame }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -115,44 +116,55 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
               </div>
             )}
             {/* game mode selector */}
+
             {!inProgressGame && (
               <div className='mt-6 bg-white rounded-xl w-full border border-gray-500 overflow-hidden'>
-                <div className='py-2 font-medium text-lg border-b border-gray-500'>Select a Game Mode to Play</div>
+                <div className='py-2 font-medium text-lg border-b border-gray-500'>
+                  Select a Game Mode to Play
+                </div>
                 <div className="relative w-full">
-                  <motion.div
-                    className="relative flex w-full items-center justify-center bg-gray-500"
-                    key={gameMode}
+                  {/* Swipeable Area */}
+                  <div {...useSwipeable({
+                    onSwipedLeft: () => paginate(1),
+                    onSwipedRight: () => paginate(-1),
+                    trackMouse: true, // Enables swipe for mouse drag (useful for testing on desktops)
+                  })}
                   >
                     <motion.div
-                      className="relative h-64 w-full text-center"
-                      variants={slideVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      custom={direction}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      className="relative flex w-full items-center justify-center bg-gray-500"
+                      key={gameMode}
                     >
-                      <Image
-                        fill
-                        alt=""
-                        src={gameModes[gameMode].bg}
-                        className='object-cover'
-                      />
-                      <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
-                      <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
-                        <h2 className="text-3xl font-bold text-white">
-                          {gameModes[gameMode].title}
-                        </h2>
-                        <p className="text-white">
-                          {gameModes[gameMode].description}
-                        </p>
-                        <MotionButton onClick={handlePlayClick} className="mt-2">
-                          Play {gameModes[gameMode].title}
-                          <ArrowRight className="ml-2 inline-block h-5 w-5" />
-                        </MotionButton>
-                      </div>
+                      <motion.div
+                        className="relative h-64 w-full text-center"
+                        variants={slideVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        custom={direction}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      >
+                        <Image
+                          fill
+                          alt=""
+                          src={gameModes[gameMode].bg}
+                          className='object-cover'
+                        />
+                        <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
+                          <h2 className="text-3xl font-bold text-white">
+                            {gameModes[gameMode].title}
+                          </h2>
+                          <p className="text-white">
+                            {gameModes[gameMode].description}
+                          </p>
+                          <MotionButton onClick={handlePlayClick} className="mt-2">
+                            Play {gameModes[gameMode].title}
+                            <ArrowRight className="ml-2 inline-block h-5 w-5" />
+                          </MotionButton>
+                        </div>
+                      </motion.div>
                     </motion.div>
-                  </motion.div>
+                  </div>
 
                   {/* Navigation Buttons */}
                   <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
