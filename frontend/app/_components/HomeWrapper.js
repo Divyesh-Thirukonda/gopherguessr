@@ -82,6 +82,12 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
     setGameMode((prev) => (prev + newDirection + gameModes.length) % gameModes.length);
   };
 
+  const swipeableAreaProp = useSwipeable({
+    onSwipedLeft: () => paginate(1),
+    onSwipedRight: () => paginate(-1),
+    trackMouse: true, // Enables swipe for mouse drag (useful for testing on desktops)
+  });
+
   return (
     <main className={`${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}>
       <section className="relative min-h-dvh w-full">
@@ -124,11 +130,7 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
                 </div>
                 <div className="relative w-full">
                   {/* Swipeable Area */}
-                  <div {...useSwipeable({
-                    onSwipedLeft: () => paginate(1),
-                    onSwipedRight: () => paginate(-1),
-                    trackMouse: true, // Enables swipe for mouse drag (useful for testing on desktops)
-                  })}
+                  <div {...swipeableAreaProp}
                   >
                     <motion.div
                       className="relative flex w-full items-center justify-center bg-gray-500"

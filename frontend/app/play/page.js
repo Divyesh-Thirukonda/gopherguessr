@@ -141,7 +141,6 @@ export default async function Play({ searchParams }) {
 
     // shuffle possibleLocations array thirty times
     for (let i = 0; i < 30; i++) {
-      console.log(Math.floor(Math.random()*(30)));
       for (let i = possibleLocations.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [possibleLocations[i], possibleLocations[j]] = [

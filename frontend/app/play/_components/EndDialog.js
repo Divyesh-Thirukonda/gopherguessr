@@ -95,7 +95,7 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}
               >
-                +{curState.lastGuess.points}
+                {curState.points}
               </div>
             )}
           </div>
@@ -109,21 +109,6 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
               {/* <span className="text-white absolute ml-1">{`${(i + 1) * 1000}`}</span> */}
             </div>
           ))}
-
-          {/* Text below the triangle */}
-          <div
-            className="absolute z-[2260] px-4 text-center font-semibold text-red-700"
-            style={{
-              left: `${progress}%`,
-              bottom: "-2.5vh",
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
-              borderRadius: "10px",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-            }}
-          >
-            ^ You have {curState.points} points!
-          </div>
         </div>
       </div>
 
