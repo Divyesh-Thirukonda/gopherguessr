@@ -1,6 +1,6 @@
 import prisma from "../_utils/db";
 import { authorizeUserRoute } from "../_utils/userSession";
-
+import GameStatsCarousel from "../_components/GameStatsCarousel";
 export default async function ProfileIndex() {
   const { session } = await authorizeUserRoute();
   const userInDB = await prisma.user.findFirst({
@@ -8,6 +8,62 @@ export default async function ProfileIndex() {
   });
 
   const name = userInDB?.name || "Guest";
+  
+  // Fetching stats for each difficulty mode (ONE, TWO, THREE)
+  const allStats = await getGameStats(userInDB?.id);
+  const easyStats = allStats.easy;
+  const mediumStats = allStats.medium;
+  const hardStats = allStats.hard;
+
+  // Helper function to fetch stats for each difficulty
+  async function getGameStats(userId) {
+    const easyGames = await fetchGameStats(userId, 'ONE');
+    const mediumGames = await fetchGameStats(userId, 'TWO');
+    const hardGames = await fetchGameStats(userId, 'THREE');
+    
+    return { easy: easyGames, medium: mediumGames, hard: hardGames };
+  }
+
+  // Helper function to fetch stats for a specific difficulty
+  async function fetchGameStats(userId, difficulty) {
+    const gameStates = await prisma.gameState.findMany({
+      where: {
+        userId,
+        guesses: {
+          some: {
+            photo: {
+              diffRating: difficulty,
+            },
+          },
+        },
+      },
+      include: {
+        guesses: {
+          include: {
+            photo: true,
+          },
+        },
+      },
+    });
+
+    const numGames = gameStates.length;
+    const allScores = [];
+    let highestScore = 0;
+
+    gameStates.forEach(gameState => {
+      gameState.guesses.forEach(guess => {
+        if (guess.photo.diffRating === difficulty) {
+          allScores.push(guess.points);
+          highestScore = Math.max(highestScore, guess.points);
+        }
+      });
+    });
+
+    const avgScore = allScores.length ? allScores.reduce((acc, score) => acc + score, 0) / allScores.length : 0;
+
+    return { numGames, highestScore, avgScore };
+  }
+
   const highScore = userInDB?.highScore || 0;
 
   // Fetch fun facts dynamically
@@ -76,6 +132,12 @@ export default async function ProfileIndex() {
 
   const results = await calculateStreaksAndFirstGame(userInDB?.id);
 
+  const totalPoints = await prisma.gameState.aggregate({
+    where: { userId: userInDB?.id },
+    _sum: { points: true },  // Calculate the sum of points
+  });
+  const totalPointsEarned = totalPoints._sum.points || 0;
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-yellow-400 to-rose-800">
       {/* User Section */}
@@ -90,31 +152,16 @@ export default async function ProfileIndex() {
 
       {/* Statistics Section */}
       <div className="grid grid-cols-1 gap-8 p-8 text-center max-w-5xl mx-auto">
+       <GameStatsCarousel easyStats={easyStats} mediumStats={mediumStats} hardStats={hardStats}/>
 
-        {/* Cards */}
-        <div
-          className="bg-black/50 backdrop-blur-md rounded-lg shadow-2xl p-6 text-white text-center"
-        >
-          {/* Title */}
-          <div>
-            <h3 className="text-rose-400 font-bold text-lg">XX</h3>
-            <p className="text-6xl font-extrabold text-white">YY</p>
-          </div>
-
-          {/* Bottom Stats */}
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div>
-              <p className="text-4xl font-bold">XX</p>
-              <p className="text-sm text-gray-400">Avg Score</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold">XX</p>
-              <p className="text-sm text-gray-400">Highest Score</p>
-            </div>
-          </div>
+      
+        {/* Additional Information */}
+        <div className="bg-black/50 backdrop-blur-md rounded-lg shadow-2xl p-6 text-white text-center">
+          <h3 className="text-gray-400 font-bold text-lg">Lifetime Points</h3>
+          <p className="text-6xl font-extrabold text-white">{totalPointsEarned}</p>
+          <p className="text-sm text-gray-400 mt-2">All points earned across every game you've played!</p>
         </div>
 
-        {/* Additional Information */}
         <div className="bg-black/50 backdrop-blur-md rounded-lg shadow-2xl p-6 text-white text-center">
           <h3 className="text-gray-400 font-bold text-lg">🔥 Your Best Streak 🔥</h3>
           <p className="text-6xl font-extrabold text-white">{results.longestStreak}</p>
@@ -123,7 +170,7 @@ export default async function ProfileIndex() {
 
         <div className="bg-black/50 backdrop-blur-md rounded-lg shadow-2xl p-6 text-white text-center">
           <h3 className="text-gray-400 font-bold text-lg">First Game Played</h3>
-          <p className="text-2xl font-bold text-white">{results.firstGame}</p>
+          <p className="text-6xl font-bold text-white">{results.firstGame}</p>
           <p className="text-sm text-gray-400 mt-2">
             Where did the time go,{" "}
             {results.elapsedDays === 1
@@ -132,6 +179,7 @@ export default async function ProfileIndex() {
           </p>
         </div>
       </div>
+
 
     </main>
   );
