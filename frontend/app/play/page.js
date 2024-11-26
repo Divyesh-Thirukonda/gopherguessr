@@ -30,6 +30,7 @@ import Image from "next/image";
 import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,11 @@ export default async function Play({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const gameMode = params.get("gameMode");
   const cookieStore = await cookies();
+  const headersList = await headers();
+  const ip =
+    process.env.NODE_ENV === "production"
+      ? headersList.get("X-Real-IP")
+      : "127.0.0.1";
 
   let { id: gameStateId } = await getIronSession(cookieStore, {
     password: process.env.SESSION_SECRET,
@@ -66,7 +72,7 @@ export default async function Play({ searchParams }) {
   });
 
   // check if user is logged in and get user id if they are
-  let userId = 29; // default user id
+  let userId = null;
   const session = await getUserSession();
   // make sure not expired
   if (session.expiry > DateTime.now().toSeconds()) {
@@ -75,6 +81,40 @@ export default async function Play({ searchParams }) {
     });
     if (userInDB) {
       userId = userInDB.id;
+    } else {
+      // check if ip was already used to make user
+      const ipBasedUserInDB = await prisma.user.findFirst({
+        where: { email: ip },
+      });
+      if (ipBasedUserInDB) {
+        userId = ipBasedUserInDB.id;
+      } else {
+        // make user based on ip otherwise
+        const newIpBasedUser = await prisma.user.create({
+          data: {
+            name: ip,
+            email: ip,
+          },
+        });
+        userId = newIpBasedUser.id;
+      }
+    }
+  } else {
+    // check if ip was already used to make user
+    const ipBasedUserInDB = await prisma.user.findFirst({
+      where: { email: ip },
+    });
+    if (ipBasedUserInDB) {
+      userId = ipBasedUserInDB.id;
+    } else {
+      // make user based on ip otherwise
+      const newIpBasedUser = await prisma.user.create({
+        data: {
+          name: ip,
+          email: ip,
+        },
+      });
+      userId = newIpBasedUser.id;
     }
   }
 
