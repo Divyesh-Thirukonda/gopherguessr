@@ -138,6 +138,19 @@ export default async function Play({ searchParams }) {
       where: filter,
       select: { id: true },
     });
+
+    // shuffle possibleLocations array thirty times
+    for (let i = 0; i < 30; i++) {
+      console.log(Math.floor(Math.random()*(30)));
+      for (let i = possibleLocations.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [possibleLocations[i], possibleLocations[j]] = [
+          possibleLocations[j],
+          possibleLocations[i],
+        ];
+      }
+    }
+
     // get 5 random indexes of the possibleLocations array
     const indexes = new Set();
     while (indexes.size !== 5) {
