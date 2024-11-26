@@ -95,10 +95,12 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}
               >
+
                 {curState.points} points!
               </div>
             )}
           </div>
+
         </div>
       </div>
 
