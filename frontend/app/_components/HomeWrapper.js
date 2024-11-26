@@ -8,7 +8,12 @@ import Link from "next/link";
 import Image from "next/image";
 import MotionButton from "./MotionButton";
 
-export default function HomeWrapper({ clearGameState, contributors, inProgressGame }) {
+export default function HomeWrapper({
+  clearGameState,
+  contributors,
+  inProgressGame,
+  isLoggedIn,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [gameMode, setGameMode] = useState(0); // Index for carousel navigation
@@ -78,11 +83,15 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
 
   const paginate = (newDirection) => {
     setDirection(newDirection);
-    setGameMode((prev) => (prev + newDirection + gameModes.length) % gameModes.length);
+    setGameMode(
+      (prev) => (prev + newDirection + gameModes.length) % gameModes.length,
+    );
   };
 
   return (
-    <main className={`${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}>
+    <main
+      className={`${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}
+    >
       <section className="relative min-h-dvh w-full">
         <div className="fixed inset-0">
           <video
@@ -93,7 +102,10 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
             playsInline
             poster="/cacheable/umn-flyover-poster-20241021.webp"
           >
-            <source src="/cacheable/umn-flyover-20241021.mp4" type="video/mp4" />
+            <source
+              src="/cacheable/umn-flyover-20241021.mp4"
+              type="video/mp4"
+            />
           </video>
         </div>
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur"></div>
@@ -105,19 +117,29 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
               beautiful University of Minnesota campus!
             </p>
             {inProgressGame && (
-              <div className="flex flex-col gap-3 mt-3">
+              <div className="mt-3 flex flex-col gap-3">
                 <MotionButton onClick={handlePlayClick} className="text-xl">
-                  Continue Game <ArrowRight className="ml-2 inline-block h-6 w-6" weight="bold" />
+                  Continue Game{" "}
+                  <ArrowRight
+                    className="ml-2 inline-block h-6 w-6"
+                    weight="bold"
+                  />
                 </MotionButton>
                 <MotionButton onClick={clearGameState} className="text-xl">
-                  New Game <ArrowArcLeft className="ml-2 inline-block h-6 w-6" weight="bold" />
+                  New Game{" "}
+                  <ArrowArcLeft
+                    className="ml-2 inline-block h-6 w-6"
+                    weight="bold"
+                  />
                 </MotionButton>
               </div>
             )}
             {/* game mode selector */}
             {!inProgressGame && (
-              <div className='mt-6 bg-white rounded-xl w-full border border-gray-500 overflow-hidden'>
-                <div className='py-2 font-medium text-lg border-b border-gray-500'>Select a Game Mode to Play</div>
+              <div className="mt-6 w-full overflow-hidden rounded-xl border border-gray-500 bg-white">
+                <div className="border-b border-gray-500 py-2 text-lg font-medium">
+                  Select a Game Mode to Play
+                </div>
                 <div className="relative w-full">
                   <motion.div
                     className="relative flex w-full items-center justify-center bg-gray-500"
@@ -130,13 +152,17 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
                       animate="center"
                       exit="exit"
                       custom={direction}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
                     >
                       <Image
                         fill
                         alt=""
                         src={gameModes[gameMode].bg}
-                        className='object-cover'
+                        className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gray-800 bg-opacity-40 backdrop-blur-sm" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center px-20">
@@ -146,7 +172,10 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
                         <p className="text-white">
                           {gameModes[gameMode].description}
                         </p>
-                        <MotionButton onClick={handlePlayClick} className="mt-2">
+                        <MotionButton
+                          onClick={handlePlayClick}
+                          className="mt-2"
+                        >
                           Play {gameModes[gameMode].title}
                           <ArrowRight className="ml-2 inline-block h-5 w-5" />
                         </MotionButton>
@@ -155,7 +184,7 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
                   </motion.div>
 
                   {/* Navigation Buttons */}
-                  <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 transform">
                     <motion.button
                       className="rounded-full bg-white p-2 text-gray-800"
                       whileHover={{ scale: 1.2 }}
@@ -164,7 +193,7 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
                       &larr;
                     </motion.button>
                   </div>
-                  <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
                     <motion.button
                       className="rounded-full bg-white p-2 text-gray-800"
                       whileHover={{ scale: 1.2 }}
@@ -178,14 +207,14 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
             )}
 
             <motion.div
-              className="absolute top-0 right-0 mx-auto mt-4 inline-block rounded-full bg-rose-600 mr-3"
+              className="absolute right-0 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
               whileHover={{ scale: 1.1 }}
             >
               <Link
                 href="/login"
                 className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
-                Login
+                {isLoggedIn ? "Profile" : "Login"}
                 <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
               </Link>
             </motion.div>
@@ -196,7 +225,9 @@ export default function HomeWrapper({ clearGameState, contributors, inProgressGa
         <div className="absolute left-0 right-0 top-[92dvh] p-6 text-center text-white">
           <div className="flex items-center gap-4">
             <hr className="w-full border-dashed border-gray-400" />
-            <span className="shrink-0">&darr;&nbsp;&nbsp;&nbsp;Contributors</span>
+            <span className="shrink-0">
+              &darr;&nbsp;&nbsp;&nbsp;Contributors
+            </span>
             <hr className="w-full border-dashed border-gray-400" />
           </div>
           <div className="mt-4 flex flex-wrap justify-center gap-4">
