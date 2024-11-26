@@ -1,6 +1,7 @@
 import prisma from "../_utils/db";
 import { authorizeUserRoute } from "../_utils/userSession";
 import GameStatsCarousel from "../_components/GameStatsCarousel";
+
 export default async function ProfileIndex() {
   const { session } = await authorizeUserRoute();
   const userInDB = await prisma.user.findFirst({
@@ -105,21 +106,19 @@ export default async function ProfileIndex() {
     let longestStreak = 1;
     let currentStreak = 1;
 
+    var previousDate = new Date(games[0].createdAt).getDate();
+
     for (let i = 1; i < games.length; i++) {
-      const previousDate = new Date(games[i - 1].createdAt);
-      const currentDate = new Date(games[i].createdAt);
+      const currentDate = new Date(games[i].createdAt).getDate();
 
-      // Calculate difference in days between consecutive games
-      const diffInDays =
-        (currentDate.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24);
-
-      if (diffInDays === 1) {
-        // If the games are exactly 1 day apart, increment the streak
+      if (currentDate - previousDate === 1) {
         currentStreak++;
         longestStreak = Math.max(longestStreak, currentStreak);
-      } else if (diffInDays > 1) {
+        previousDate = new Date(games[i].createdAt).getDate();
+      } else if (currentDate - previousDate > 1) {
         // If there's a gap, reset the current streak
         currentStreak = 1;
+        previousDate = new Date(games[i].createdAt).getDate();
       }
     }
 

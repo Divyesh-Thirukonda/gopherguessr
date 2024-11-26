@@ -9,7 +9,7 @@ export default function GameStatsCarousel({ easyStats, mediumStats, hardStats })
   // Define the stats for each mode
   const stats = [
     {
-      title: "All",
+      title: "Overall",
       numGames:
         easyStats.numGames + mediumStats.numGames + hardStats.numGames,
       avgScore:
