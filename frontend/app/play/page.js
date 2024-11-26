@@ -212,8 +212,22 @@ export default async function Play({ searchParams }) {
         photo.latitude,
         photo.longitude,
       );
-      const roundPoints =
-        (500 - (roundDistance > 500 ? 500 : roundDistance)) * 2;
+      
+      const maxDistance = 1000;
+      const minDistance = 6;
+
+      // Ensure roundDistance is within bounds
+      const clampedDistance = Math.min(Math.max(roundDistance, minDistance), maxDistance);
+
+      // Normalize the distance to [0, 1] for logarithmic scaling
+      const normalizedDistance = (clampedDistance - minDistance) / (maxDistance - minDistance);
+
+      // Apply a logarithmic scale
+      const logValue = Math.log(1 + normalizedDistance * 9); // Base-e logarithm scaled over [1, 10]
+
+      // Map logarithmic scale to the points range [1000, 0]
+      const roundPoints = Math.ceil(1000 * (1 - logValue / Math.log(10)));
+      
       // update in db
       await prisma.guess.update({
         where: { id: curState.curGuess.id },
