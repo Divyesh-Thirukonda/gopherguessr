@@ -84,7 +84,7 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
         ])}
       </Leaflet>
 
-      <div className="pointer-events-none absolute bottom-28 left-0 right-0 z-[2200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
+      <div className="pointer-events-none absolute bottom-[5.5rem] left-0 right-0 z-[2200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
           <div
             className="absolute left-0 top-0 z-[2300] h-6 rounded-full bg-rose-600 shadow-lg transition-[width] duration-700 ease-out"
@@ -95,20 +95,12 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}
               >
-                {curState.points}
+
+                {curState.points} points!
               </div>
             )}
           </div>
 
-          {Array.from({ length: 4 }, (_, i) => (
-            <div
-              key={i}
-              className="absolute top-0 z-[2250] h-6 border-r border-slate-200 opacity-50"
-              style={{ left: `${(i + 1) * 20}%` }}
-            >
-              {/* <span className="text-white absolute ml-1">{`${(i + 1) * 1000}`}</span> */}
-            </div>
-          ))}
         </div>
       </div>
 
