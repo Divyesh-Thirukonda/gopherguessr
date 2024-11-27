@@ -145,7 +145,7 @@ export default function HomeWrapper({
 
             {!inProgressGame && (
               <div className="mt-6 w-full overflow-hidden rounded-xl border border-gray-500 bg-white">
-                <div className="border-b border-gray-500 py-2 text-lg font-medium">
+                <div className="bg-amber-400 py-2 text-lg font-medium">
                   Select a Game Mode to Play
                 </div>
                 <div className="relative w-full">
@@ -197,7 +197,7 @@ export default function HomeWrapper({
                   {/* Navigation Buttons */}
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 transform">
                     <motion.button
-                      className="rounded-full bg-white p-2 text-gray-800"
+                      className="rounded-full bg-rose-600 p-2 text-white"
                       whileHover={{ scale: 1.2 }}
                       onClick={() => paginate(-1)}
                     >
@@ -206,7 +206,7 @@ export default function HomeWrapper({
                   </div>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
                     <motion.button
-                      className="rounded-full bg-white p-2 text-gray-800"
+                      className="rounded-full bg-rose-600 p-2 text-white"
                       whileHover={{ scale: 1.2 }}
                       onClick={() => paginate(1)}
                     >

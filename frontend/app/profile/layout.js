@@ -9,11 +9,11 @@ export default async function ProfileLayout({ children }) {
     <>
       <header className="flex flex-wrap items-center justify-between bg-rose-800 p-3 text-white">
         <div className="flex items-center gap-3">
-          <Link className="font-medium underline" href="/profile">
-            profile
-          </Link>
           <Link className="font-medium underline" href="/">
             home
+          </Link>
+          <Link className="font-medium underline" href="/profile">
+            profile
           </Link>
         </div>
         <div className="flex items-center gap-3">
