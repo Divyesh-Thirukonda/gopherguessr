@@ -17,10 +17,22 @@ export default async function HomePage() {
   // check if user has a current game
   const cookieStore = await cookies();
   let inProgressGame = false;
+  let isLoggedIn = false;
+
   const { id: gameStateId } = await getIronSession(cookieStore, {
     password: process.env.SESSION_SECRET,
     cookieName: "game_s",
   });
+
+  const { email: email } = await getIronSession(cookieStore, {
+    password: process.env.SESSION_SECRET,
+    cookieName: "user_s",
+  });
+
+  if (email) {
+    isLoggedIn = true;
+  }
+
   if (gameStateId) {
     const curState = await prisma.gameState.findUnique({
       where: { id: parseInt(gameStateId, 10) },
@@ -39,6 +51,7 @@ export default async function HomePage() {
       clearGameState={clearGameState}
       contributors={contributors}
       inProgressGame={inProgressGame}
+      isLoggedIn={isLoggedIn}
     />
   );
 }

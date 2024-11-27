@@ -8,9 +8,9 @@ export default async function UserAuth() {
   if (session.email) redirect("/profile");
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-rose-600">
-      <div className="p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-6 text-5xl font-extrabold text-rose-700 text-center">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800">
+      <div className="rounded-lg bg-white p-6 shadow-lg">
+        <h1 className="mb-6 text-center text-5xl font-extrabold text-rose-700">
           User Login
         </h1>
         <div

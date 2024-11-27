@@ -200,4 +200,3 @@ export default async function ProfileIndex() {
     </main>
   );
 }
-
