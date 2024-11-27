@@ -229,6 +229,19 @@ export default function HomeWrapper({
                 <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
               </Link>
             </motion.div>
+
+            <motion.div
+              className="absolute right-36 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
+              whileHover={{ scale: 1.1 }}
+            >
+              <Link
+                href="/leaderboard"
+                className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+              >
+                Leaderboard
+                <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
+              </Link>
+            </motion.div>
           </div>
         </div>
 
