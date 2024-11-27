@@ -57,13 +57,31 @@ export default function HomeWrapper({
     setIsMounted(true);
   }, []);
 
-  const handlePlayClick = (e) => {
-    e.preventDefault();
-    if (!isMounted) return;
+  // const handlePlayClick = (e) => {
+  //   e.preventDefault();
+  //   if (!isMounted) return;
 
-    setIsLoading(true);
-    router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
+  //   setIsLoading(true);
+  //   router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
+  // };
+  const handleNavigationClick = (target) => {
+    return (e) => {
+      e.preventDefault();
+      if (!isMounted) return;
+  
+      setIsLoading(true);
+  
+      if (target === "play") {
+        router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
+      } else if (target === "leaderboard") {
+        router.push("/leaderboard");
+      } else {
+        console.warn("Unknown target:", target);
+        setIsLoading(false); // Reset loading if the route is invalid
+      }
+    };
   };
+  
 
   const slideVariants = {
     enter: (direction) => ({
@@ -125,7 +143,7 @@ export default function HomeWrapper({
             </p>
             {inProgressGame && (
               <div className="mt-3 flex flex-col gap-3">
-                <MotionButton onClick={handlePlayClick} className="text-xl">
+                <MotionButton onClick={handleNavigationClick("play")} className="text-xl">
                   Continue Game{" "}
                   <ArrowRight
                     className="ml-2 inline-block h-6 w-6"
@@ -183,7 +201,7 @@ export default function HomeWrapper({
                             {gameModes[gameMode].description}
                           </p>
                           <MotionButton
-                            onClick={handlePlayClick}
+                            onClick={handleNavigationClick("play")}
                             className="mt-2"
                           >
                             Play {gameModes[gameMode].title}
@@ -234,12 +252,17 @@ export default function HomeWrapper({
               className="absolute left-0 top-0 mx-auto ml-3 mt-4 inline-block rounded-full bg-rose-600"
               whileHover={{ scale: 1.1 }}
             >
-              <Link
+              <MotionButton onClick={handleNavigationClick("leaderboard")} className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white">
+                Leaderboard
+              </MotionButton>
+
+              {/* <Link
                 href="/leaderboard"
                 className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+                onClick={handleNavigationClick("leaderboard")}
               >
                 Leaderboard
-              </Link>
+              </Link> */}
             </motion.div>
           </div>
         </div>
