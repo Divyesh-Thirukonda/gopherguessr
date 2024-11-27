@@ -8,11 +8,6 @@ export default async function AdminIndex() {
 
   return (
     <div className="w-full py-3">
-      <div>
-        <h1 className="text-center text-4xl font-bold">
-          Welcome Back {user.name}
-        </h1>
-      </div>
       <div className="mt-3 flex items-center justify-center gap-6">
         <Link
           href="/admin/map"

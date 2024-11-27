@@ -145,7 +145,7 @@ export default async function ProfileIndex() {
     <main className="min-h-screen bg-gradient-to-br from-yellow-400 to-rose-800">
       {/* User Section */}
       <h1 className="flex items-center justify-center p-6 text-2xl font-bold text-white">
-        Welcome back, {name}!
+        Welcome back, {name.replace(/ .*/, "")}!
       </h1>
 
       {/* Dashes */}
@@ -183,9 +183,7 @@ export default async function ProfileIndex() {
           <p className="text-6xl font-extrabold text-white">
             {results.longestStreak}
           </p>
-          <p className="mt-2 text-sm text-gray-400">
-            Longest Consecutive Days Played
-          </p>
+          <p className="mt-2 text-sm text-gray-400">Consecutive Days Played</p>
         </div>
 
         <div className="rounded-lg bg-black/50 p-6 text-center text-white shadow-2xl backdrop-blur-md">
@@ -195,7 +193,7 @@ export default async function ProfileIndex() {
             Where did the time go,{" "}
             {results.elapsedDays === 1
               ? "feels like it was just yesterday"
-              : `feels like it was just ${results.elapsedDays} days ago 🫠`}
+              : `feels like it was just ${results.elapsedDays} days ago...`}
           </p>
         </div>
       </div>
