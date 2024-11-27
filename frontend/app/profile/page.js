@@ -81,7 +81,7 @@ export default async function ProfileIndex() {
   async function calculateStreaksAndFirstGame(userId) {
     // Fetch all games played by the user, sorted by date
     const games = await prisma.gameState.findMany({
-      where: { userId },
+      where: { userId, complete: true },
       orderBy: { createdAt: "asc" }, // Sort games by ascending date
       select: { createdAt: true }, // Only fetch the creation date
     });
