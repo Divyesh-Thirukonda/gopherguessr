@@ -14,7 +14,7 @@ export default function Table({ scoreData }) {
       <thead>
         <tr>
           <th className="w-36 text-center">Rank</th>
-          <th className="w-36 text-center">Name</th>
+          <th className="w-96 text-center">Name</th>
           <th className="w-36 text-center">Score</th>
         </tr>
       </thead>
