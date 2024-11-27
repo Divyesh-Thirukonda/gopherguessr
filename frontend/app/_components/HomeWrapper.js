@@ -231,7 +231,7 @@ export default function HomeWrapper({
             </motion.div>
 
             <motion.div
-              className="absolute right-36 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
+              className="absolute left-0 top-0 mx-auto ml-3 mt-4 inline-block rounded-full bg-rose-600"
               whileHover={{ scale: 1.1 }}
             >
               <Link
