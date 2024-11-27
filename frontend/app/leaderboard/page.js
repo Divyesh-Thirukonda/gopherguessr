@@ -11,7 +11,7 @@ export default async function HomePage() {
   function anonymize(item) {
     if (item.email.charCodeAt(item.email.length - 1) <= 57) {
       item.email = "not logged in";
-      item.name = "guest";
+      item.name = "Guest";
     }
   }
 
