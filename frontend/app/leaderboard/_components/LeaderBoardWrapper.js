@@ -11,7 +11,7 @@ export default function LeaderBoardWrapper({ isLoggedIn, scoreData }) {
     <main className="min-h-screen bg-gradient-to-br from-yellow-400 to-rose-800">
       <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-12">
         <div className="max-w-md text-center">
-          <Table scoreData={scoreData} />
+          <Table scoreData={scoreData} isLoggedIn={isLoggedIn} />
           <motion.div
             className="absolute right-0 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
             whileHover={{ scale: 1.1 }}
