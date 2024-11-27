@@ -1,21 +1,10 @@
-export default function Table() {
-  const sample1 = {
-    name: "sam breider",
-    score: 4201,
-  };
-
-  const sample2 = {
-    name: "john",
-    score: 3917,
-  };
-
-  const users = [sample1, sample2];
-
-  const LeaderBoard = users.map((item, index) => {
+export default function Table({ scoreData }) {
+  const LeaderBoard = scoreData.map((item, index) => {
     return (
       <tr key={index}>
+        <td>{index + 1}</td>
         <td>{item.name}</td>
-        <td>{item.score}</td>
+        <td>{item.highScore}</td>
       </tr>
     );
   });
@@ -24,8 +13,9 @@ export default function Table() {
     <table className="w-full table-auto">
       <thead>
         <tr>
-          <th className="w-48 text-center">Name</th>
-          <th className="w-24 text-center">Score</th>
+          <th className="w-36 text-center">Rank</th>
+          <th className="w-36 text-center">Name</th>
+          <th className="w-36 text-center">Score</th>
         </tr>
       </thead>
       <tbody>{LeaderBoard}</tbody>

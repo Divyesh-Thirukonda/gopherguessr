@@ -32,7 +32,6 @@ export default async function HomePage() {
   if (email) {
     isLoggedIn = true;
   }
-  console.log(isLoggedIn);
 
   if (gameStateId) {
     const curState = await prisma.gameState.findUnique({
