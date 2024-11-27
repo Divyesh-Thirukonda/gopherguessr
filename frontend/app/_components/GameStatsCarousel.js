@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import * as motion from "framer-motion/client";
+import { useSwipeable } from "react-swipeable";
 
-export default function GameStatsCarousel({ easyStats, mediumStats, hardStats }) {
+export default function GameStatsCarousel({
+  easyStats,
+  mediumStats,
+  hardStats,
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -10,19 +16,33 @@ export default function GameStatsCarousel({ easyStats, mediumStats, hardStats })
   const stats = [
     {
       title: "Overall",
-      numGames:
-        easyStats.numGames + mediumStats.numGames + hardStats.numGames,
+      numGames: easyStats.numGames + mediumStats.numGames + hardStats.numGames,
       avgScore:
         (easyStats.avgScore + mediumStats.avgScore + hardStats.avgScore) / 3,
       highestScore: Math.max(
         easyStats.highestScore,
         mediumStats.highestScore,
-        hardStats.highestScore
+        hardStats.highestScore,
       ),
     },
-    { title: "Easy", numGames: easyStats.numGames, avgScore: easyStats.avgScore, highestScore: easyStats.highestScore },
-    { title: "Medium", numGames: mediumStats.numGames, avgScore: mediumStats.avgScore, highestScore: mediumStats.highestScore },
-    { title: "Hard", numGames: hardStats.numGames, avgScore: hardStats.avgScore, highestScore: hardStats.highestScore },
+    {
+      title: "Easy",
+      numGames: easyStats.numGames,
+      avgScore: easyStats.avgScore,
+      highestScore: easyStats.highestScore,
+    },
+    {
+      title: "Medium",
+      numGames: mediumStats.numGames,
+      avgScore: mediumStats.avgScore,
+      highestScore: mediumStats.highestScore,
+    },
+    {
+      title: "Hard",
+      numGames: hardStats.numGames,
+      avgScore: hardStats.avgScore,
+      highestScore: hardStats.highestScore,
+    },
   ];
 
   const goToNext = () => {
@@ -34,11 +54,19 @@ export default function GameStatsCarousel({ easyStats, mediumStats, hardStats })
   const goToPrevious = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + stats.length) % stats.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + stats.length) % stats.length,
+    );
   };
 
+  const swipeableAreaProp = useSwipeable({
+    onSwipedLeft: () => goToNext(),
+    onSwipedRight: () => goToPrevious(),
+    trackMouse: true,
+  });
+
   return (
-    <div className="relative overflow-hidden w-full">
+    <div {...swipeableAreaProp} className="relative w-full overflow-hidden">
       <div
         className={`flex transition-transform duration-500 ease-in-out`}
         style={{
@@ -49,18 +77,20 @@ export default function GameStatsCarousel({ easyStats, mediumStats, hardStats })
         {stats.map((stat, key) => (
           <div
             key={key}
-            className="bg-black/50 backdrop-blur-md rounded-lg shadow-2xl p-6 text-white text-center w-full flex-shrink-0 mr-[5%]"
+            className="mr-[5%] w-full flex-shrink-0 rounded-lg bg-black/50 p-6 text-center text-white shadow-2xl backdrop-blur-md"
           >
-            <h3 className="text-rose-400 font-bold text-lg">{stat.title}</h3>
+            <h3 className="text-lg font-bold text-rose-400">{stat.title}</h3>
             <p className="text-6xl font-extrabold">{stat.numGames}</p>
             <p className="text-sm text-gray-400">Num Games Played</p>
-            <div className="grid grid-cols-2 gap-4 mt-6">
+            <div className="mt-6 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-4xl font-bold">{stat.avgScore.toFixed(2)}</p>
                 <p className="text-sm text-gray-400">Avg Score</p>
               </div>
               <div>
-                <p className="text-4xl font-bold">{stat.highestScore.toFixed(2)}</p>
+                <p className="text-4xl font-bold">
+                  {stat.highestScore.toFixed(2)}
+                </p>
                 <p className="text-sm text-gray-400">Highest Score</p>
               </div>
             </div>
@@ -69,17 +99,23 @@ export default function GameStatsCarousel({ easyStats, mediumStats, hardStats })
       </div>
 
       {/* Carousel Navigation Arrows */}
-      <div
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white text-3xl cursor-pointer"
-        onClick={goToPrevious}
-      >
-        <span>&lt;</span>
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 transform">
+        <motion.button
+          className="rounded-full bg-white p-2 text-gray-800"
+          whileHover={{ scale: 1.2 }}
+          onClick={goToPrevious}
+        >
+          &larr;
+        </motion.button>
       </div>
-      <div
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white text-3xl cursor-pointer"
-        onClick={goToNext}
-      >
-        <span>&gt;</span>
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
+        <motion.button
+          className="rounded-full bg-white p-2 text-gray-800"
+          whileHover={{ scale: 1.2 }}
+          onClick={goToNext}
+        >
+          &rarr;
+        </motion.button>
       </div>
     </div>
   );
