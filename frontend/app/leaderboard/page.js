@@ -14,13 +14,12 @@ export default async function HomePage() {
       item.name = "Guest";
     }
   }
-
+  // Get top users and anonymize all guests
   let scoreData = await prisma.user.findMany();
   scoreData.sort((a, b) => (a.highScore > b.highScore ? -1 : 1));
-  scoreData.map((item) => anonymize(item));
-
   // Likely change based on # of users. Top 10 users
   scoreData = scoreData.slice(0, 10);
+  scoreData.map((item) => anonymize(item));
 
   const { email: email } = await getIronSession(cookieStore, {
     password: process.env.SESSION_SECRET,

@@ -1,7 +1,9 @@
+// Leaderboard table
+
 export default function Table({ scoreData, isLoggedIn }) {
   const LeaderBoard = scoreData.map((item, index) => {
     return (
-      <tr className="py-16 text-xl" key={index}>
+      <tr className="text-xl" key={index}>
         <td className="text-left">{index + 1}.</td>
         <td className="text-right">{item.name}</td>
         <td>{item.highScore}</td>
@@ -29,7 +31,6 @@ export default function Table({ scoreData, isLoggedIn }) {
           <tbody>{LeaderBoard}</tbody>
         </table>
       </div>
-
       {!isLoggedIn && (
         <p className="mt-6 text-white">
           Think you can top the leaderboards?{" "}

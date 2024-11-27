@@ -239,7 +239,6 @@ export default function HomeWrapper({
                 className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
               >
                 Leaderboard
-                <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
               </Link>
             </motion.div>
           </div>
