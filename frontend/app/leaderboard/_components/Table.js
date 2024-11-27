@@ -5,16 +5,11 @@ export default function Table() {
   };
 
   const sample2 = {
-    name: "johnny appleseed",
+    name: "john",
     score: 3917,
   };
 
-  const sample3 = {
-    name: "stevie wonder",
-    score: 0,
-  };
-
-  const users = [sample1, sample2, sample3];
+  const users = [sample1, sample2];
 
   const LeaderBoard = users.map((item, index) => {
     return (
