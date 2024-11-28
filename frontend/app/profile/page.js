@@ -1,6 +1,6 @@
 import prisma from "../_utils/db";
 import { authorizeUserRoute } from "../_utils/userSession";
-import GameStatsCarousel from "../_components/GameStatsCarousel";
+import GameStatsCarousel from "./_components/GameStatsCarousel";
 
 export default async function ProfileIndex() {
   const { session } = await authorizeUserRoute();
