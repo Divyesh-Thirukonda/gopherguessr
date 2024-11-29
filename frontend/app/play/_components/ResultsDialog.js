@@ -14,6 +14,7 @@ export default function ResultsDialog({
   goHome,
 }) {
   const [showEndDialog, setShowEndDialog] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [progress, setProgress] = useState(0);
 
   const totalPoints = 5000;
@@ -60,9 +61,27 @@ export default function ResultsDialog({
       <Leaflet center={dialogCenter} zoom={myZoom} className="h-full w-full">
         <LeafletMarker position={userGuessLoc} icon="crosshair" />
         <LeafletMarker position={actualLoc} icon="destination" />
-        <LeafletPolyline positions={[actualLoc, userGuessLoc]} />
+        <LeafletPolyline 
+          positions={[actualLoc, userGuessLoc]}
+          distance={curState.lastGuess.distance}
+          onClick={() => setSelectedImage(curState.lastGuess.photo.imageId)}
+        />
       </Leaflet>
 
+      /* image overlay */
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[2400] flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <img
+            src={`https://utfs.io/a/e9dxf42twp/${selectedImage}`}
+            className="max-h-[80vh] max-w-[80vw] object-contain"
+            alt="Round location"
+          />
+        </div>
+      )} 
+      
       <div className="pointer-events-none absolute bottom-28 left-0 right-0 z-[1200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
           <div

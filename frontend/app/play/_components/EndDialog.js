@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 export default function EndDialog({ clearGameState, curState, goHome }) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
+
 
   const totalPoints = 5000;
   const maxPointsPerRound = 1000;
@@ -80,9 +82,25 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
               [guess.photo.latitude, guess.photo.longitude],
             ]}
             key={[guess.id, "line"]}
+            distance={guess.distance}
+            onClick={() => setSelectedImage(guess.photo.imageId)}
           />,
         ])}
       </Leaflet>
+
+      /* image overlay */
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[2400] flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <img
+            src={`https://utfs.io/a/e9dxf42twp/${selectedImage}`}
+            className="max-h-[80vh] max-w-[80vw] object-contain"
+            alt="Round location"
+          />
+        </div>
+      )} 
 
       <div className="pointer-events-none absolute bottom-[5.5rem] left-0 right-0 z-[2200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
