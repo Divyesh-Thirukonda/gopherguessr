@@ -13,7 +13,7 @@ export default function Table({ scoreData, isLoggedIn }) {
 
   return (
     <main>
-      <div className="mb-5 text-rose-800">
+      <div className="mb-5 text-white">
         <h1 className="text-4xl">
           <b>High Scores</b>
         </h1>
