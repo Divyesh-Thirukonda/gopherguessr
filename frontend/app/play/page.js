@@ -235,6 +235,8 @@ export default async function Play({ searchParams }) {
       filter = { diffRating: "THREE", isApproved: true };
     } else if (gameMode === "stpaul") {
       filter = { campus: "StPaul", isApproved: true };
+    } else if (gameMode === "all") {
+      filter = { isApproved: true };
     }
     // check if guesses initialized
     if (curState.guesses.length === 0) {

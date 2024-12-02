@@ -33,6 +33,13 @@ export default function HomeWrapper({
       description: "Cows may be coolest thing here-",
       bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMdevHFUSzhAB4JjrVfnMDw1C0o37tcFgSuP2K",
     },
+    /*
+      we currently don't have enough photos to offer a good user experience for these modes if we limit to minneapolis campus
+      for example there are only 35 easy photos on the minneapolis campus
+      thats only enough to last 7 games!
+      and only like 2 until repeats become rampant
+      so hiding for now until we have more photos
+      i did add an "all" mode that has every photo though
     {
       title: "Easy",
       mode: "1",
@@ -50,6 +57,12 @@ export default function HomeWrapper({
       mode: "3",
       description: '"This exists??" :O',
       bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMGnHLxEiXzCVTYEGJj5pQab9dMKoReIthFUrO",
+    },*/
+    {
+      title: "Everything",
+      mode: "all",
+      description: "You gotta be better than Rainbolt to play this mode...",
+      bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMxjdU0W61dJiMHu2eo6NDykUlB7vPE4fYOCIq",
     },
   ];
 
