@@ -271,23 +271,27 @@ export default function HomeWrapper({
             <hr className="w-full border-dashed border-gray-400" />
           </div>
           <div className="mt-4 flex flex-wrap justify-center gap-4">
-            {contributors?.map((contributor) => (
-              <div key={contributor.id} className="relative">
-                <a
-                  href={`https://github.com/${contributor.login}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Image
-                    src={contributor.avatar_url}
-                    alt={contributor.login}
-                    width={60}
-                    height={60}
-                    className="rounded-full border-2 border-white"
-                  />
-                </a>
-              </div>
-            ))}
+            {contributors && typeof contributors === "array" ? (
+              contributors.map((contributor) => (
+                <div key={contributor.id} className="relative">
+                  <a
+                    href={`https://github.com/${contributor.login}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={contributor.avatar_url}
+                      alt={contributor.login}
+                      width={60}
+                      height={60}
+                      className="rounded-full border-2 border-white"
+                    />
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div>Error fetching contributors...</div>
+            )}
           </div>
         </div>
 
