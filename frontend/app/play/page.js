@@ -212,9 +212,25 @@ export default async function Play({ searchParams }) {
       isApproved: true,
     };
     if (gameMode === "1") {
-      filter = { diffRating: "ONE", isApproved: true };
+      filter = {
+        diffRating: "ONE",
+        OR: [
+          { campus: "WestBank" },
+          { campus: "EastBankCore" },
+          { campus: "EastBankOuter" },
+        ],
+        isApproved: true,
+      };
     } else if (gameMode === "2") {
-      filter = { diffRating: "TWO", isApproved: true };
+      filter = {
+        diffRating: "TWO",
+        OR: [
+          { campus: "WestBank" },
+          { campus: "EastBankCore" },
+          { campus: "EastBankOuter" },
+        ],
+        isApproved: true,
+      };
     } else if (gameMode === "3") {
       filter = { diffRating: "THREE", isApproved: true };
     } else if (gameMode === "stpaul") {
