@@ -3,14 +3,11 @@ import HomeWrapper from "./_components/HomeWrapper";
 import prisma from "./_utils/db";
 import { cookies } from "next/headers";
 
-// Keep contributor info fresh
-export const dynamic = "force-dynamic";
-
 export default async function HomePage() {
   // fetch contributors on server
   const res = await fetch(
     "https://api.github.com/repos/Divyesh-Thirukonda/gopherguessr/contributors",
-    { cache: "no-store" },
+    { next: { revalidate: 60 * 60 * 24 } }, // cache contributors data for 24 hours to prevent hitting rate limit
   );
   const contributors = await res.json();
 
