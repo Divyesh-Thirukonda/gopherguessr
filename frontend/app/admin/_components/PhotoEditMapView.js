@@ -31,6 +31,7 @@ export default function MapView({ photo, updateLocation }) {
     <>
       <Leaflet
         center={memoizedCenter}
+        zoom={16}
         onClick={(e) => setPosition([e.latlng.lat, e.latlng.lng])}
         className="h-80 w-full"
       >

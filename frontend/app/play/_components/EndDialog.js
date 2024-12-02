@@ -13,35 +13,11 @@ export default function EndDialog({
   goHome,
   curLobby,
 }) {
-  const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
   const totalPoints = 5000;
   const maxPointsPerRound = 1000;
-
-  const calculateLargestDistance = () => {
-    return Math.max(curState.guesses.map((guess) => guess.distance));
-  };
-
-  // Calculate the center of the map by averaging all locations and guesses
-  const calculateMapCenter = () => {
-    let allPoints = [];
-    curState.guesses.forEach((guess) => {
-      allPoints.push([guess.photo.latitude, guess.photo.latitude]);
-      allPoints.push([guess.latitude, guess.longitude]);
-    });
-
-    const latSum = allPoints.reduce((sum, point) => sum + point[0], 0);
-    const lngSum = allPoints.reduce((sum, point) => sum + point[1], 0);
-    return [latSum / allPoints.length, lngSum / allPoints.length];
-  };
-
-  // Calculate appropriate zoom level based on average distance
-  const dist = calculateLargestDistance();
-  const myZoom = dist < 100 ? 18 : dist < 600 ? 16 : dist < 1000 ? 15 : 14;
-
-  const mapCenter = calculateMapCenter();
 
   useEffect(() => {
     let start = curState.points - curState.lastGuess.points;
@@ -59,11 +35,7 @@ export default function EndDialog({
 
   return (
     <div className="absolute inset-0 z-[2000]">
-      <Leaflet
-        center={[44.97528, -93.23538]}
-        zoom={16}
-        className="h-full w-full"
-      >
+      <Leaflet className="h-full w-full">
         {curState.guesses.flatMap((guess, index) => [
           <LeafletMarker
             position={[guess.latitude, guess.longitude]}
