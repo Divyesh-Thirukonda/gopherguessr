@@ -15,18 +15,32 @@ const icons = {
   }),
 };
 
-export default function LeafletMarker({ position, icon, mapRef, onClick, id }) {
+export default function LeafletMarker({
+  position,
+  icon,
+  mapRef,
+  onClick,
+  id,
+  markerGroup,
+}) {
   const marker = useRef(null);
 
   useEffect(() => {
     if (mapRef.current) {
       // automatically update when position updated
       if (marker.current) {
+        if (markerGroup.current) {
+          markerGroup.current.removeLayer(marker.current);
+        }
         marker.current.remove();
       }
       marker.current = L.marker(position, { icon: icons[icon] }).addTo(
         mapRef.current,
       );
+      // add to feature group
+      if (markerGroup.current) {
+        marker.current.addTo(markerGroup.current);
+      }
       // add id for use during event handlers
       marker.current.id = id;
       // add an onclick handler
@@ -34,6 +48,7 @@ export default function LeafletMarker({ position, icon, mapRef, onClick, id }) {
         onClick && onClick(e);
       });
     }
+
     // prevent memory leak
     return () => {
       if (mapRef.current && marker.current) {

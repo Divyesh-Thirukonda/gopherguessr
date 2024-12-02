@@ -456,7 +456,7 @@ export default async function Play({ searchParams }) {
             <img
               src={getFullUrl(guess.photo.imageId)}
               alt=""
-              className="h-full w-full object-contain object-center"
+              className="mx-auto h-full w-full object-contain"
             />
           </div>
         ))}

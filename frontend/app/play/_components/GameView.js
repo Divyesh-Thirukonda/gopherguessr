@@ -82,7 +82,7 @@ export default function GameView({
                 className="absolute top-0 z-[1250] h-6 border-r border-gray-400 opacity-50"
                 style={{ left: `${(i + 1) * 20}%` }}
               >
-                {/* <span className="text-white absolute ml-1">{`${(i + 1) * 1000}`}</span> */}
+                <span className="absolute ml-1 text-white">{`${(i + 1) * 1000}`}</span>
               </div>
             ))}
           </div>
@@ -119,16 +119,19 @@ export default function GameView({
       <div className="relative flex h-dvh w-dvw items-center justify-center bg-gray-500">
         {!curState.complete && (
           <>
-            <div>
+            {/* Blurred Background */}
+            <div className="absolute inset-0">
               <img
                 src={getFullUrl(curState.curGuess.photo.imageId)}
-                className="blur-xl"
+                className="h-full w-full object-cover blur-xl"
                 alt="Blurry guess image."
               />
             </div>
+
+            {/* Centered Guess Image */}
             <img
               src={getFullUrl(curState.curGuess.photo.imageId)}
-              className="h-full w-full object-contain object-center"
+              className="relative max-h-full max-w-full object-contain"
               alt="Guess image."
             />
           </>

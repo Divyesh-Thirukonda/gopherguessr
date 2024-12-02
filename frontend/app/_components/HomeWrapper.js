@@ -20,6 +20,7 @@ export default function HomeWrapper({
   contributors,
   inProgressGame,
   isLoggedIn,
+  gameCompleted,
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -133,6 +134,13 @@ export default function HomeWrapper({
     trackMouse: true, // Enables swipe for mouse drag (useful for testing on desktops)
   });
 
+  // auto clear cookie if game complete
+  useEffect(() => {
+    if (gameCompleted) {
+      clearGameState();
+    }
+  }, []);
+
   return (
     <main
       className={`fixed inset-0 overflow-y-scroll ${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}
@@ -161,7 +169,7 @@ export default function HomeWrapper({
               Just like Geoguessr, but for the streets and buildings of the
               beautiful University of Minnesota campus!
             </p>
-            {inProgressGame && (
+            {inProgressGame && !gameCompleted && (
               <div className="mt-3 flex flex-col gap-3">
                 <MotionButton
                   onClick={handleNavigationClick("play")}
@@ -184,7 +192,7 @@ export default function HomeWrapper({
             )}
             {/* game mode selector */}
 
-            {!inProgressGame && (
+            {(!inProgressGame || gameCompleted) && (
               <div className="mt-6 w-full overflow-hidden rounded-xl border border-gray-500 bg-white">
                 <div className="bg-amber-400 py-2 text-lg font-medium">
                   Select a Game Mode to Play
