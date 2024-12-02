@@ -121,15 +121,22 @@ export default async function Lobby({ searchParams }) {
               />
             </Link>
           </motion.div>
-          <h1 className="text-3xl font-bold text-white">
-            Create Multiplayer Lobby
-          </h1>
-          <p className="mt-1.5 text-gray-100">
-            Play Gopher Guessr with friends!
-            <br /> Currently, only the Minneapolis Game Mode is available.
-          </p>
+          {!curLobby && (
+            <div>
+              <h1 className="text-3xl font-bold text-white">
+                Create Multiplayer Lobby
+              </h1>
+              <p className="mt-1.5 text-gray-100">
+                Play Gopher Guessr with friends!
+                <br /> Currently, only the Minneapolis Game Mode is available.
+              </p>
+            </div>
+          )}
           {curLobby && timeLeft <= 0 && (
             <div>
+              <h1 className="text-3xl font-bold text-white">
+                Time's up! Let's see how you did...
+              </h1>
               <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
                 <h2 className="text-2xl font-medium">Leaderboard</h2>
                 <table className="mx-auto w-full table-auto border-separate border-spacing-y-2 md:border-spacing-y-3">
@@ -159,8 +166,10 @@ export default async function Lobby({ searchParams }) {
             <>
               <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
                 <div className="w-full bg-amber-400 py-2 text-lg font-medium">
-                  Join by Scanning this QR Code <br />
-                  (manual code entry coming soon...)
+                  <div className="ml-2 mr-2">
+                    Join by Scanning this QR Code <br />
+                    (manual code entry coming soon...)
+                  </div>
                 </div>
                 <div className="px-3 py-4">
                   <QRCode
