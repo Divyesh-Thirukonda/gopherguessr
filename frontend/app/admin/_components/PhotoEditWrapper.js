@@ -6,7 +6,6 @@
 "use server";
 
 import prisma from "@/app/_utils/db";
-import Image from "next/image";
 import PhotoEditBackButton from "./PhotoEditBackButton";
 import PhotoEditForm from "./PhotoEditForm";
 import { DiffEnum, CampusEnum } from "@prisma/client";
@@ -104,14 +103,10 @@ export default async function PhotoEditWrapper({ id, inModal }) {
         Direct Image Link
       </a>
       <div className="relative mt-3 w-[28rem] max-w-full overflow-hidden rounded-xl">
-        <Image
+        <img
           src={getFullUrl(photo.imageId)}
           className="h-full w-full object-contain object-center"
-          width={0}
-          height={0}
-          sizes="100%"
           alt={photo.buildingName}
-          loading="eager"
         />
       </div>
       <div className="relative mt-3 h-80 w-full overflow-hidden rounded-xl border">

@@ -12,7 +12,6 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
-import Image from "next/image";
 import MotionButton from "./MotionButton";
 import { useSwipeable } from "react-swipeable";
 
@@ -210,8 +209,7 @@ export default function HomeWrapper({
                           damping: 30,
                         }}
                       >
-                        <Image
-                          fill
+                        <img
                           alt=""
                           src={gameModes[gameMode].bg}
                           className="object-cover"
@@ -279,12 +277,10 @@ export default function HomeWrapper({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Image
+                    <img
                       src={contributor.avatar_url}
                       alt={contributor.login}
-                      width={60}
-                      height={60}
-                      className="rounded-full border-2 border-white"
+                      className="h-16 w-16 rounded-full border-2 border-white"
                     />
                   </a>
                 </div>

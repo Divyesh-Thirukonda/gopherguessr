@@ -34,7 +34,6 @@ import { X } from "@phosphor-icons/react";
 import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
-import Image from "next/image";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -100,11 +99,8 @@ export default function MapWrapper({
   const getPreviewImage = () => {
     if (!curState.complete && !resultsDialogOpen) {
       return (
-        <Image
+        <img
           src={getFullUrl(curState.curGuess.photo.imageId)}
-          width={0}
-          height={0}
-          sizes="100%"
           className="absolute max-h-full w-auto rounded-xl transition-transform duration-300 hover:scale-105 active:scale-100 md:h-auto md:w-full"
           onClick={onDialogContinue}
           alt="Guess image."
@@ -112,21 +108,16 @@ export default function MapWrapper({
       );
     } else if (resultsDialogOpen) {
       return (
-        <Image
+        <img
           src={getFullUrl(curState.lastGuess.photo.imageId)}
-          width={0}
-          height={0}
-          sizes="100%"
           className="absolute max-h-full w-auto rounded-xl transition-transform duration-300 md:h-auto md:w-full"
           alt="Guess image."
         />
       );
     } else {
       return (
-        <Image
+        <img
           src={getFullUrl(curState.lastGuess.photo.imageId)}
-          fill="true"
-          objectFit="contain"
           className="absolute max-h-full w-auto rounded-xl transition-transform duration-300 md:h-auto md:w-full"
           alt="Guess image."
         />

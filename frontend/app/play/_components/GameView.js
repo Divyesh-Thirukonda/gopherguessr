@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import * as motion from "framer-motion/client";
 import dynamicImport from "next/dynamic";
@@ -121,15 +120,13 @@ export default function GameView({
         {!curState.complete && (
           <>
             <div>
-              <Image
-                fill
+              <img
                 src={getFullUrl(curState.curGuess.photo.imageId)}
                 className="blur-xl"
                 alt="Blurry guess image."
               />
             </div>
-            <Image
-              fill
+            <img
               src={getFullUrl(curState.curGuess.photo.imageId)}
               className="h-full w-full object-contain object-center"
               alt="Guess image."

@@ -26,7 +26,6 @@ import prisma from "../_utils/db";
 import GameView from "./_components/GameView";
 import { cookies } from "next/headers";
 import { getIronSession, sealData } from "iron-session";
-import Image from "next/image";
 import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
@@ -454,12 +453,10 @@ export default async function Play({ searchParams }) {
         {/* preloading images for better perf */}
         {curState.guesses.map((guess) => (
           <div className="absolute inset-0" key={guess.photo.imageId}>
-            <Image
-              fill
+            <img
               src={getFullUrl(guess.photo.imageId)}
               alt=""
               className="h-full w-full object-contain object-center"
-              loading="eager"
             />
           </div>
         ))}
