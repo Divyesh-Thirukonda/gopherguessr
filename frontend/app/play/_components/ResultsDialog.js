@@ -5,6 +5,7 @@ import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import LeafletPolyline from "@/app/_components/LeafletPolyline";
 import latlngToMeters from "@/app/_utils/latlngToMeters";
+import MotionButton from "@/app/_components/MotionButton";
 
 export default function ResultsDialog({
   setDialogOpen,
@@ -58,7 +59,7 @@ export default function ResultsDialog({
   }, [curState.points]);
 
   return (
-    <div className="fixed inset-0 z-[1000]">
+    <div className="absolute inset-0 z-[1050] h-full w-full">
       <Leaflet center={dialogCenter} zoom={myZoom} className="h-full w-full">
         <LeafletMarker position={userGuessLoc} icon="crosshair" />
         <LeafletMarker position={actualLoc} icon="destination" />
@@ -81,7 +82,7 @@ export default function ResultsDialog({
           />
         </div>
       )}
-      <div className="pointer-events-none absolute bottom-28 left-0 right-0 z-[1200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
+      <div className="pointer-events-none absolute bottom-24 left-0 right-0 z-[1200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
           <div
             className="absolute left-0 top-0 z-[1300] h-6 rounded-full bg-rose-600 shadow-lg transition-[width] duration-700 ease-out"
@@ -140,9 +141,8 @@ export default function ResultsDialog({
           </div>
         </div>
       </div>
-      <div className="pointer-events-auto absolute bottom-8 left-0 right-0 z-[1300] flex justify-center">
-        <button
-          className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
+      <div className="pointer-events-auto absolute bottom-6 left-0 right-0 z-[1300] flex justify-center">
+        <MotionButton
           onClick={() => {
             if (curState.complete) {
               setShowEndDialog(true);
@@ -153,7 +153,7 @@ export default function ResultsDialog({
           }}
         >
           Continue
-        </button>
+        </MotionButton>
       </div>
       {showEndDialog && (
         <EndDialog

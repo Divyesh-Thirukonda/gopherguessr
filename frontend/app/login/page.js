@@ -11,7 +11,7 @@ export default async function UserAuth() {
   if (session.email) redirect("/profile");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800 px-3 py-10">
       <div className="rounded-lg bg-white p-6 shadow-lg">
         <h1 className="mb-6 text-center text-5xl font-extrabold text-rose-700">
           User Login

@@ -136,9 +136,9 @@ export default function HomeWrapper({
 
   return (
     <main
-      className={`${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}
+      className={`fixed inset-0 overflow-y-scroll ${isLoading && "animate-[loadBlur_1s_ease-in-out_forwards]"}`}
     >
-      <section className="relative min-h-dvh w-full">
+      <section className="relative flex min-h-full w-full flex-col items-center justify-center px-3 pb-10 pt-20">
         <div className="fixed inset-0">
           <video
             className="h-full w-full object-cover"
@@ -155,7 +155,7 @@ export default function HomeWrapper({
           </video>
         </div>
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur"></div>
-        <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-12">
+        <div className="relative flex min-h-[80dvh] items-center">
           <div className="max-w-md text-center">
             <h1 className="text-5xl font-bold text-white">Explore The U!</h1>
             <p className="mt-3 text-white">
@@ -258,55 +258,11 @@ export default function HomeWrapper({
                 </div>
               </div>
             )}
-
-            <motion.div
-              className="absolute right-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.8 }}
-            >
-              <Link
-                href="/login"
-                className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
-                aria-label="Login"
-              >
-                {isLoggedIn ? (
-                  <UserCircle
-                    className="h-6 w-6"
-                    weight="bold"
-                    aria-label="Profile Icon"
-                  />
-                ) : (
-                  <>
-                    <span>Login</span>
-                    <SignIn className="ml-1.5 h-6 w-6" weight="bold" />
-                  </>
-                )}
-              </Link>
-            </motion.div>
-
-            <div className="absolute left-3 top-3">
-              <MotionButton
-                onClick={handleNavigationClick("leaderboard")}
-                className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
-                ariaLabel="Leaderboard"
-              >
-                <Ranking className="h-6 w-6" aria-label="Leaderboard Icon" />
-              </MotionButton>
-            </div>
-            <div className="absolute left-[4.75rem] top-3">
-              <MotionButton
-                onClick={handleNavigationClick("lobby")}
-                className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
-                ariaLabel="Multiplayer"
-              >
-                <UsersFour className="h-6 w-6" aria-label="Multiplayer Icon" />
-              </MotionButton>
-            </div>
           </div>
         </div>
 
         {/* Contributors Section */}
-        <div className="absolute left-0 right-0 top-[92dvh] p-6 text-center text-white">
+        <div className="relative left-0 right-0 top-0 w-dvw px-3 pb-3 pt-10 text-center text-white">
           <div className="flex items-center gap-4">
             <hr className="w-full border-dashed border-gray-400" />
             <span className="shrink-0">
@@ -333,6 +289,50 @@ export default function HomeWrapper({
               </div>
             ))}
           </div>
+        </div>
+
+        <motion.div
+          className="fixed right-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+        >
+          <Link
+            href="/login"
+            className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
+            aria-label="Login"
+          >
+            {isLoggedIn ? (
+              <UserCircle
+                className="h-6 w-6"
+                weight="bold"
+                aria-label="Profile Icon"
+              />
+            ) : (
+              <>
+                <span>Login</span>
+                <SignIn className="ml-1.5 h-6 w-6" weight="bold" />
+              </>
+            )}
+          </Link>
+        </motion.div>
+
+        <div className="fixed left-3 top-3">
+          <MotionButton
+            onClick={handleNavigationClick("leaderboard")}
+            className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+            ariaLabel="Leaderboard"
+          >
+            <Ranking className="h-6 w-6" aria-label="Leaderboard Icon" />
+          </MotionButton>
+        </div>
+        <div className="fixed left-[4.75rem] top-3">
+          <MotionButton
+            onClick={handleNavigationClick("lobby")}
+            className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+            ariaLabel="Multiplayer"
+          >
+            <UsersFour className="h-6 w-6" aria-label="Multiplayer Icon" />
+          </MotionButton>
         </div>
       </section>
 

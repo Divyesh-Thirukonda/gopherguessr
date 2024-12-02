@@ -7,8 +7,8 @@ import Table from "./Table";
 
 export default function LeaderBoardWrapper({ isLoggedIn, scoreData }) {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-yellow-400 to-rose-800">
-      <div className="absolute inset-0 flex items-center justify-center px-4 pb-20 pt-12">
+    <main className="fixed inset-0 overflow-y-scroll bg-gradient-to-br from-yellow-400 to-rose-800">
+      <div className="flex min-h-full items-center justify-center px-4 py-20">
         <div className="max-w-lg text-center">
           <Table scoreData={scoreData} isLoggedIn={isLoggedIn} />
           <motion.div

@@ -58,7 +58,7 @@ export default function EndDialog({
   }, [curState.points]);
 
   return (
-    <div className="fixed inset-0 z-[2000]">
+    <div className="absolute inset-0 z-[2000]">
       <Leaflet
         center={[44.97528, -93.23538]}
         zoom={16}
@@ -104,7 +104,7 @@ export default function EndDialog({
           />
         </div>
       )}
-      <div className="pointer-events-none absolute bottom-[5.5rem] left-0 right-0 z-[2200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
+      <div className="pointer-events-none absolute bottom-20 left-0 right-0 z-[2200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
           <div
             className="absolute left-0 top-0 z-[2300] h-6 rounded-full bg-rose-600 shadow-lg transition-[width] duration-700 ease-out"
@@ -121,7 +121,7 @@ export default function EndDialog({
           </div>
         </div>
       </div>
-      <div className="pointer-events-auto absolute bottom-8 left-0 right-0 z-[2300] flex justify-center gap-3">
+      <div className="pointer-events-auto absolute bottom-6 left-0 right-0 z-[2300] flex justify-center gap-3">
         {!curLobby && (
           <form action={clearGameState}>
             <MotionButton
