@@ -271,7 +271,7 @@ export default function HomeWrapper({
             <hr className="w-full border-dashed border-gray-400" />
           </div>
           <div className="mt-4 flex flex-wrap justify-center gap-4">
-            {contributors && typeof contributors === "array" ? (
+            {contributors && Array.isArray(contributors) ? (
               contributors.map((contributor) => (
                 <div key={contributor.id} className="relative">
                   <a
