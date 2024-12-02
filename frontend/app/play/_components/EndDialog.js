@@ -91,7 +91,7 @@ export default function EndDialog({
           />,
         ])}
       </Leaflet>
-      /* image overlay */
+      {/* image overlay */}
       {selectedImage && (
         <div
           className="fixed inset-0 z-[2400] flex items-center justify-center bg-black bg-opacity-50"

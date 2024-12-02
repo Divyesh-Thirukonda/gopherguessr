@@ -172,7 +172,7 @@ export default async function ProfileIndex() {
             {totalPointsEarned}
           </p>
           <p className="mt-2 text-sm text-gray-400">
-            All points earned across every game you've played!
+            All points earned across every game you&apos;ve played!
           </p>
         </div>
 
