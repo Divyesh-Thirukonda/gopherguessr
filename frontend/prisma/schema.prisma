@@ -21,6 +21,15 @@ enum CampusEnum {
   StPaul
 }
 
+enum GameModeEnum {
+  Easy
+  Medium
+  Hard
+  Minneapolis
+  StPaul
+  All
+}
+
 model Photo {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -62,6 +71,7 @@ model GameState {
   userId Int @default(29) // default user
   lobby Lobby? @relation(fields: [lobbyId], references: [id])
   lobbyId Int?
+  gameMode GameModeEnum?
 }
 
 model Guess {

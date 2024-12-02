@@ -141,6 +141,29 @@ export default async function Play({ searchParams }) {
     }
   }
 
+  // for storing gamemode in db (converting to the enum)
+  let dbGameMode = null;
+  switch (gameMode) {
+    case "1":
+      dbGameMode = "Easy";
+      break;
+    case "2":
+      dbGameMode = "Medium";
+      break;
+    case "3":
+      dbGameMode = "Hard";
+      break;
+    case "stpaul":
+      dbGameMode = "StPaul";
+      break;
+    case "all":
+      dbGameMode = "All";
+      break;
+    default:
+      dbGameMode = "Minneapolis";
+      break;
+  }
+
   let curState = null;
   if (gameStateId) {
     // check if game state is in the db
@@ -158,6 +181,7 @@ export default async function Play({ searchParams }) {
         data: {
           userId,
           lobbyId: curLobby ? curLobby.id : null,
+          gameMode: dbGameMode,
         },
         include: prismaGameStateInclude,
       });
@@ -169,6 +193,7 @@ export default async function Play({ searchParams }) {
       data: {
         userId,
         lobbyId: curLobby ? curLobby.id : null,
+        gameMode: dbGameMode,
       },
       include: prismaGameStateInclude,
     });
