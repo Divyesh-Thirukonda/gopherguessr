@@ -46,6 +46,7 @@ export default function MapWrapper({
   clearGameState,
   curState,
   goHome,
+  curLobby,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -174,6 +175,7 @@ export default function MapWrapper({
               onContinue={onDialogContinue}
               clearGameState={clearGameState}
               goHome={goHome}
+              curLobby={curLobby}
             />
           )}
         </div>

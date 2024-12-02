@@ -12,6 +12,7 @@ export default function ResultsDialog({
   clearGameState,
   curState,
   goHome,
+  curLobby,
 }) {
   const [showEndDialog, setShowEndDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -61,16 +62,15 @@ export default function ResultsDialog({
       <Leaflet center={dialogCenter} zoom={myZoom} className="h-full w-full">
         <LeafletMarker position={userGuessLoc} icon="crosshair" />
         <LeafletMarker position={actualLoc} icon="destination" />
-        <LeafletPolyline 
+        <LeafletPolyline
           positions={[actualLoc, userGuessLoc]}
           distance={curState.lastGuess.distance}
           onClick={() => setSelectedImage(curState.lastGuess.photo.imageId)}
         />
       </Leaflet>
-
       /* image overlay */
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 z-[2400] flex items-center justify-center bg-black bg-opacity-50"
           onClick={() => setSelectedImage(null)}
         >
@@ -80,8 +80,7 @@ export default function ResultsDialog({
             alt="Round location"
           />
         </div>
-      )} 
-      
+      )}
       <div className="pointer-events-none absolute bottom-28 left-0 right-0 z-[1200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
           <div
@@ -141,7 +140,6 @@ export default function ResultsDialog({
           </div>
         </div>
       </div>
-
       <div className="pointer-events-auto absolute bottom-8 left-0 right-0 z-[1300] flex justify-center">
         <button
           className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
@@ -157,13 +155,13 @@ export default function ResultsDialog({
           Continue
         </button>
       </div>
-
       {showEndDialog && (
         <EndDialog
           curState={curState}
           setShowEndDialog={setShowEndDialog}
           clearGameState={clearGameState}
           goHome={goHome}
+          curLobby={curLobby}
         />
       )}
     </div>

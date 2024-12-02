@@ -14,7 +14,8 @@ export default function LeaderBoardWrapper({ isLoggedIn, scoreData }) {
           <Table scoreData={scoreData} isLoggedIn={isLoggedIn} />
           <motion.div
             className="absolute right-0 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.8 }}
           >
             <Link
               href="/login"
@@ -26,7 +27,8 @@ export default function LeaderBoardWrapper({ isLoggedIn, scoreData }) {
           </motion.div>
           <motion.div
             className="absolute left-0 top-0 mx-auto ml-3 mt-4 inline-block rounded-full bg-rose-600"
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.8 }}
           >
             <Link
               href="/"

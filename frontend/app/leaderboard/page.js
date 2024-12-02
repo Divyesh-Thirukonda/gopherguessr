@@ -7,12 +7,9 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   let isLoggedIn = false;
 
-  // Make all not logged in users anonymous
+  // remove user email addresses from client payload
   function anonymize(item) {
-    if (item.email.charCodeAt(item.email.length - 1) <= 57) {
-      item.email = "not logged in";
-      item.name = "Guest";
-    }
+    item.email = null;
   }
   // Get top users and anonymize all guests
   let scoreData = await prisma.user.findMany();

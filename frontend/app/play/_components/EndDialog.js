@@ -7,11 +7,15 @@ import { useRouter } from "next/navigation";
 import MotionButton from "@/app/_components/MotionButton";
 import { useEffect, useState } from "react";
 
-export default function EndDialog({ clearGameState, curState, goHome }) {
+export default function EndDialog({
+  clearGameState,
+  curState,
+  goHome,
+  curLobby,
+}) {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
-
 
   const totalPoints = 5000;
   const maxPointsPerRound = 1000;
@@ -87,10 +91,9 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
           />,
         ])}
       </Leaflet>
-
       /* image overlay */
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 z-[2400] flex items-center justify-center bg-black bg-opacity-50"
           onClick={() => setSelectedImage(null)}
         >
@@ -100,8 +103,7 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
             alt="Round location"
           />
         </div>
-      )} 
-
+      )}
       <div className="pointer-events-none absolute bottom-[5.5rem] left-0 right-0 z-[2200] mx-4 bg-opacity-40 shadow-xl backdrop-blur-md">
         <div className="relative h-6 rounded-full bg-slate-500 shadow-xl">
           <div
@@ -113,24 +115,23 @@ export default function EndDialog({ clearGameState, curState, goHome }) {
                 className="absolute right-2 top-0 flex h-6 items-center text-xs font-semibold text-white"
                 style={{ right: "10px" }}
               >
-
                 {curState.points} points!
               </div>
             )}
           </div>
-
         </div>
       </div>
-
       <div className="pointer-events-auto absolute bottom-8 left-0 right-0 z-[2300] flex justify-center gap-3">
-        <form action={clearGameState}>
-          <MotionButton
-            className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
-            type="submit"
-          >
-            Play Again
-          </MotionButton>
-        </form>
+        {!curLobby && (
+          <form action={clearGameState}>
+            <MotionButton
+              className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
+              type="submit"
+            >
+              Play Again
+            </MotionButton>
+          </form>
+        )}
         <form action={goHome}>
           <MotionButton
             className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
