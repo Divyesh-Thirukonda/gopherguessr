@@ -28,6 +28,7 @@
     "protomaps-leaflet": "4.0.1",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "react-qr-code": "^2.0.15",
     "react-swipeable": "^7.0.2",
     "server-only": "^0.0.1",
     "sharp": "^0.33.5",

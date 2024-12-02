@@ -22,6 +22,7 @@ export default function GameView({
   curState,
   persistGameState,
   goHome,
+  curLobby,
 }) {
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -146,6 +147,7 @@ export default function GameView({
           clearGameState={clearGameState}
           curState={curState}
           goHome={goHome}
+          curLobby={curLobby}
         />
       </div>
     </div>

@@ -68,9 +68,9 @@ export default function HomeWrapper({
     return (e) => {
       e.preventDefault();
       if (!isMounted) return;
-  
+
       setIsLoading(true);
-  
+
       if (target === "play") {
         router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
       } else if (target === "leaderboard") {
@@ -81,7 +81,6 @@ export default function HomeWrapper({
       }
     };
   };
-  
 
   const slideVariants = {
     enter: (direction) => ({
@@ -143,7 +142,10 @@ export default function HomeWrapper({
             </p>
             {inProgressGame && (
               <div className="mt-3 flex flex-col gap-3">
-                <MotionButton onClick={handleNavigationClick("play")} className="text-xl">
+                <MotionButton
+                  onClick={handleNavigationClick("play")}
+                  className="text-xl"
+                >
                   Continue Game{" "}
                   <ArrowRight
                     className="ml-2 inline-block h-6 w-6"
@@ -237,7 +239,8 @@ export default function HomeWrapper({
 
             <motion.div
               className="absolute right-0 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.8 }}
             >
               <Link
                 href="/login"
@@ -248,11 +251,11 @@ export default function HomeWrapper({
               </Link>
             </motion.div>
 
-            <motion.div
-              className="absolute left-0 top-0 mx-auto ml-3 mt-4 inline-block rounded-full bg-rose-600"
-              whileHover={{ scale: 1.1 }}
-            >
-              <MotionButton onClick={handleNavigationClick("leaderboard")} className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white">
+            <div className="absolute left-3 top-3">
+              <MotionButton
+                onClick={handleNavigationClick("leaderboard")}
+                className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+              >
                 Leaderboard
               </MotionButton>
 
@@ -263,7 +266,7 @@ export default function HomeWrapper({
               >
                 Leaderboard
               </Link> */}
-            </motion.div>
+            </div>
           </div>
         </div>
 
