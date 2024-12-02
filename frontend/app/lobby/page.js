@@ -135,7 +135,7 @@ export default async function Lobby({ searchParams }) {
           {curLobby && timeLeft <= 0 && (
             <div>
               <h1 className="text-3xl font-bold text-white">
-                Game Over! How did you do...
+                Time's up! Let's see how you did...
               </h1>
               <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
                 <h2 className="text-2xl font-medium">Leaderboard</h2>
