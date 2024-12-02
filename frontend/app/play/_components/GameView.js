@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import * as motion from "framer-motion/client";
 import dynamicImport from "next/dynamic";
@@ -21,6 +20,8 @@ export default function GameView({
   clearGameState,
   curState,
   persistGameState,
+  goHome,
+  curLobby,
 }) {
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -48,6 +49,13 @@ export default function GameView({
     };
     requestAnimationFrame(increment);
   }, [curState.points]);
+
+  // on first load, if game complete, open map to show results dialog
+  useEffect(() => {
+    if (curState.complete) {
+      setViewMap(true);
+    }
+  }, []);
 
   const getStatsMenu = () => {
     if (!viewMap) {
@@ -112,15 +120,13 @@ export default function GameView({
         {!curState.complete && (
           <>
             <div>
-              <Image
-                fill
+              <img
                 src={getFullUrl(curState.curGuess.photo.imageId)}
                 className="blur-xl"
                 alt="Blurry guess image."
               />
             </div>
-            <Image
-              fill
+            <img
               src={getFullUrl(curState.curGuess.photo.imageId)}
               className="h-full w-full object-contain object-center"
               alt="Guess image."
@@ -137,6 +143,8 @@ export default function GameView({
           viewMap={viewMap}
           clearGameState={clearGameState}
           curState={curState}
+          goHome={goHome}
+          curLobby={curLobby}
         />
       </div>
     </div>

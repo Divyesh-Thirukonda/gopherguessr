@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { getIronSession, sealData } from "iron-session";
 import { redirect } from "next/navigation";
 import { DateTime } from "luxon";
+import prisma from "@/utils/db";
 
 // gets encrypted data from the session stored in the cookie
 async function getUserSession() {
@@ -41,7 +42,7 @@ async function authorizeAdminRoute() {
 }
 
 // for server actions in admin to double verify
-export default async function authorizeAdminAction() {
+async function authorizeAdminAction() {
   const { session } = await authorizeUserRoute();
   // make sure the user exists in the database before allowing them to do admin actions
   const userInDB = await prisma.user.findFirst({
