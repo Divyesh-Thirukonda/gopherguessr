@@ -1,4 +1,4 @@
-import { ArrowArcLeft } from "@phosphor-icons/react/dist/ssr";
+import { ArrowArcLeft, ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import { DateTime } from "luxon";
@@ -105,16 +105,20 @@ export default async function Lobby({ searchParams }) {
       <div className="flex min-h-full items-center justify-center px-3 py-24">
         <div className="max-w-lg text-center">
           <motion.div
-            className="absolute left-0 top-0 mx-auto ml-3 mt-4 inline-block rounded-full bg-rose-600"
+            className="absolute left-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.8 }}
           >
             <Link
               href="/"
-              className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+              className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
+              aria-label="Back"
             >
-              Home
-              <ArrowArcLeft className="ml-1.5 h-6 w-6" weight="bold" />
+              <ArrowLeft
+                className="h-6 w-6"
+                weight="bold"
+                aria-label="Back Icon"
+              />
             </Link>
           </motion.div>
           <h1 className="text-3xl font-bold text-white">

@@ -1,10 +1,9 @@
 "use client";
 
-import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft, SignIn, UserCircle } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import Table from "./Table";
-import { ArrowArcLeft } from "@phosphor-icons/react";
 
 export default function LeaderBoardWrapper({ isLoggedIn, scoreData }) {
   return (
@@ -13,29 +12,44 @@ export default function LeaderBoardWrapper({ isLoggedIn, scoreData }) {
         <div className="max-w-lg text-center">
           <Table scoreData={scoreData} isLoggedIn={isLoggedIn} />
           <motion.div
-            className="absolute right-0 top-0 mx-auto mr-3 mt-4 inline-block rounded-full bg-rose-600"
+            className="absolute right-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.8 }}
           >
             <Link
               href="/login"
-              className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+              className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
+              aria-label="Login"
             >
-              {isLoggedIn ? "Profile" : "Login"}
-              <ArrowRight className="ml-1.5 h-6 w-6" weight="bold" />
+              {isLoggedIn ? (
+                <UserCircle
+                  className="h-6 w-6"
+                  weight="bold"
+                  aria-label="Profile Icon"
+                />
+              ) : (
+                <>
+                  <span>Login</span>
+                  <SignIn className="ml-1.5 h-6 w-6" weight="bold" />
+                </>
+              )}
             </Link>
           </motion.div>
           <motion.div
-            className="absolute left-0 top-0 mx-auto ml-3 mt-4 inline-block rounded-full bg-rose-600"
+            className="absolute left-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.8 }}
           >
             <Link
               href="/"
-              className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+              className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
+              aria-label="Back"
             >
-              Home
-              <ArrowArcLeft className="ml-1.5 h-6 w-6" weight="bold" />
+              <ArrowLeft
+                className="h-6 w-6"
+                weight="bold"
+                aria-label="Back Icon"
+              />
             </Link>
           </motion.div>
         </div>

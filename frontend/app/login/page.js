@@ -1,6 +1,9 @@
 import Script from "next/script";
 import { redirect } from "next/navigation";
 import { getUserSession } from "../_utils/userSession";
+import * as motion from "framer-motion/client";
+import Link from "next/link";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 
 export default async function UserAuth() {
   const session = await getUserSession();
@@ -33,6 +36,19 @@ export default async function UserAuth() {
         ></div>
       </div>
       <Script src="https://accounts.google.com/gsi/client" />
+      <motion.div
+        className="absolute left-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
+        whileHover={{ scale: 1.2 }}
+        whileTap={{ scale: 0.8 }}
+      >
+        <Link
+          href="/"
+          className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
+          aria-label="Back"
+        >
+          <ArrowLeft className="h-6 w-6" weight="bold" aria-label="Back Icon" />
+        </Link>
+      </motion.div>
     </div>
   );
 }
