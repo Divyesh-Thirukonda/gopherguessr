@@ -140,6 +140,7 @@ export default function MapWrapper({
             center={viewStPaul ? stPaulCenter : minneapolisCenter}
             onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
             className="h-full w-full"
+            zoom={16}
           >
             <LeafletMarker position={guess} icon="crosshair" />
           </Leaflet>

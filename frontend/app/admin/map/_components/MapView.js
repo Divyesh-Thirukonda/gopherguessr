@@ -16,10 +16,7 @@ export default function MapView({ allPhotos }) {
   const router = useRouter();
 
   return (
-    <Leaflet
-      center={[44.97528, -93.23538]}
-      className="h-dvh max-h-[calc(100dvh-3rem)] w-dvw"
-    >
+    <Leaflet className="h-dvh max-h-[calc(100dvh-3rem)] w-dvw">
       {allPhotos.map((loc) => (
         <LeafletMarker
           position={[loc.latitude, loc.longitude]}
