@@ -131,10 +131,13 @@ export default function MapWrapper({
   };
 
   const getLeaderBoard = (isLoggedIn, scoreData) => {
-    console.log(curState);
     return (
       <div className="max-w-lg text-center">
-        <ResultsLeaderboard scoreData={scoreData} isLoggedIn={isLoggedIn} />
+        <ResultsLeaderboard
+          scoreData={scoreData}
+          isLoggedIn={isLoggedIn}
+          curState={curState}
+        />
       </div>
     );
   };

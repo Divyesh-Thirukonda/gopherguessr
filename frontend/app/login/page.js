@@ -5,8 +5,10 @@ import * as motion from "framer-motion/client";
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 
-export default async function UserAuth() {
+export default async function UserAuth({ searchParams }) {
   const session = await getUserSession();
+  const params = new URLSearchParams(await searchParams);
+  const gameMode = params.get("gameId");
 
   if (session.email) redirect("/profile");
 

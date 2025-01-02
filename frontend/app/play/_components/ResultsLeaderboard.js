@@ -1,6 +1,10 @@
 // Leaderboard table
 
-export default function ResultsLeaderboard({ scoreData, isLoggedIn }) {
+export default function ResultsLeaderboard({
+  scoreData,
+  isLoggedIn,
+  curState,
+}) {
   if (!scoreData) {
     scoreData = [];
   }
@@ -31,11 +35,13 @@ export default function ResultsLeaderboard({ scoreData, isLoggedIn }) {
       suffix = "rd";
     }
 
+    const hrefRoute = "/login?gameId=" + curState.id;
+
     if (place > scoreData.length && !isLoggedIn) {
       return (
         <b className="text-2xl">
           <u>
-            <a href="/login"> Log in</a>
+            <a href={hrefRoute}> Log in</a>
           </u>{" "}
           to save your score!
         </b>
@@ -52,7 +58,7 @@ export default function ResultsLeaderboard({ scoreData, isLoggedIn }) {
           What a score! {place}
           {suffix} place globally.{" "}
           <u>
-            <a href="/login"> Log in</a>
+            <a href={hrefRoute}> Log in</a>
           </u>{" "}
           to claim your spot!
         </b>
