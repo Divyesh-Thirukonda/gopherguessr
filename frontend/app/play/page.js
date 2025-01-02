@@ -447,6 +447,17 @@ export default async function Play({ searchParams }) {
     }
   }
 
+  // remove user email addresses from client payload
+  function anonymize(item) {
+    item.email = null;
+  }
+  // Get top users and anonymize all guests
+  let scoreData = await prisma.user.findMany();
+  scoreData.sort((a, b) => (a.highScore > b.highScore ? -1 : 1));
+  // Likely change based on # of users. Top 10 users
+  scoreData = scoreData.slice(0, 10);
+  scoreData.map((item) => anonymize(item));
+
   return (
     <>
       <div className="pointer-events-none invisible fixed inset-0 h-dvh w-dvw">
@@ -469,6 +480,7 @@ export default async function Play({ searchParams }) {
         key={curState.id}
         persistGameState={persistGameState}
         curLobby={curLobby}
+        scoreData={scoreData}
       />
       {usingIpFlag && curLobby && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-md">

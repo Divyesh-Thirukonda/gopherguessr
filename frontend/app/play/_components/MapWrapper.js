@@ -34,6 +34,7 @@ import { X } from "@phosphor-icons/react";
 import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
+import ResultsLeaderboard from "./ResultsLeaderboard";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -46,6 +47,7 @@ export default function MapWrapper({
   curState,
   goHome,
   curLobby,
+  scoreData,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -127,6 +129,19 @@ export default function MapWrapper({
     return null;
   };
 
+  const getLeaderBoard = (isLoggedIn, scoreData) => {
+    console.log(curState);
+    return (
+      <div className="max-w-lg text-center">
+        <ResultsLeaderboard
+          scoreData={scoreData}
+          isLoggedIn={isLoggedIn}
+          score={curState.points}
+        />
+      </div>
+    );
+  };
+
   return (
     <div
       className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
@@ -177,7 +192,8 @@ export default function MapWrapper({
           <StatsMenu curState={curState} />
         </div> */}
         <div className="relative flex flex-grow items-center justify-center">
-          {getPreviewImage()}
+          {!curState.complete && getPreviewImage()}
+          {curState.complete && getLeaderBoard(false, scoreData)}
         </div>
       </div>
     </div>
