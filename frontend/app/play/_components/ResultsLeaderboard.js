@@ -33,37 +33,37 @@ export default function ResultsLeaderboard({ scoreData, isLoggedIn }) {
 
     if (place > scoreData.length && !isLoggedIn) {
       return (
-        <p className="text-2xl">
+        <b className="text-2xl">
           <u>
-            <a href="/login"> Log in now</a>
+            <a href="/login"> Log in</a>
           </u>{" "}
           to save your score!
-        </p>
+        </b>
       );
     } else if (place > scoreData.length) {
       return (
-        <p className="text-2xl">Nice score! You'll be number 1 in no time.</p>
+        <b className="text-2xl">Nice score! You'll be number 1 in no time.</b>
       );
     }
 
     if (!isLoggedIn) {
       return (
-        <p className="text-2xl">
+        <b className="text-2xl">
           What a score! {place}
           {suffix} place globally.{" "}
           <u>
             <a href="/login"> Log in</a>
           </u>{" "}
           to claim your spot!
-        </p>
+        </b>
       );
     }
 
     return (
-      <p className="text-2xl">
+      <b className="text-2xl">
         What a score! {place}
         {suffix} place globally.{" "}
-      </p>
+      </b>
     );
   };
 

@@ -141,7 +141,7 @@ export default function MapWrapper({
 
   return (
     <div
-      className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
+      className={`fixed inset-0 z-[900] overflow-auto backdrop-blur-md ${!viewMap && "invisible"}`}
       onKeyDown={handleKeyDown}
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
@@ -185,9 +185,6 @@ export default function MapWrapper({
             />
           )}
         </div>
-        {/* <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
-          <StatsMenu curState={curState} />
-        </div> */}
         <div className="relative flex flex-grow items-center justify-center">
           {!curState.complete && getPreviewImage()}
           {curState.complete && getLeaderBoard(isLoggedIn, scoreData)}
