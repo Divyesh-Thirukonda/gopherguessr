@@ -8,9 +8,9 @@ export default function ResultsLeaderboard({ scoreData, isLoggedIn }) {
   const LeaderBoard = scoreData.map((item, index) => {
     return (
       <tr className="text-xl" key={index}>
-        <td className="text-left">{index + 1}.</td>
-        <td className="text-right">{item.name}</td>
-        <td>{item.highScore}</td>
+        <td className="text-left text-sm">{index + 1}.</td>
+        <td className="text-right text-sm">{item.name}</td>
+        <td className="text-sm">{item.highScore}</td>
       </tr>
     );
   });
