@@ -48,6 +48,7 @@ export default function MapWrapper({
   goHome,
   curLobby,
   scoreData,
+  isLoggedIn,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -133,11 +134,7 @@ export default function MapWrapper({
     console.log(curState);
     return (
       <div className="max-w-lg text-center">
-        <ResultsLeaderboard
-          scoreData={scoreData}
-          isLoggedIn={isLoggedIn}
-          score={curState.points}
-        />
+        <ResultsLeaderboard scoreData={scoreData} isLoggedIn={isLoggedIn} />
       </div>
     );
   };
@@ -193,7 +190,7 @@ export default function MapWrapper({
         </div> */}
         <div className="relative flex flex-grow items-center justify-center">
           {!curState.complete && getPreviewImage()}
-          {curState.complete && getLeaderBoard(false, scoreData)}
+          {curState.complete && getLeaderBoard(isLoggedIn, scoreData)}
         </div>
       </div>
     </div>

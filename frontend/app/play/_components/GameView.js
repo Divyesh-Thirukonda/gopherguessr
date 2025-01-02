@@ -23,6 +23,7 @@ export default function GameView({
   goHome,
   curLobby,
   scoreData,
+  isLoggedIn,
 }) {
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -150,6 +151,7 @@ export default function GameView({
           goHome={goHome}
           curLobby={curLobby}
           scoreData={scoreData}
+          isLoggedIn={isLoggedIn}
         />
       </div>
     </div>

@@ -74,10 +74,11 @@ export default async function Play({ searchParams }) {
   // check if user is logged in and get user id if they are
   let usingIpFlag = false;
   let userId = null;
+  let userInDB = null;
   const session = await getUserSession();
   // make sure not expired
   if (session.expiry > DateTime.now().toSeconds()) {
-    const userInDB = await prisma.user.findFirst({
+    userInDB = await prisma.user.findFirst({
       where: { email: session.email },
     });
     if (userInDB) {
@@ -481,6 +482,7 @@ export default async function Play({ searchParams }) {
         persistGameState={persistGameState}
         curLobby={curLobby}
         scoreData={scoreData}
+        isLoggedIn={userInDB}
       />
       {usingIpFlag && curLobby && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-md">

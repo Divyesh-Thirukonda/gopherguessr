@@ -1,6 +1,6 @@
 // Leaderboard table
 
-export default function ResultsLeaderboard({ scoreData, isLoggedIn, score }) {
+export default function ResultsLeaderboard({ scoreData, isLoggedIn }) {
   if (!scoreData) {
     scoreData = [];
   }
@@ -29,16 +29,20 @@ export default function ResultsLeaderboard({ scoreData, isLoggedIn, score }) {
       suffix = "nd";
     } else if (place === 3) {
       suffix = "rd";
-    } else if (place > scoreData.length && !isLoggedIn) {
+    }
+
+    if (place > scoreData.length && !isLoggedIn) {
       return (
-        !isLoggedIn && (
-          <p className="text-2xl">
-            <u>
-              <a href="/login"> Log in now</a>
-            </u>{" "}
-            to save your score!
-          </p>
-        )
+        <p className="text-2xl">
+          <u>
+            <a href="/login"> Log in now</a>
+          </u>{" "}
+          to save your score!
+        </p>
+      );
+    } else if (place > scoreData.length) {
+      return (
+        <p className="text-2xl">Nice score! You'll be number 1 in no time.</p>
       );
     }
 
