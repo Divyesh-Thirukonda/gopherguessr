@@ -24,7 +24,11 @@ export async function POST(req) {
   const headers = req.headers;
   const referer = headers.get("referer");
   const gameId = parseInt(referer.slice(referer.length - 4, referer.length));
-  const game = await prisma.gameState.findFirst({ where: { id: gameId } });
+
+  let game = null;
+  if (gameId) {
+    game = await prisma.gameState.findFirst({ where: { id: gameId } });
+  }
 
   // 1. validate csrf token
   const csrfCookieToken = cookieStore.get("g_csrf_token").value;
@@ -73,7 +77,7 @@ export async function POST(req) {
     });
 
     // If user signs in with new high score, adjust
-    if (existingUser.highScore < game.points) {
+    if (game && existingUser.highScore < game.points) {
       await prisma.user.update({
         where: { id: existingUser.id },
         data: { highScore: game.points },
