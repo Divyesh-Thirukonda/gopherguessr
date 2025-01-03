@@ -34,6 +34,7 @@ import { X } from "@phosphor-icons/react";
 import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
+import ResultsLeaderboard from "./ResultsLeaderboard";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -46,6 +47,8 @@ export default function MapWrapper({
   curState,
   goHome,
   curLobby,
+  scoreData,
+  isLoggedIn,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -127,9 +130,21 @@ export default function MapWrapper({
     return null;
   };
 
+  const getLeaderBoard = (isLoggedIn, scoreData) => {
+    return (
+      <div className="max-w-lg text-center">
+        <ResultsLeaderboard
+          scoreData={scoreData}
+          isLoggedIn={isLoggedIn}
+          curState={curState}
+        />
+      </div>
+    );
+  };
+
   return (
     <div
-      className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
+      className={`fixed inset-0 z-[900] overflow-auto backdrop-blur-md ${!viewMap && "invisible"}`}
       onKeyDown={handleKeyDown}
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
@@ -173,11 +188,9 @@ export default function MapWrapper({
             />
           )}
         </div>
-        {/* <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
-          <StatsMenu curState={curState} />
-        </div> */}
         <div className="relative flex flex-grow items-center justify-center">
-          {getPreviewImage()}
+          {!curState.complete && getPreviewImage()}
+          {curState.complete && getLeaderBoard(isLoggedIn, scoreData)}
         </div>
       </div>
     </div>
