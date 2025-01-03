@@ -7,9 +7,7 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 
 export default async function UserAuth({ searchParams }) {
   const session = await getUserSession();
-  const params = new URLSearchParams(await searchParams);
-  const gameMode = params.get("gameId");
-
+  // const params = new URLSearchParams(await searchParams);
   if (session.email) redirect("/profile");
 
   return (
