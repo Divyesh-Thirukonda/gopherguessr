@@ -10,73 +10,78 @@ export default async function ProfileIndex() {
 
   const name = userInDB?.name || "Guest";
 
-  // Fetching stats for each difficulty mode (ONE, TWO, THREE)
-  const allStats = await getGameStats(userInDB?.id);
-  const easyStats = allStats.easy;
-  const mediumStats = allStats.medium;
-  const hardStats = allStats.hard;
-
-  // Helper function to fetch stats for each difficulty
-  async function getGameStats(userId) {
-    const easyGames = await fetchGameStats(userId, "ONE");
-    const mediumGames = await fetchGameStats(userId, "TWO");
-    const hardGames = await fetchGameStats(userId, "THREE");
-
-    return { easy: easyGames, medium: mediumGames, hard: hardGames };
-  }
+  const allStats = await fetchGameStats(userInDB?.id);
+  const { easy: easyStats, medium: mediumStats, hard: hardStats } = allStats;
 
   // Helper function to fetch stats for a specific difficulty
-  async function fetchGameStats(userId, difficulty) {
-    const gameStates = await prisma.gameState.findMany({
-      where: {
-        userId,
-        guesses: {
-          some: {
-            photo: {
-              diffRating: difficulty,
+  async function fetchGameStats(userId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        games: {
+          include: {
+            guesses: {
+              include: {
+                photo: true,
+              },
             },
           },
         },
       },
-      include: {
-        guesses: {
-          include: {
-            photo: true,
-          },
-        },
-      },
     });
 
-    const numGames = gameStates.length;
-    const allScores = [];
-    let highestScore = 0;
+    const difficultyLevels = {
+      ONE: { count: 0, scores: [], highest: 0 },
+      TWO: { count: 0, scores: [], highest: 0 },
+      THREE: { count: 0, scores: [], highest: 0 },
+    };
 
-    gameStates.forEach((gameState) => {
-      gameState.guesses.forEach((guess) => {
-        if (guess.photo.diffRating === difficulty) {
-          allScores.push(guess.points);
-          highestScore = Math.max(highestScore, guess.points);
+    user.games.forEach((game) => {
+      game.guesses.forEach((guess) => {
+        if (guess.guessComplete) {
+          const level = difficultyLevels[guess.photo.diffRating];
+          if (level) {
+            level.count++;
+            level.scores.push(guess.points);
+            level.highest = Math.max(level.highest, guess.points);
+          }
         }
       });
     });
 
-    const avgScore = allScores.length
-      ? allScores.reduce((acc, score) => acc + score, 0) / allScores.length
-      : 0;
+    const calculateAverage = (scores) =>
+      scores.length ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
 
-    return { numGames, highestScore, avgScore };
+    return {
+      easy: {
+        numGames: difficultyLevels.ONE.count,
+        highestScore: difficultyLevels.ONE.highest,
+        avgScore: calculateAverage(difficultyLevels.ONE.scores),
+      },
+      medium: {
+        numGames: difficultyLevels.TWO.count,
+        highestScore: difficultyLevels.TWO.highest,
+        avgScore: calculateAverage(difficultyLevels.TWO.scores),
+      },
+      hard: {
+        numGames: difficultyLevels.THREE.count,
+        highestScore: difficultyLevels.THREE.highest,
+        avgScore: calculateAverage(difficultyLevels.THREE.scores),
+      },
+    };
   }
 
-  const highScore = userInDB?.highScore || 0;
+
 
   // Fetch fun facts dynamically
-  const totalPhotos = await prisma.photo.count({ where: { isApproved: true } });
-  const highestScore =
-    (await prisma.gameState.aggregate({ _max: { points: true } }))?._max
-      .points || 0;
-  const totalGamesPlayed = await prisma.gameState.count({
-    where: { userId: userInDB?.id },
-  });
+  // const highScore = userInDB?.highScore || 0;
+  // const totalPhotos = await prisma.photo.count({ where: { isApproved: true } });
+  // const highestScore =
+  //   (await prisma.gameState.aggregate({ _max: { points: true } }))?._max
+  //     .points || 0;
+  // const totalGamesPlayed = await prisma.gameState.count({
+  //   where: { userId: userInDB?.id },
+  // });
 
   async function calculateStreaksAndFirstGame(userId) {
     // Fetch all games played by the user, sorted by date
@@ -167,7 +172,7 @@ export default async function ProfileIndex() {
 
         {/* Additional Information */}
         <div className="rounded-lg bg-black/50 p-6 text-center text-white shadow-2xl backdrop-blur-md">
-          <h3 className="text-lg font-bold text-gray-400">Lifetime Points</h3>
+          <h3 className="text-lg font-bold text-rose-400">Lifetime Points</h3>
           <p className="text-6xl font-extrabold text-white">
             {totalPointsEarned}
           </p>
@@ -177,7 +182,7 @@ export default async function ProfileIndex() {
         </div>
 
         <div className="rounded-lg bg-black/50 p-6 text-center text-white shadow-2xl backdrop-blur-md">
-          <h3 className="text-lg font-bold text-gray-400">
+          <h3 className="text-lg font-bold text-rose-400">
             🔥 Your Best Streak 🔥
           </h3>
           <p className="text-6xl font-extrabold text-white">
@@ -187,7 +192,7 @@ export default async function ProfileIndex() {
         </div>
 
         <div className="rounded-lg bg-black/50 p-6 text-center text-white shadow-2xl backdrop-blur-md">
-          <h3 className="text-lg font-bold text-gray-400">First Game Played</h3>
+          <h3 className="text-lg font-bold text-rose-400">First Game Played</h3>
           <p className="text-6xl font-bold text-white">{results.firstGame}</p>
           <p className="mt-2 text-sm text-gray-400">
             Where did the time go,{" "}

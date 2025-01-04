@@ -18,7 +18,7 @@ export default function GameStatsCarousel({
       title: "Overall",
       numGames: easyStats.numGames + mediumStats.numGames + hardStats.numGames,
       avgScore:
-        (easyStats.avgScore + mediumStats.avgScore + hardStats.avgScore) / 3,
+        (easyStats.avgScore*easyStats.numGames + mediumStats.avgScore*mediumStats.numGames + hardStats.avgScore*hardStats.numGames) / (easyStats.numGames + mediumStats.numGames + hardStats.numGames),
       highestScore: Math.max(
         easyStats.highestScore,
         mediumStats.highestScore,
@@ -81,7 +81,7 @@ export default function GameStatsCarousel({
           >
             <h3 className="text-lg font-bold text-rose-400">{stat.title}</h3>
             <p className="text-6xl font-extrabold">{stat.numGames}</p>
-            <p className="text-sm text-gray-400">Games Played</p>
+            <p className="text-sm text-gray-400">Rounds Played</p>
             <div className="mt-6 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-4xl font-bold">{stat.avgScore.toFixed(2)}</p>
