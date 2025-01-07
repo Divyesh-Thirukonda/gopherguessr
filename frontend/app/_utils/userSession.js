@@ -41,6 +41,16 @@ async function authorizeAdminRoute() {
   return { session };
 }
 
+async function userGreetings() {
+  const { session } = await authorizeUserRoute();
+  // make sure the user exists in the database before allowing them to do admin actions
+  const userInDB = await prisma.user.findFirst({
+    where: { email: session.email },
+  });
+
+  return (userInDB.name ? `Hello, ${userInDB.name}` : "Hello, Guest") + "!";
+}
+
 // for server actions in admin to double verify
 async function authorizeAdminAction() {
   const { session } = await authorizeUserRoute();
@@ -87,4 +97,5 @@ export {
   authorizeUserRoute,
   authorizeAdminRoute,
   authorizeAdminAction,
+  userGreetings,
 };

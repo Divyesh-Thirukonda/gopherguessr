@@ -70,19 +70,8 @@ export default async function ProfileIndex() {
       },
     };
   }
-
-
-
-  // Fetch fun facts dynamically
-  // const highScore = userInDB?.highScore || 0;
-  // const totalPhotos = await prisma.photo.count({ where: { isApproved: true } });
-  // const highestScore =
-  //   (await prisma.gameState.aggregate({ _max: { points: true } }))?._max
-  //     .points || 0;
-  // const totalGamesPlayed = await prisma.gameState.count({
-  //   where: { userId: userInDB?.id },
-  // });
-
+  
+  
   async function calculateStreaksAndFirstGame(userId) {
     // Fetch all games played by the user, sorted by date
     const games = await prisma.gameState.findMany({
