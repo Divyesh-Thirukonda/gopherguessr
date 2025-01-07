@@ -267,7 +267,10 @@ export default async function Play({ searchParams }) {
     if (curState.guesses.length === 0) {
       // get all locations that are in the filter
       const possibleLocations = await prisma.photo.findMany({
-        where: filter,
+        where: {
+          ...filter,
+          isApproved: true,  // This makes sure the isApproved filter is always true and the other filters are not ignored
+        },
         select: { id: true },
       });
 

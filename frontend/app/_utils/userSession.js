@@ -68,6 +68,20 @@ async function authorizeAdminAction() {
   return userInDB;
 }
 
+async function authorizeUserAction() {
+  const { session } = await authorizeUserRoute();
+  // make sure the user exists in the database before allowing them to do actions
+  const userInDB = await prisma.user.findFirst({
+    where: { email: session.email },
+  });
+
+  if (!userInDB) {
+    await deleteUserSession();
+  }
+
+  return userInDB;
+}
+
 // for login
 async function saveUserSession(data) {
   const cookieStore = await cookies();
@@ -98,4 +112,5 @@ export {
   authorizeAdminRoute,
   authorizeAdminAction,
   userGreetings,
+  authorizeUserAction,
 };

@@ -9,18 +9,14 @@ import UploadForm from "./_components/UploadForm";
 import heicConvert from "heic-convert";
 import { DiffEnum, CampusEnum } from "@prisma/client";
 import {
-  authorizeAdminRoute,
-  authorizeAdminAction,
+  authorizeUserAction,
 } from "@/app/_utils/userSession";
 
 export default async function Uploader() {
   // this runs on the backend when the user submits the form
   async function uploadFiles(formData) {
     "use server";
-    // check admmin auth, redirects if not authorized
-    await authorizeAdminRoute();
-    // checks db, logs the user out if not actually admin
-    const user = await authorizeAdminAction();
+    const user = await authorizeUserAction();
 
     const file = formData.get("file");
     let buffer = await file.arrayBuffer();
@@ -89,6 +85,7 @@ export default async function Uploader() {
         uploaderId: user.id,
         campus,
         diffRating,
+        isApproved: false,
         indoors: indoors === "Yes" ? true : false,
       },
     });

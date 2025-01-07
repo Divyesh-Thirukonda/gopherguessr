@@ -24,7 +24,7 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
         className="mb-3 rounded border-gray-300"
       />
       <label htmlFor="difficulty" className="mb-1 text-lg font-medium">
-        Difficulty
+        Difficulty (1 is easy, 3 is hard)
       </label>
       <select
         name="difficulty"

@@ -39,6 +39,15 @@ export default async function AdminIndex() {
           </div>
           Upload Photos
         </Link>
+        <Link
+          href="/admin/public_upload_approval"
+          className="group flex flex-col items-center gap-1 text-sm text-gray-600"
+        >
+          <div className="flex w-min items-center justify-center rounded-full bg-rose-600 p-5 group-hover:bg-rose-700">
+            <Upload className="h-10 w-10 text-white" weight="bold" />
+          </div>
+          Approve Photos
+        </Link>
       </div>
     </div>
   );
