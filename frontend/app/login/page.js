@@ -1,9 +1,9 @@
-import Script from "next/script";
 import { redirect } from "next/navigation";
 import { getUserSession } from "../_utils/userSession";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import LoadScript from "./_components/LoadScript";
 
 export default async function UserAuth() {
   const session = await getUserSession();
@@ -35,7 +35,7 @@ export default async function UserAuth() {
           data-logo_alignment="left"
         ></div>
       </div>
-      <Script src="https://accounts.google.com/gsi/client" />
+      <LoadScript />
       <motion.div
         className="absolute left-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
         whileHover={{ scale: 1.2 }}
