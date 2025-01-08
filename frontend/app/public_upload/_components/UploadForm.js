@@ -9,27 +9,28 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
 
   // show uploading... if the form is currently submitting
   if (pending) {
-    return <div>uploading...</div>;
+    return <div>Sending...</div>;
   }
 
   return (
-    <>
-      <label htmlFor="name" className="mb-1 text-lg font-medium">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <label htmlFor="name" className="block mb-2 text-lg font-medium">
         Location Name
       </label>
       <input
         name="name"
         id="name"
         type="text"
-        className="mb-3 rounded border-gray-300"
+        className="mb-4 w-full p-2 border rounded border-gray-300"
       />
-      <label htmlFor="difficulty" className="mb-1 text-lg font-medium">
+      <label htmlFor="difficulty" className="block mb-2 text-lg font-medium">
         Difficulty (1 is easy, 3 is hard)
       </label>
       <select
         name="difficulty"
         id="difficulty"
-        className="mb-3 rounded border-gray-300"
+        className="mb-4 w-full p-2 border rounded border-gray-300"
       >
         {Object.keys(DiffEnum).map((key) => (
           <option value={DiffEnum[key]} key={key}>
@@ -37,13 +38,13 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
           </option>
         ))}
       </select>
-      <label htmlFor="campus" className="mb-1 text-lg font-medium">
+      <label htmlFor="campus" className="block mb-2 text-lg font-medium">
         Campus
       </label>
       <select
         name="campus"
         id="campus"
-        className="mb-3 rounded border-gray-300"
+        className="mb-4 w-full p-2 border rounded border-gray-300"
       >
         {Object.keys(CampusEnum).map((key) => (
           <option value={CampusEnum[key]} key={key}>
@@ -51,21 +52,21 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
           </option>
         ))}
       </select>
-      <label htmlFor="indoors" className="mb-1 text-lg font-medium">
+      <label htmlFor="indoors" className="block mb-2 text-lg font-medium">
         Indoors
       </label>
       <select
         name="indoors"
         id="indoors"
-        className="mb-3 rounded border-gray-300"
+        className="mb-4 w-full p-2 border rounded border-gray-300"
       >
         <option value="Yes">Yes</option>
         <option value="No">No</option>
       </select>
-      <label htmlFor="file" className="mb-1 text-lg font-medium">
+      <label htmlFor="file" className="block mb-2 text-lg font-medium">
         Image Upload
       </label>
-      <div className="mb-3 rounded border p-2">
+      <div className="mb-4 w-full p-2 border rounded border-gray-300">
         <input
           name="file"
           type="file"
@@ -74,9 +75,11 @@ export default function UploadForm({ uploaders, CampusEnum, DiffEnum }) {
           required
         />
       </div>
-      <button type="submit" className="rounded bg-rose-600 p-3 text-white">
-        Upload
+      <button type="submit" className="w-full rounded bg-rose-600 p-3 text-white">
+        Submit
       </button>
-    </>
+      <p className="mt-5 text-center font-light">The council will review your upload and determine if it is worthy of our prestigious collection.</p>
+      </div>
+    </div>
   );
 }

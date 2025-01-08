@@ -96,7 +96,6 @@ export default async function Uploader() {
   return (
     <form
       action={uploadFiles}
-      className="m-4 flex max-w-md flex-col rounded-md border p-4"
     >
       <UploadForm CampusEnum={CampusEnum} DiffEnum={DiffEnum} />
     </form>

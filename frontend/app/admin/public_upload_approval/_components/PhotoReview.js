@@ -21,7 +21,7 @@ export default function PhotoReview({ photos }) {
     }
     setCurrentIndex((prevIndex) => prevIndex + 1);
     if (currentIndex + 1 >= photos.length) {
-      return <div>Nothing left</div>;
+      return;
     }
   };
 

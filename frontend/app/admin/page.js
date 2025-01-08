@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { authorizeAdminAction } from "../_utils/userSession";
-import { Upload, MapTrifold, Table } from "@phosphor-icons/react/dist/ssr";
+import { Upload, MapTrifold, Table, Hourglass } from "@phosphor-icons/react/dist/ssr";
 
 export default async function AdminIndex() {
   // get user info for name
@@ -44,7 +44,7 @@ export default async function AdminIndex() {
           className="group flex flex-col items-center gap-1 text-sm text-gray-600"
         >
           <div className="flex w-min items-center justify-center rounded-full bg-rose-600 p-5 group-hover:bg-rose-700">
-            <Upload className="h-10 w-10 text-white" weight="bold" />
+            <Hourglass className="h-10 w-10 text-white" weight="bold" />
           </div>
           Approve Photos
         </Link>

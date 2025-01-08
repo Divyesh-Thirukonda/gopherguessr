@@ -46,6 +46,7 @@ model Photo {
   uploader User @relation(fields: [uploaderId], references: [id])
   uploaderId Int
   guesses Guess[]
+  isTest Boolean @default(false)
 }
 
 model User {
