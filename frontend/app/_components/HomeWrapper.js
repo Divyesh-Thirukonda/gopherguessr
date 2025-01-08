@@ -26,6 +26,8 @@ export default function HomeWrapper({
   const [isMounted, setIsMounted] = useState(false);
   const [gameMode, setGameMode] = useState(0); // Index for carousel navigation
   const router = useRouter();
+  // const [isTimed, setIsTimed] = useState(false);
+  let isTimed = false;
 
   const gameModes = [
     {
@@ -71,19 +73,19 @@ export default function HomeWrapper({
       description: "You gotta be better than Rainbolt to play this mode...",
       bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMxjdU0W61dJiMHu2eo6NDykUlB7vPE4fYOCIq",
     },
+    {
+      title: "Timed",
+      isTimed: true,
+      mode: "default",
+      description: "No time to waste, no time to lose!",
+      bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMxjdU0W61dJiMHu2eo6NDykUlB7vPE4fYOCIq", // TODO: change bg
+    },
   ];
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // const handlePlayClick = (e) => {
-  //   e.preventDefault();
-  //   if (!isMounted) return;
-
-  //   setIsLoading(true);
-  //   router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
-  // };
   const handleNavigationClick = (target) => {
     return (e) => {
       e.preventDefault();
@@ -92,7 +94,11 @@ export default function HomeWrapper({
       setIsLoading(true);
 
       if (target === "play") {
-        router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
+        // if (gameModes[gameMode].title === "Timed") {
+        //   isTimed = true;
+        // }
+        router.push(`/play?gameMode=${gameModes[gameMode].mode}&isTimed=${gameModes[gameMode].isTimed ?? false}`);
+        // router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
       } else if (target === "leaderboard") {
         router.push("/leaderboard");
       } else if (target === "lobby") {

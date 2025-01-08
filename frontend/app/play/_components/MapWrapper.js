@@ -49,6 +49,7 @@ export default function MapWrapper({
   curLobby,
   scoreData,
   isLoggedIn,
+  isTimeUp,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -73,6 +74,12 @@ export default function MapWrapper({
       setResultsDialogOpen(true);
     }
   }, [curState.round]);
+
+  useEffect(() => {
+    if (isTimeUp) {
+      submitGuess(guess);
+    }
+  }, [isTimeUp]);
 
   // handle keybinds
   const handleKeyDown = (event) => {

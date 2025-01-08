@@ -59,6 +59,7 @@ export default async function Play({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const gameMode = params.get("gameMode");
   const code = params.get("code");
+  const isTimed = params.get("isTimed");
   const cookieStore = await cookies();
   const headersList = await headers();
   const ip =
@@ -486,6 +487,7 @@ export default async function Play({ searchParams }) {
         curLobby={curLobby}
         scoreData={scoreData}
         isLoggedIn={userInDB}
+        isTimed={isTimed.toLowerCase() === "true"}
       />
       {usingIpFlag && curLobby && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-md">

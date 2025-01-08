@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as motion from "framer-motion/client";
 import dynamicImport from "next/dynamic";
 import { MapTrifold } from "@phosphor-icons/react";
 import Loading from "@/app/_components/Loading";
-// import StatsMenu from "./StatsMenu";
 
 const MapWrapper = dynamicImport(() => import("./MapWrapper"), {
   ssr: false,
@@ -24,10 +23,15 @@ export default function GameView({
   curLobby,
   scoreData,
   isLoggedIn,
+  isTimed,
 }) {
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
+  const [timer, setTimer] = useState(10); // Initialize the timer with 30 seconds
+  const [isTimeUp, setIsTimeUp] = useState(false); // Track if the time is up
+  const [hangTimer, setHangTimer] = useState(false); // Use state to control the timer hang
+  const initialGameState = useRef(null);
 
   // trigger server action to save cookie on mount
   useEffect(() => {
@@ -52,12 +56,68 @@ export default function GameView({
     requestAnimationFrame(increment);
   }, [curState.points]);
 
+  // Timer logic: Countdown and auto-submit
+  useEffect(() => {
+    if (isTimed && !isTimeUp && !(curState.curGuess.guessComplete)) {
+      const interval = setInterval(() => {
+        setTimer((prevTime) => {
+          console.log("Starting timer", prevTime);
+          if (!isTimed) {
+            return prevTime;
+          }
+
+          if (hangTimer) {
+            console.log("Timer is hanging, but game state is the same.");
+            clearInterval(interval);
+            return prevTime;
+          }
+          
+          if (prevTime <= 1) {
+            clearInterval(interval);
+            setIsTimeUp(true);
+            setViewMap(true);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isTimed, isTimeUp, hangTimer]);
+
   // on first load, if game complete, open map to show results dialog
   useEffect(() => {
     if (curState.complete) {
       setViewMap(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (curState.complete) {
+      setHangTimer(false);
+      return;
+    }
+    
+    if (curState.curGuess && curState.curGuess.photo) {
+      if (initialGameState.current === null) {
+        // Store the first game state in the ref (this only happens once)
+        initialGameState.current = curState.curGuess.photo.id;
+        console.log("Initial GameState stored", initialGameState.current);
+      } else {
+        // This is not the first state change, so we don't update the initialGameState
+        if (initialGameState.current !== curState.curGuess.photo.id) {
+          console.log("Game state has already been set initially.");
+          setHangTimer(true); // Set hangTimer to true when the guess is not the same
+        } else {
+          setHangTimer(false); // Reset the hangTimer if the guess is the same
+        }
+      }
+    } else {
+      console.log("curState.curGuess or curState.curGuess.photo is undefined");
+    }
+  }, [curState.curGuess?.photo?.id]); // Using optional chaining for safety
+  
 
   const getStatsMenu = () => {
     if (!viewMap) {
@@ -116,6 +176,24 @@ export default function GameView({
     return <Loading />;
   }
 
+  const resetTime = () => {
+    if (curState.complete || !isTimed) return;
+    
+    setIsTimeUp(false);
+    setTimer(10); // Reset the timer
+    
+    // Check if curState.curGuess and curState.curGuess.photo are defined
+    if (curState.curGuess && curState.curGuess.photo) {
+      initialGameState.current = curState.curGuess.photo.id;
+      console.log("Game state reset with photo id:", initialGameState.current);
+    } else {
+      console.log("curState.curGuess or curState.curGuess.photo is undefined, cannot reset game state");
+    }
+  
+    setHangTimer(false); // Reset the hangTimer state
+  };
+  
+
   return (
     <div className="fixed inset-0">
       <div className="relative flex h-dvh w-dvw items-center justify-center bg-gray-500">
@@ -142,9 +220,14 @@ export default function GameView({
       <div>{getStatsMenu()}</div>
       <div>
         {getOpenMap()}
+        {(isTimed && !isTimeUp) && (
+          <div className="absolute top-4 right-4 z-[1300] text-white font-semibold">
+            Time Remaining: {timer}s
+          </div>
+        )}
         <MapWrapper
           submitGuess={submitGuess}
-          onDialogContinue={() => setViewMap(false)}
+          onDialogContinue={() => {setViewMap(false); resetTime();}}
           viewMap={viewMap}
           clearGameState={clearGameState}
           curState={curState}
@@ -152,6 +235,7 @@ export default function GameView({
           curLobby={curLobby}
           scoreData={scoreData}
           isLoggedIn={isLoggedIn}
+          isTimeUp={isTimeUp}
         />
       </div>
     </div>
