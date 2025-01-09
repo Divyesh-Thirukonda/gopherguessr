@@ -42,6 +42,7 @@ const stPaulCenter = [44.98655, -93.18201];
 export default function MapWrapper({
   submitGuess,
   onDialogContinue,
+  onXClick,
   viewMap,
   clearGameState,
   curState,
@@ -180,7 +181,7 @@ export default function MapWrapper({
           </MotionButton>
           <MotionButton
             className="absolute right-3 top-3 z-[1000]"
-            onClick={onDialogContinue}
+            onClick={onXClick}
           >
             <X className="h-6 w-6 text-white" />
           </MotionButton>

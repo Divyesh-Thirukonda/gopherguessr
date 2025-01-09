@@ -149,7 +149,15 @@ export default function GameView({
             ))}
           </div>
           <div className="mx-auto mt-3 inline-block rounded-full border border-gray-400 bg-gray-900 bg-opacity-50 px-4 text-center font-semibold text-white backdrop-blur">
-            Round {curState.round} / 5
+            Round {curState.round} / 5{" "}
+            {isTimed && !isTimeUp && (
+              <>
+                <span className="mx-2">|</span>
+                <span>
+                  Time Remaining: {timer}s
+                </span>
+              </>
+            )}
           </div>
         </div>
       );
@@ -196,6 +204,11 @@ export default function GameView({
 
   return (
     <div className="fixed inset-0">
+      {/* Flashing Border Overlay */}
+      {timer < 3 && isTimed && !isTimeUp && (
+        <div className="absolute inset-0 animate-flash-red border-8 border-red-500 pointer-events-none z-50"></div>
+      )}
+    
       <div className="relative flex h-dvh w-dvw items-center justify-center bg-gray-500">
         {!curState.complete && (
           <>
@@ -207,7 +220,7 @@ export default function GameView({
                 alt="Blurry guess image."
               />
             </div>
-
+  
             {/* Centered Guess Image */}
             <img
               src={getFullUrl(curState.curGuess.photo.imageId)}
@@ -220,14 +233,16 @@ export default function GameView({
       <div>{getStatsMenu()}</div>
       <div>
         {getOpenMap()}
-        {(isTimed && !isTimeUp) && (
-          <div className="absolute top-4 right-4 z-[1300] text-white font-semibold">
-            Time Remaining: {timer}s
-          </div>
-        )}
+        
         <MapWrapper
           submitGuess={submitGuess}
-          onDialogContinue={() => {setViewMap(false); resetTime();}}
+          onDialogContinue={() => {
+            setViewMap(false);
+            resetTime();
+          }}
+          onXClick={() => {
+            setViewMap(false);
+          }}
           viewMap={viewMap}
           clearGameState={clearGameState}
           curState={curState}
@@ -240,4 +255,5 @@ export default function GameView({
       </div>
     </div>
   );
+  
 }
