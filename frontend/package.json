@@ -6,9 +6,13 @@
     "dev": "npm i && prisma generate && next dev --turbo",
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.1.7",
@@ -28,6 +32,7 @@
     "protomaps-leaflet": "4.0.1",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "react-native-webview": "^13.12.5",
     "react-qr-code": "^2.0.15",
     "react-swipeable": "^7.0.2",
     "server-only": "^0.0.1",
