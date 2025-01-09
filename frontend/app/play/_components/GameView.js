@@ -25,12 +25,16 @@ export default function GameView({
   isLoggedIn,
   isTimed,
 }) {
+  const maxAllocatedTime = 10; // max time allocated for each round
+  const percentagePenaltyPerReduction = 5; // 5% penalty for each time reduction
+  const timeFragments = 4; // Time is split into 4 quarters, 5% penalty for each quarter (first quarter is free)
+
   const [viewMap, setViewMap] = useState(false);
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
-  const [timer, setTimer] = useState(10); // Initialize the timer with 30 seconds
-  const [isTimeUp, setIsTimeUp] = useState(false); // Track if the time is up
-  const [hangTimer, setHangTimer] = useState(false); // Use state to control the timer hang
+  const [timer, setTimer] = useState(maxAllocatedTime); // time remaining (counts down to 0)
+  const [isTimeUp, setIsTimeUp] = useState(false); // did timer hit 0
+  const [hangTimer, setHangTimer] = useState(false); // freezes timer
   const initialGameState = useRef(null);
 
   // trigger server action to save cookie on mount
@@ -185,10 +189,25 @@ export default function GameView({
   }
 
   const resetTime = () => {
+    const timeFrag = maxAllocatedTime / timeFragments;
+
+    if (isTimed && timer > timeFrag) {
+      const fragsElapsed = Math.floor(timer / timeFrag);
+      const reductionPercentage = Math.min(fragsElapsed - 1, timeFragments-1) * percentagePenaltyPerReduction;
+
+      const reducedPointsMultiplier = (1 - reductionPercentage / 100);
+      curState.guesses[curState.round - 2].points *= Math.max(reducedPointsMultiplier, 0)
+    }
+
+    if (curState.complete) {
+      setViewMap(true);
+    }
+
     if (curState.complete || !isTimed) return;
+
     
     setIsTimeUp(false);
-    setTimer(10); // Reset the timer
+    setTimer(maxAllocatedTime); // Reset the timer
     
     // Check if curState.curGuess and curState.curGuess.photo are defined
     if (curState.curGuess && curState.curGuess.photo) {

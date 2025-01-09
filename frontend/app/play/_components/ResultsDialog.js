@@ -98,10 +98,10 @@ export default function ResultsDialog({
       <div className="pointer-events-auto absolute bottom-6 left-0 right-0 z-[1300] flex justify-center">
         <MotionButton
           onClick={() => {
+            onContinue();
             if (curState.complete) {
               setShowEndDialog(true);
             } else {
-              onContinue();
               setDialogOpen(false);
             }
           }}

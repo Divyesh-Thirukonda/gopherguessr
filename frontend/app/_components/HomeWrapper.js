@@ -77,7 +77,7 @@ export default function HomeWrapper({
       title: "Timed",
       isTimed: true,
       mode: "default",
-      description: "No time to waste, no time to lose!",
+      description: "The quicker you are, the better your score",
       bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMxjdU0W61dJiMHu2eo6NDykUlB7vPE4fYOCIq", // TODO: change bg
     },
   ];
