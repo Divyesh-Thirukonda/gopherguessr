@@ -59,7 +59,7 @@ export default async function Play({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const gameMode = params.get("gameMode");
   const code = params.get("code");
-  const isTimed = params.get("isTimed");
+  const isTimed = params.get("isTimed") || "false";
   const cookieStore = await cookies();
   const headersList = await headers();
   const ip =
@@ -270,7 +270,7 @@ export default async function Play({ searchParams }) {
       const possibleLocations = await prisma.photo.findMany({
         where: {
           ...filter,
-          isApproved: true,  // This makes sure the isApproved filter is always true and the other filters are not ignored
+          isApproved: true, // This makes sure the isApproved filter is always true and the other filters are not ignored
         },
         select: { id: true },
       });
