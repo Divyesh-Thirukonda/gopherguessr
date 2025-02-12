@@ -34,8 +34,7 @@ import { X } from "@phosphor-icons/react";
 import Leaflet from "@/app/_components/Leaflet";
 import LeafletMarker from "@/app/_components/LeafletMarker";
 import MotionButton from "@/app/_components/MotionButton";
-import Image from "next/image";
-import StatsMenu from "./StatsMenu";
+import ResultsLeaderboard from "./ResultsLeaderboard";
 
 const minneapolisCenter = [44.97528, -93.23538];
 const stPaulCenter = [44.98655, -93.18201];
@@ -43,10 +42,15 @@ const stPaulCenter = [44.98655, -93.18201];
 export default function MapWrapper({
   submitGuess,
   onDialogContinue,
+  onXClick,
   viewMap,
   clearGameState,
   curState,
   goHome,
+  curLobby,
+  scoreData,
+  isLoggedIn,
+  isTimeUp,
 }) {
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
@@ -71,6 +75,12 @@ export default function MapWrapper({
       setResultsDialogOpen(true);
     }
   }, [curState.round]);
+
+  useEffect(() => {
+    if (isTimeUp) {
+      submitGuess(guess);
+    }
+  }, [isTimeUp]);
 
   // handle keybinds
   const handleKeyDown = (event) => {
@@ -100,33 +110,26 @@ export default function MapWrapper({
   const getPreviewImage = () => {
     if (!curState.complete && !resultsDialogOpen) {
       return (
-        <Image
+        <img
           src={getFullUrl(curState.curGuess.photo.imageId)}
-          fill="true"
-          objectFit="contain"
-          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
+          className="absolute max-h-full w-auto rounded-xl transition-transform duration-300 hover:scale-105 active:scale-100 md:h-auto md:w-full"
           onClick={onDialogContinue}
           alt="Guess image."
         />
       );
     } else if (resultsDialogOpen) {
       return (
-        <Image
+        <img
           src={getFullUrl(curState.lastGuess.photo.imageId)}
-          fill="true"
-          objectFit="contain"
-          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
+          className="absolute max-h-full w-auto rounded-xl transition-transform duration-300 md:h-auto md:w-full"
           alt="Guess image."
         />
       );
     } else {
       return (
-        <Image
+        <img
           src={getFullUrl(curState.lastGuess.photo.imageId)}
-          fill="true"
-          objectFit="contain"
-          className="scale-90 rounded-xl transition-transform duration-300 hover:scale-95"
-          onClick={onDialogContinue}
+          className="absolute max-h-full w-auto rounded-xl transition-transform duration-300 md:h-auto md:w-full"
           alt="Guess image."
         />
       );
@@ -135,36 +138,50 @@ export default function MapWrapper({
     return null;
   };
 
+  const getLeaderBoard = (isLoggedIn, scoreData) => {
+    return (
+      <div className="max-w-lg text-center">
+        <ResultsLeaderboard
+          scoreData={scoreData}
+          isLoggedIn={isLoggedIn}
+          curState={curState}
+        />
+      </div>
+    );
+  };
+
   return (
     <div
-      className={`fixed inset-0 z-[900] backdrop-blur-md ${!viewMap && "invisible"}`}
+      className={`fixed inset-0 z-[900] overflow-auto backdrop-blur-md ${!viewMap && "invisible"}`}
       onKeyDown={handleKeyDown}
       onClick={() => setEnableKeybinds(true)}
       tabIndex={0}
     >
-      <div className="grid h-screen grid-cols-2 grid-rows-3 md:grid-cols-11 md:grid-rows-7">
-        <div className="col-span-2 row-span-2 scale-x-[96%] scale-y-[96%] overflow-hidden rounded-xl md:col-span-9 md:row-span-7">
+      <div className="flex h-dvh flex-col gap-3 p-3 md:flex-row">
+        <div className="relative h-[66dvh] w-full flex-shrink-0 overflow-hidden rounded-xl md:h-full md:w-[75dvw]">
           <Leaflet
             center={viewStPaul ? stPaulCenter : minneapolisCenter}
             onClick={(e) => setGuess([e.latlng.lat, e.latlng.lng])}
+            className="h-full w-full"
+            zoom={16}
           >
             <LeafletMarker position={guess} icon="crosshair" />
           </Leaflet>
           <MotionButton
-            className="fixed left-0 right-0 top-6 z-[1000]"
+            className="absolute left-0 right-0 top-3 z-[1000]"
             onClick={() => setViewStPaul((currentState) => !currentState)}
           >
             Go to {viewStPaul ? "Minneapolis" : "St Paul"}
           </MotionButton>
           <MotionButton
-            className="fixed bottom-6 left-0 right-0 z-[1000]"
+            className="absolute bottom-6 left-0 right-0 z-[1000]"
             onClick={() => submitGuess(guess)}
           >
             Submit Guess
           </MotionButton>
           <MotionButton
-            className="absolute right-4 top-4 z-[1000]"
-            onClick={onDialogContinue}
+            className="absolute right-3 top-3 z-[1000]"
+            onClick={onXClick}
           >
             <X className="h-6 w-6 text-white" />
           </MotionButton>
@@ -175,14 +192,13 @@ export default function MapWrapper({
               onContinue={onDialogContinue}
               clearGameState={clearGameState}
               goHome={goHome}
+              curLobby={curLobby}
             />
           )}
         </div>
-        {/* <div className="relative col-span-1 row-span-1 flex flex-col items-center justify-center md:col-span-2 md:row-span-3 md:justify-end">
-          <StatsMenu curState={curState} />
-        </div> */}
-        <div className="relative col-span-2 row-span-1 flex items-center justify-center md:col-span-2 md:row-span-7">
-          {getPreviewImage()}
+        <div className="relative flex flex-grow items-center justify-center">
+          {!curState.complete && getPreviewImage()}
+          {curState.complete && getLeaderBoard(isLoggedIn, scoreData)}
         </div>
       </div>
     </div>

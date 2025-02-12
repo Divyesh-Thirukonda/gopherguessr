@@ -20,14 +20,25 @@ export default function Leaflet({
   const [renderChildren, setRenderChildren] = useState(false);
   const divRef = useRef(null);
   const mapRef = useRef(null);
+  const markerGroup = useRef(null);
+
+  function onLayerAdd() {
+    // only run if zoom isn't being overridden & more than 1 marker is present
+    const numMarkers = Object.keys(markerGroup.current._layers).length;
+    if (!zoom && numMarkers > 1) {
+      // zoom to fit markers every time a new marker is added
+      const bounds = markerGroup.current.getBounds();
+      mapRef.current.fitBounds(bounds);
+    }
+  }
 
   useEffect(() => {
     if (!mapRef.current) {
       // create the map if only it doesn't already exist
       mapRef.current = L.map(divRef.current, {
-        center,
+        center: center || [44.97528, -93.23538],
         zoom: zoom || 16,
-        minZoom: 14,
+        minZoom: 13,
         maxZoom: 20,
       });
       // get our custom protomaps tileset
@@ -65,20 +76,25 @@ export default function Leaflet({
       mapRef.current.on("click", (e) => {
         onClick && onClick(e);
       });
+      // create feature group to hold markers
+      markerGroup.current = L.featureGroup();
+      markerGroup.current.on("layeradd", onLayerAdd);
     }
     // prevent memory leak (delete leaflet instance on unmount)
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
+        markerGroup.current.off("layeradd", onLayerAdd);
+        markerGroup.current = null;
       }
     };
   }, []);
 
   // to update the center automatically
   useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setView(center, 16);
+    if (mapRef.current && center) {
+      mapRef.current.setView(center);
     }
   }, [center]);
 
@@ -96,6 +112,7 @@ export default function Leaflet({
           Children.map(children, (child) =>
             cloneElement(child, {
               mapRef,
+              markerGroup,
             }),
           )}
       </div>
