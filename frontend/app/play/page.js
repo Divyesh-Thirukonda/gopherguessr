@@ -27,9 +27,6 @@ import GameView from "./_components/GameView";
 import { cookies } from "next/headers";
 import { getIronSession, sealData } from "iron-session";
 import Image from "next/image";
-import { getUserSession } from "../_utils/userSession";
-import { DateTime } from "luxon";
-import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -65,19 +62,6 @@ export default async function Play({ searchParams }) {
     cookieName: "game_s",
   });
 
-  // check if user is logged in and get user id if they are
-  let userId = 29; // default user id
-  const session = await getUserSession();
-  // make sure not expired
-  if (session.expiry > DateTime.now().toSeconds()) {
-    const userInDB = await prisma.user.findFirst({
-      where: { email: session.email },
-    });
-    if (userInDB) {
-      userId = userInDB.id;
-    }
-  }
-
   let curState = null;
   if (gameStateId) {
     // check if game state is in the db
@@ -88,9 +72,7 @@ export default async function Play({ searchParams }) {
     if (!curState) {
       // if not in db, create game state
       curState = await prisma.gameState.create({
-        data: {
-          userId,
-        },
+        data: {},
         include: prismaGameStateInclude,
       });
       gameStateId = curState.id;
@@ -98,9 +80,7 @@ export default async function Play({ searchParams }) {
   } else {
     // if no session stored in browser, create game state
     curState = await prisma.gameState.create({
-      data: {
-        userId,
-      },
+      data: {},
       include: prismaGameStateInclude,
     });
     gameStateId = curState.id;
@@ -120,16 +100,15 @@ export default async function Play({ searchParams }) {
       { campus: "EastBankCore" },
       { campus: "EastBankOuter" },
     ],
-    isApproved: true,
   };
   if (gameMode === "1") {
-    filter = { diffRating: "ONE", isApproved: true };
+    filter = { diffRating: "ONE" };
   } else if (gameMode === "2") {
-    filter = { diffRating: "TWO", isApproved: true };
+    filter = { diffRating: "TWO" };
   } else if (gameMode === "3") {
-    filter = { diffRating: "THREE", isApproved: true };
-  } else if (gameMode === "stpaul") {
-    filter = { campus: "StPaul", isApproved: true };
+    filter = { diffRating: "THREE" };
+  } else if (gameMode === "St.Paul") {
+    filter = { campus: "StPaul" };
   }
   // check if guesses initialized
   if (curState.guesses.length === 0) {
@@ -213,7 +192,6 @@ export default async function Play({ searchParams }) {
           points: roundPoints,
         },
       });
-
       await prisma.gameState.update({
         where: { id: curState.id },
         data: {
@@ -223,27 +201,6 @@ export default async function Play({ searchParams }) {
           complete: curState.round === 5,
         },
       });
-
-      // NOTE:
-      // Eventually, we will want specific high scores for game modes / difficulties
-
-      // update user (or default user) high score
-      if (curState.round === 5) {
-        const userInDB = await prisma.user.findFirst({
-          where: { id: curState.userId },
-        });
-
-        // update db only if new score is higher
-        if (userInDB.highScore < curState.points + roundPoints) {
-          await prisma.user.update({
-            where: { id: curState.userId },
-            data: {
-              highScore: curState.points + roundPoints,
-            },
-          });
-        }
-      }
-
       // make sure frontend has latest data
       revalidatePath("/play");
     }
@@ -254,14 +211,6 @@ export default async function Play({ searchParams }) {
     "use server";
     const cookieStore = await cookies();
     cookieStore.delete("game_s");
-  }
-
-  // SERVER ACTION
-  async function goHome() {
-    "use server";
-    const cookieStore = await cookies();
-    cookieStore.delete("game_s");
-    redirect("/");
   }
 
   return (
@@ -282,7 +231,6 @@ export default async function Play({ searchParams }) {
       </div>
       <GameView
         clearGameState={clearGameState}
-        goHome={goHome}
         submitGuess={submitGuess}
         curState={curState}
         key={curState.id}
