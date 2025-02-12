@@ -73,6 +73,7 @@ model GameState {
   lobby Lobby? @relation(fields: [lobbyId], references: [id])
   lobbyId Int?
   gameMode GameModeEnum?
+  lobbyUsername String?
 }
 
 model Guess {
