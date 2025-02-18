@@ -152,7 +152,7 @@ export default async function Lobby({ searchParams }) {
                       return (
                         <tr className="text-xl" key={index}>
                           <td className="text-left">{index + 1}.</td>
-                          <td className="text-right">{game.user.name}</td>
+                          <td className="text-right">{game.lobbyUsername}</td>
                           <td>{game.points}</td>
                         </tr>
                       );
@@ -164,12 +164,24 @@ export default async function Lobby({ searchParams }) {
           )}
           {curLobby && timeLeft > 0 && (
             <>
+              <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
+                <h2 className="text-2xl font-medium">Time Left</h2>
+                <Timer
+                  completeBy={curLobby.completeBy}
+                  initTimeLeft={timeLeft}
+                />
+              </div>
+              <div className="mt-3 flex w-80 flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
+                <div className="w-full bg-amber-400 py-2 text-lg font-medium">
+                  <div className="ml-2 mr-2">Join with Code</div>
+                </div>
+                <div className="px-3 py-4 text-4xl font-bold">
+                  {curLobby.code}
+                </div>
+              </div>
               <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
                 <div className="w-full bg-amber-400 py-2 text-lg font-medium">
-                  <div className="ml-2 mr-2">
-                    Join by Scanning this QR Code <br />
-                    (manual code entry coming soon...)
-                  </div>
+                  <div className="ml-2 mr-2">Join with QR Code</div>
                 </div>
                 <div className="px-3 py-4">
                   <QRCode
@@ -177,13 +189,6 @@ export default async function Lobby({ searchParams }) {
                     size="200"
                   />
                 </div>
-              </div>
-              <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
-                <h2 className="text-2xl font-medium">Time Left</h2>
-                <Timer
-                  completeBy={curLobby.completeBy}
-                  initTimeLeft={timeLeft}
-                />
               </div>
             </>
           )}

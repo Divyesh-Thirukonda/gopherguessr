@@ -59,7 +59,7 @@ export default async function Play({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const gameMode = params.get("gameMode");
   const code = params.get("code");
-  const isTimed = params.get("isTimed");
+  const isTimed = params.get("isTimed") || "false";
   const cookieStore = await cookies();
   const headersList = await headers();
   const ip =
@@ -73,8 +73,7 @@ export default async function Play({ searchParams }) {
   });
 
   // check if user is logged in and get user id if they are
-  let usingIpFlag = false;
-  let userId = null;
+  let userId = 29; // default user
   let userInDB = null;
   const session = await getUserSession();
   // make sure not expired
@@ -84,46 +83,6 @@ export default async function Play({ searchParams }) {
     });
     if (userInDB) {
       userId = userInDB.id;
-    } else {
-      usingIpFlag = true;
-      // check if ip was already used to make user
-      const ipBasedUserInDB = await prisma.user.findFirst({
-        where: { email: ip },
-      });
-      if (ipBasedUserInDB) {
-        if (ipBasedUserInDB.name !== "Guest") usingIpFlag = false;
-        userId = ipBasedUserInDB.id;
-      } else {
-        // make user based on ip otherwise
-        const newIpBasedUser = await prisma.user.create({
-          data: {
-            name: "Guest",
-            email: ip,
-          },
-        });
-        if (newIpBasedUser.name !== "Guest") usingIpFlag = false;
-        userId = newIpBasedUser.id;
-      }
-    }
-  } else {
-    usingIpFlag = true;
-    // check if ip was already used to make user
-    const ipBasedUserInDB = await prisma.user.findFirst({
-      where: { email: ip },
-    });
-    if (ipBasedUserInDB) {
-      if (ipBasedUserInDB.name !== "Guest") usingIpFlag = false;
-      userId = ipBasedUserInDB.id;
-    } else {
-      // make user based on ip otherwise
-      const newIpBasedUser = await prisma.user.create({
-        data: {
-          name: "Guest",
-          email: ip,
-        },
-      });
-      if (newIpBasedUser.name !== "Guest") usingIpFlag = false;
-      userId = newIpBasedUser.id;
     }
   }
 
@@ -183,6 +142,7 @@ export default async function Play({ searchParams }) {
           userId,
           lobbyId: curLobby ? curLobby.id : null,
           gameMode: dbGameMode,
+          ip,
         },
         include: prismaGameStateInclude,
       });
@@ -195,6 +155,7 @@ export default async function Play({ searchParams }) {
         userId,
         lobbyId: curLobby ? curLobby.id : null,
         gameMode: dbGameMode,
+        ip,
       },
       include: prismaGameStateInclude,
     });
@@ -270,7 +231,7 @@ export default async function Play({ searchParams }) {
       const possibleLocations = await prisma.photo.findMany({
         where: {
           ...filter,
-          isApproved: true,  // This makes sure the isApproved filter is always true and the other filters are not ignored
+          isApproved: true, // This makes sure the isApproved filter is always true and the other filters are not ignored
         },
         select: { id: true },
       });
@@ -416,12 +377,12 @@ export default async function Play({ searchParams }) {
     // if we implement this for regular games we should have some sort of profanity filter on the names
     "use server";
     if (curLobby) {
-      await prisma.user.update({
+      await prisma.gameState.update({
         where: {
-          id: userId,
+          id: curState.id,
         },
         data: {
-          name: formData.get("name"),
+          lobbyUsername: formData.get("name"),
         },
       });
       revalidatePath("/play");
@@ -466,7 +427,7 @@ export default async function Play({ searchParams }) {
         isLoggedIn={userInDB}
         isTimed={isTimed.toLowerCase() === "true"}
       />
-      {usingIpFlag && curLobby && (
+      {curLobby && !curState.lobbyUsername && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-md">
           <form
             action={setName}
