@@ -25,7 +25,7 @@ export default function GameView({
   isLoggedIn,
   isTimed,
 }) {
-  const maxAllocatedTime = 10; // max time allocated for each round
+  const maxAllocatedTime = 30; // max time allocated for each round
   const percentagePenaltyPerReduction = 5; // 5% penalty for each time reduction
   const timeFragments = 4; // Time is split into 4 quarters, 5% penalty for each quarter (first quarter is free)
 
@@ -62,7 +62,7 @@ export default function GameView({
 
   // Timer logic: Countdown and auto-submit
   useEffect(() => {
-    if (isTimed && !isTimeUp && !(curState.curGuess.guessComplete)) {
+    if (isTimed && !isTimeUp && !curState.curGuess?.guessComplete) {
       const interval = setInterval(() => {
         setTimer((prevTime) => {
           console.log("Starting timer", prevTime);
@@ -75,7 +75,7 @@ export default function GameView({
             clearInterval(interval);
             return prevTime;
           }
-          
+
           if (prevTime <= 1) {
             clearInterval(interval);
             setIsTimeUp(true);
@@ -102,7 +102,7 @@ export default function GameView({
       setHangTimer(false);
       return;
     }
-    
+
     if (curState.curGuess && curState.curGuess.photo) {
       if (initialGameState.current === null) {
         // Store the first game state in the ref (this only happens once)
@@ -121,7 +121,6 @@ export default function GameView({
       console.log("curState.curGuess or curState.curGuess.photo is undefined");
     }
   }, [curState.curGuess?.photo?.id]); // Using optional chaining for safety
-  
 
   const getStatsMenu = () => {
     if (!viewMap) {
@@ -157,9 +156,7 @@ export default function GameView({
             {isTimed && !isTimeUp && (
               <>
                 <span className="mx-2">|</span>
-                <span>
-                  Time Remaining: {timer}s
-                </span>
+                <span>Time Remaining: {timer}s</span>
               </>
             )}
           </div>
@@ -205,10 +202,9 @@ export default function GameView({
 
     if (curState.complete || !isTimed) return;
 
-    
     setIsTimeUp(false);
     setTimer(maxAllocatedTime); // Reset the timer
-    
+
     // Check if curState.curGuess and curState.curGuess.photo are defined
     if (curState.curGuess && curState.curGuess.photo) {
       initialGameState.current = curState.curGuess.photo.id;
@@ -216,18 +212,25 @@ export default function GameView({
     } else {
       console.log("curState.curGuess or curState.curGuess.photo is undefined, cannot reset game state");
     }
-  
+
     setHangTimer(false); // Reset the hangTimer state
   };
-  
 
   return (
     <div className="fixed inset-0">
       {/* Flashing Border Overlay */}
       {timer < 3 && isTimed && !isTimeUp && (
-        <div className="absolute inset-0 animate-flash-red border-8 border-red-500 pointer-events-none z-50"></div>
+        <div className="pointer-events-none absolute inset-0 z-50 animate-flash-red border-4 border-rose-600"></div>
       )}
-    
+      {isTimed && !curState?.complete && (
+        <div className="absolute left-0 right-0 top-0 z-[4000] h-2 w-full">
+          <div
+            className="h-2 bg-rose-600 transition-all duration-1000 ease-linear"
+            style={{ width: `${(timer / maxAllocatedTime) * 100}%` }}
+          ></div>
+        </div>
+      )}
+
       <div className="relative flex h-dvh w-dvw items-center justify-center bg-gray-500">
         {!curState.complete && (
           <>
@@ -239,7 +242,7 @@ export default function GameView({
                 alt="Blurry guess image."
               />
             </div>
-  
+
             {/* Centered Guess Image */}
             <img
               src={getFullUrl(curState.curGuess.photo.imageId)}
@@ -252,7 +255,7 @@ export default function GameView({
       <div>{getStatsMenu()}</div>
       <div>
         {getOpenMap()}
-        
+
         <MapWrapper
           submitGuess={submitGuess}
           onDialogContinue={() => {
@@ -274,5 +277,4 @@ export default function GameView({
       </div>
     </div>
   );
-  
 }
