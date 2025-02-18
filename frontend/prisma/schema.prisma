@@ -74,6 +74,7 @@ model GameState {
   lobbyId Int?
   gameMode GameModeEnum?
   lobbyUsername String?
+  ip String?
 }
 
 model Guess {

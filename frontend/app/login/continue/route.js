@@ -6,14 +6,33 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { saveUserSession } from "@/app/_utils/userSession";
 import prisma from "@/app/_utils/db";
+import { DateTime } from "luxon";
 
-async function createUser(payload) {
+async function createUser(payload, ip) {
   const user = await prisma.user.create({
     data: {
       name: payload.name,
       email: payload.email,
     },
   });
+
+  // associate last played game on current ip address as long as it was finished in the last 5 mins
+  // this is so that when users sign up their last game is saved to their account
+  const lastGame = await prisma.gameState.findFirst({
+    where: {
+      ip,
+      compete: true,
+      updatedAt: {
+        gte: DateTime.now().minus({ minutes: 5 }).toJSDate,
+      },
+    },
+  });
+  if (lastGame) {
+    prisma.gameState.update({
+      where: { id: lastGame.id },
+      data: { userId: user.id },
+    });
+  }
 
   return user;
 }
@@ -23,6 +42,10 @@ export async function POST(req) {
 
   const headers = req.headers;
   const referer = headers.get("referer");
+  const ip =
+    process.env.NODE_ENV === "production"
+      ? headers.get("X-Real-IP")
+      : "127.0.0.1";
   const gameId = parseInt(referer.slice(referer.length - 4, referer.length));
 
   let game = null;
@@ -61,7 +84,7 @@ export async function POST(req) {
   // 4. Record admin status
   let isAdmin = false;
   if (!existingUser) {
-    existingUser = await createUser(payload);
+    existingUser = await createUser(payload, ip);
   } else {
     isAdmin = existingUser.isAdmin;
   }
