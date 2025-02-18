@@ -7,6 +7,7 @@ export default function App() {
     <WebView
       style={styles.container}
       source={{ uri: "https://gopher.nimbus.page" }}
+      allowsInlineMediaPlayback={true}
     />
   );
 }
