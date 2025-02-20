@@ -104,14 +104,26 @@ export default function EndDialog({
             </MotionButton>
           </form>
         )}
-        <form action={goHome}>
-          <MotionButton
-            className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
-            type="submit"
-          >
-            Go Home
-          </MotionButton>
-        </form>
+        {!curLobby && (
+          <form action={goHome}>
+            <MotionButton
+              className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
+              type="submit"
+            >
+              Go Home
+            </MotionButton>
+          </form>
+        )}
+        {curLobby && (
+          <form action={goHome}>
+            <MotionButton
+              className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
+              type="submit"
+            >
+              View Standings
+            </MotionButton>
+          </form>
+        )}
       </div>
     </div>
   );
