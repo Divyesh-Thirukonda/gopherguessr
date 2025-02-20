@@ -422,6 +422,7 @@ export default async function Play({ searchParams }) {
         curState={curState}
         key={curState.id}
         persistGameState={persistGameState}
+        goHome={goHome}
         curLobby={curLobby}
         scoreData={scoreData}
         isLoggedIn={userInDB}

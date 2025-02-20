@@ -6,10 +6,14 @@ import prisma from "../_utils/db";
 import { redirect } from "next/navigation";
 import QRCode from "react-qr-code";
 import Timer from "./_components/Timer";
+import LobbyLeaderboard from "./_components/LobbyLeaderboard";
+import { revalidatePath } from "next/cache";
 
 export default async function Lobby({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const code = params.get("code");
+  const playerDone = params.get("playerDone");
+  const isPlayerDone = !isNaN(parseInt(playerDone, 10));
 
   // get currently running lobby game
   let curLobby = null;
@@ -100,125 +104,142 @@ export default async function Lobby({ searchParams }) {
     redirect(`/lobby?code=${lobby.code}`);
   }
 
-  return (
-    <div className="fixed inset-0 overflow-y-scroll bg-gradient-to-br from-yellow-400 to-rose-800">
-      <div className="flex min-h-full items-center justify-center px-3 py-20">
-        <div className="max-w-lg text-center">
-          <motion.div
-            className="absolute left-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.8 }}
-          >
-            <Link
-              href="/"
-              className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
-              aria-label="Back"
+  async function secretRevalidateShhh(pth) {
+    "use server";
+    return revalidatePath(pth);
+  }
+
+  if (isPlayerDone) {
+    const path = "/lobby?code=" + code + "&playerDone=" + playerDone;
+    return (
+      <LobbyLeaderboard
+        path={path}
+        games={games}
+        secretRevalidateShhh={secretRevalidateShhh}
+      />
+    );
+  } else {
+    // Standard lobby
+    return (
+      <div className="fixed inset-0 overflow-y-scroll bg-gradient-to-br from-yellow-400 to-rose-800">
+        <div className="flex min-h-full items-center justify-center px-3 py-20">
+          <div className="max-w-lg text-center">
+            <motion.div
+              className="absolute left-3 top-3 mx-auto inline-block rounded-full bg-rose-600"
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.8 }}
             >
-              <ArrowLeft
-                className="h-6 w-6"
-                weight="bold"
-                aria-label="Back Icon"
-              />
-            </Link>
-          </motion.div>
-          {!curLobby && (
-            <div>
-              <h1 className="text-3xl font-bold text-white">
-                Create Multiplayer Lobby
-              </h1>
-              <p className="mt-1.5 text-gray-100">
-                Play Gopher Guessr with friends!
-                <br /> Currently, only the Minneapolis Game Mode is available.
-              </p>
-            </div>
-          )}
-          {curLobby && timeLeft <= 0 && (
-            <div>
-              <h1 className="text-3xl font-bold text-white">
-                Time&apos;s up! Let&apos;s see how you did...
-              </h1>
-              <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
-                <h2 className="text-2xl font-medium">Leaderboard</h2>
-                <table className="mx-auto w-full table-auto border-separate border-spacing-y-2 md:border-spacing-y-3">
-                  <thead>
-                    <tr className="text-gray-500">
-                      <th className="w-36 text-center"></th>
-                      <th className="w-96 text-right font-medium">Name</th>
-                      <th className="w-64 text-center font-medium">Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {games.map((game, index) => {
-                      return (
-                        <tr className="text-xl" key={index}>
-                          <td className="text-left">{index + 1}.</td>
-                          <td className="text-right">{game.lobbyUsername}</td>
-                          <td>{game.points}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-          {curLobby && timeLeft > 0 && (
-            <>
-              <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
-                <h2 className="text-2xl font-medium">Time Left</h2>
-                <Timer
-                  completeBy={curLobby.completeBy}
-                  initTimeLeft={timeLeft}
+              <Link
+                href="/"
+                className="inline-flex items-center px-4 py-2 text-xl font-medium text-white"
+                aria-label="Back"
+              >
+                <ArrowLeft
+                  className="h-6 w-6"
+                  weight="bold"
+                  aria-label="Back Icon"
                 />
+              </Link>
+            </motion.div>
+            {!curLobby && (
+              <div>
+                <h1 className="text-3xl font-bold text-white">
+                  Create Multiplayer Lobby
+                </h1>
+                <p className="mt-1.5 text-gray-100">
+                  Play Gopher Guessr with friends!
+                  <br /> Currently, only the Minneapolis Game Mode is available.
+                </p>
               </div>
-              <div className="mt-3 flex w-80 flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
-                <div className="w-full bg-amber-400 py-2 text-lg font-medium">
-                  <div className="ml-2 mr-2">Join with Code</div>
-                </div>
-                <div className="px-3 py-4 text-4xl font-bold">
-                  {curLobby.code}
+            )}
+            {curLobby && timeLeft <= 0 && (
+              <div>
+                <h1 className="text-3xl font-bold text-white">
+                  Time&apos;s up! Let&apos;s see how you did...
+                </h1>
+                <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
+                  <h2 className="text-2xl font-medium">Leaderboard</h2>
+                  <table className="mx-auto w-full table-auto border-separate border-spacing-y-2 md:border-spacing-y-3">
+                    <thead>
+                      <tr className="text-gray-500">
+                        <th className="w-36 text-center"></th>
+                        <th className="w-96 text-right font-medium">Name</th>
+                        <th className="w-64 text-center font-medium">Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {games.map((game, index) => {
+                        return (
+                          <tr className="text-xl" key={index}>
+                            <td className="text-left">{index + 1}.</td>
+                            <td className="text-right">{game.lobbyUsername}</td>
+                            <td>{game.points}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
-                <div className="w-full bg-amber-400 py-2 text-lg font-medium">
-                  <div className="ml-2 mr-2">Join with QR Code</div>
-                </div>
-                <div className="px-3 py-4">
-                  <QRCode
-                    value={`${process.env.ROOT}/play?code=${curLobby.code}`}
-                    size="200"
+            )}
+            {curLobby && timeLeft > 0 && (
+              <>
+                <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white p-4">
+                  <h2 className="text-2xl font-medium">Time Left</h2>
+                  <Timer
+                    completeBy={curLobby.completeBy}
+                    initTimeLeft={timeLeft}
                   />
                 </div>
-              </div>
-            </>
-          )}
-          {!curLobby && (
-            <form
-              action={createLobby}
-              className="relative mt-3 flex flex-col overflow-hidden rounded-xl border bg-white p-4 text-left"
-            >
-              <label htmlFor="time" className="mb-1 text-lg font-medium">
-                Timer (in minutes)
-              </label>
-              <input
-                name="time"
-                id="time"
-                type="number"
-                defaultValue="5"
-                min="1"
-                max="15"
-                className="mb-3 rounded border-gray-300"
-              />
-              <button
-                type="submit"
-                className="rounded bg-rose-600 p-3 font-medium text-white hover:bg-rose-700"
+                <div className="mt-3 flex w-80 flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
+                  <div className="w-full bg-amber-400 py-2 text-lg font-medium">
+                    <div className="ml-2 mr-2">Join with Code</div>
+                  </div>
+                  <div className="px-3 py-4 text-4xl font-bold">
+                    {curLobby.code}
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
+                  <div className="w-full bg-amber-400 py-2 text-lg font-medium">
+                    <div className="ml-2 mr-2">Join with QR Code</div>
+                  </div>
+                  <div className="px-3 py-4">
+                    <QRCode
+                      value={`${process.env.ROOT}/play?code=${curLobby.code}`}
+                      size="200"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {!curLobby && (
+              <form
+                action={createLobby}
+                className="relative mt-3 flex flex-col overflow-hidden rounded-xl border bg-white p-4 text-left"
               >
-                Create Lobby
-              </button>
-            </form>
-          )}
+                <label htmlFor="time" className="mb-1 text-lg font-medium">
+                  Timer (in minutes)
+                </label>
+                <input
+                  name="time"
+                  id="time"
+                  type="number"
+                  defaultValue="5"
+                  min="1"
+                  max="15"
+                  className="mb-3 rounded border-gray-300"
+                />
+                <button
+                  type="submit"
+                  className="rounded bg-rose-600 p-3 font-medium text-white hover:bg-rose-700"
+                >
+                  Create Lobby
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
