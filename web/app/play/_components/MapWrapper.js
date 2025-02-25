@@ -51,7 +51,12 @@ export default function MapWrapper({
   scoreData,
   isLoggedIn,
   isTimeUp,
+  gameMode,
 }) {
+
+  
+  
+
   const [viewStPaul, setViewStPaul] = useState(false);
   const [guess, setGuess] = useState(
     viewStPaul ? stPaulCenter : minneapolisCenter,
@@ -70,6 +75,11 @@ export default function MapWrapper({
 
   // when round changes, reset marker position, and open resultdialog
   useEffect(() => {
+    
+    if (gameMode == "stpaul") {
+      setViewStPaul(true);
+    }
+
     setGuess(viewStPaul ? stPaulCenter : minneapolisCenter);
     if (curState.started) {
       setResultsDialogOpen(true);

@@ -24,6 +24,7 @@ export default function GameView({
   scoreData,
   isLoggedIn,
   isTimed,
+  gameMode,
 }) {
   const maxAllocatedTime = 30; // max time allocated for each round
   const percentagePenaltyPerReduction = 5; // 5% penalty for each time reduction
@@ -216,6 +217,7 @@ export default function GameView({
     setHangTimer(false); // Reset the hangTimer state
   };
 
+
   return (
     <div className="fixed inset-0">
       {/* Flashing Border Overlay */}
@@ -273,6 +275,7 @@ export default function GameView({
           scoreData={scoreData}
           isLoggedIn={isLoggedIn}
           isTimeUp={isTimeUp}
+          gameMode={gameMode}
         />
       </div>
     </div>

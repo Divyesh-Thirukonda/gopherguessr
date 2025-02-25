@@ -426,6 +426,7 @@ export default async function Play({ searchParams }) {
         scoreData={scoreData}
         isLoggedIn={userInDB}
         isTimed={isTimed.toLowerCase() === "true"}
+        gameMode={gameMode}
       />
       {curLobby && !curState.lobbyUsername && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-md">
