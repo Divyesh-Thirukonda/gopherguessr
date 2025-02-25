@@ -20,7 +20,7 @@ export default async function UserAuth({ searchParams }) {
           id="g_id_onload"
           data-client_id={process.env.NEXT_PUBLIC_GOOGLE_ADMIN}
           data-context="signin"
-          data-ux_mode="popup"
+          data-ux_mode="redirect"
           data-login_uri={`${process.env.ROOT}/login/continue`}
           data-auto_prompt="false"
           data-use_fedcm_for_prompt="true"

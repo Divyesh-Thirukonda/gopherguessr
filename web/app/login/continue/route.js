@@ -46,7 +46,7 @@ export async function POST(req) {
     process.env.NODE_ENV === "production"
       ? headers.get("X-Real-IP")
       : "127.0.0.1";
-  const gameId = parseInt(referer.slice(referer.length - 4, referer.length));
+  const gameId = parseInt(referer?.slice(referer.length - 4, referer.length));
 
   let game = null;
   if (gameId) {
