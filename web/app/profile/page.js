@@ -2,11 +2,33 @@ import prisma from "../_utils/db";
 import { authorizeUserRoute } from "../_utils/userSession";
 import GameStatsCarousel from "./_components/GameStatsCarousel";
 
-export default async function ProfileIndex() {
+export default async function ProfileIndex({userId, publicView=false}) {
   const { session } = await authorizeUserRoute();
+  let idToFetch = null;
+
+  if (publicView) {
+    idToFetch = userId;
+  } else {
+    let user = await prisma.user.findFirst({
+      where: { email: session?.email },
+    });
+    idToFetch = user.id;
+  }
+
   const userInDB = await prisma.user.findFirst({
-    where: { email: session.email },
+    where: { id: idToFetch },
   });
+
+
+  if (!userInDB) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800">
+          <h1 className="text-center text-white text-3xl md:text-4xl font-bold p-6">
+              🔍 Hmm... <br /> The Profile You Are Looking For <br /> Does Not Exist...
+          </h1>
+      </main>
+    );
+  }
 
   const name = userInDB?.name || "Guest";
 
@@ -138,18 +160,28 @@ export default async function ProfileIndex() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-yellow-400 to-rose-800">
       {/* User Section */}
-      <h1 className="flex items-center justify-center p-6 text-2xl font-bold text-white">
-        Welcome back, {name.replace(/ .*/, "")}!
-      </h1>
 
-      {/* Dashes */}
-      <div className="flex items-center gap-4">
+      {publicView && (
+        <h1 className="relative mx-auto w-fit rounded-xl px-6 py-3 text-center text-3xl font-bold tracking-wide mb-4 shadow-[0_4px_12px_rgba(0,0,0,0.3)] backdrop-blur-lg text-white" 
+            style={{
+              backgroundImage: "linear-gradient(0deg, #ffffff, #bbbbbb)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              textShadow: "0 6px 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(121, 121, 121, 0.3)"
+            }}>
+          {name.replace(/ .*/, "")}'s Profile
+        </h1>
+      )}
+
+
+      {/* Dashes ... cool but not needed*/}
+      {/* <div className="flex items-center gap-4">
         <hr className="w-full border-dashed border-gray-400" />
         <span className="shrink-0 text-white">
-          &darr;&nbsp;&nbsp;&nbsp;Statistics
+          &darr;&nbsp;&nbsp;&nbsp;Player Stats
         </span>
         <hr className="w-full border-dashed border-gray-400" />
-      </div>
+      </div> */}
 
       {/* Statistics Section */}
       <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 p-8 text-center">
