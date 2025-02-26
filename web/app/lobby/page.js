@@ -235,6 +235,13 @@ export default async function Lobby({ searchParams }) {
                 >
                   Create Lobby
                 </button>
+                <p className="mt-3.5 text-center text-black">
+                  Or join a lobby{" "}
+                  <u>
+                    <a href="/join">here</a>
+                  </u>
+                  !
+                </p>
               </form>
             )}
           </div>
