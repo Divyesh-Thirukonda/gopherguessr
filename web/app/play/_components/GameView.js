@@ -191,10 +191,15 @@ export default function GameView({
 
     if (isTimed && timer > timeFrag) {
       const fragsElapsed = Math.floor(timer / timeFrag);
-      const reductionPercentage = Math.min(fragsElapsed - 1, timeFragments-1) * percentagePenaltyPerReduction;
+      const reductionPercentage =
+        Math.min(fragsElapsed - 1, timeFragments - 1) *
+        percentagePenaltyPerReduction;
 
-      const reducedPointsMultiplier = (1 - reductionPercentage / 100);
-      curState.guesses[curState.round - 2].points *= Math.max(reducedPointsMultiplier, 0)
+      const reducedPointsMultiplier = 1 - reductionPercentage / 100;
+      curState.guesses[curState.round - 2].points *= Math.max(
+        reducedPointsMultiplier,
+        0,
+      );
     }
 
     if (curState.complete) {
@@ -211,7 +216,9 @@ export default function GameView({
       initialGameState.current = curState.curGuess.photo.id;
       console.log("Game state reset with photo id:", initialGameState.current);
     } else {
-      console.log("curState.curGuess or curState.curGuess.photo is undefined, cannot reset game state");
+      console.log(
+        "curState.curGuess or curState.curGuess.photo is undefined, cannot reset game state",
+      );
     }
 
     setHangTimer(false); // Reset the hangTimer state

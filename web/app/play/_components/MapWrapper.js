@@ -208,7 +208,9 @@ export default function MapWrapper({
         </div>
         <div className="relative flex flex-grow items-center justify-center">
           {!curState.complete && getPreviewImage()}
-          {curState.complete && getLeaderBoard(isLoggedIn, scoreData)}
+          {curState.complete &&
+            !curLobby &&
+            getLeaderBoard(isLoggedIn, scoreData)}
         </div>
       </div>
     </div>

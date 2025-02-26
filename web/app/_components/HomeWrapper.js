@@ -9,11 +9,13 @@ import {
   SignIn,
   UserCircle,
   UsersFour,
+  Play,
 } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import MotionButton from "./MotionButton";
 import { useSwipeable } from "react-swipeable";
+import { PlayCircle } from "@phosphor-icons/react";
 
 export default function HomeWrapper({
   clearGameState,
@@ -97,10 +99,14 @@ export default function HomeWrapper({
         // if (gameModes[gameMode].title === "Timed") {
         //   isTimed = true;
         // }
-        router.push(`/play?gameMode=${gameModes[gameMode].mode}&isTimed=${gameModes[gameMode].isTimed ?? false}`);
+        router.push(
+          `/play?gameMode=${gameModes[gameMode].mode}&isTimed=${gameModes[gameMode].isTimed ?? false}`,
+        );
         // router.push(`/play?gameMode=${gameModes[gameMode].mode}`);
       } else if (target === "leaderboard") {
         router.push("/leaderboard");
+      } else if (target === "join") {
+        router.push("/join");
       } else if (target === "lobby") {
         router.push("/lobby");
       } else {
@@ -346,6 +352,18 @@ export default function HomeWrapper({
             ariaLabel="Multiplayer"
           >
             <UsersFour className="h-6 w-6" aria-label="Multiplayer Icon" />
+          </MotionButton>
+        </div>
+        <div className="fixed left-[8.8rem] top-3">
+          <MotionButton
+            onClick={handleNavigationClick("join")}
+            className="inline-flex items-center px-4 py-2 text-2xl font-medium text-white"
+            ariaLabel="Join Multiplayer"
+          >
+            <PlayCircle
+              className="h-6 w-6"
+              aria-label="Join Multiplayer Icon"
+            />
           </MotionButton>
         </div>
       </section>

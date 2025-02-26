@@ -9,7 +9,14 @@ export default async function Join() {
     "use server";
 
     // Lobby code
-    const code = parseInt(formData.get("code"), 10);
+    const stringCode = formData.get("code");
+
+    if (!stringCode) {
+      // No code
+      redirect(`/join`);
+    }
+
+    const code = parseInt(stringCode, 10);
 
     if (isNaN(code)) {
       // Invalid code
@@ -66,6 +73,7 @@ export default async function Join() {
                 name="code"
                 id="code"
                 className="mb-3 rounded border-gray-300 text-center"
+                maxLength={6}
                 placeholder="Game PIN"
               />
               <button
