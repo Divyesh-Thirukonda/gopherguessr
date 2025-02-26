@@ -18,10 +18,15 @@ export default async function Lobby({ searchParams }) {
   // get currently running lobby game
   let curLobby = null;
   let timeLeft = null;
+
   if (code) {
     curLobby = await prisma.lobby.findUnique({
       where: { code: parseInt(code, 10) },
     });
+    if (!curLobby) {
+      redirect("/lobby");
+    }
+
     timeLeft =
       DateTime.fromJSDate(curLobby.completeBy).toMillis() -
       DateTime.now().toMillis();
