@@ -109,8 +109,9 @@ export default async function Lobby({ searchParams }) {
     return revalidatePath(pth);
   }
 
+  const path = "/lobby?code=" + code + "&playerDone=" + playerDone;
+
   if (isPlayerDone) {
-    const path = "/lobby?code=" + code + "&playerDone=" + playerDone;
     return (
       <LobbyLeaderboard
         path={path}
