@@ -3,27 +3,22 @@
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
 import { useState, useEffect } from "react";
 
-export default function LobbyLeaderboard({
-  games,
-  path,
-  secretRevalidateShhh,
-}) {
+export default function LobbyLeaderboard({ games, path, pollForLeaderboard }) {
   const [secondsSinceRefresh, setSecondsSinceRefresh] = useState(5);
 
   // Update timer and handle revalidation
   useEffect(() => {
     const updateInterval = setInterval(() => {
-      secretRevalidateShhh(path);
+      pollForLeaderboard(path);
       setSecondsSinceRefresh((prev) => prev + 1);
-    }, 10000);
+    }, 6000); // Reloads the multiplayer leaderboard every 6 seconds. Can be lowered/raised based on performance
 
     return () => {
       clearInterval(updateInterval);
     };
-  }, [path, secretRevalidateShhh]);
+  }, [path, pollForLeaderboard]);
 
   return (
     <div className="fixed inset-0 overflow-y-scroll bg-gradient-to-br from-yellow-400 to-rose-800">

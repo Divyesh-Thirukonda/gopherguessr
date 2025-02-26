@@ -33,6 +33,14 @@ export default function EndDialog({
     requestAnimationFrame(increment);
   }, [curState.points]);
 
+  function viewMultiplayerLeaderboard() {
+    console.log(curLobby);
+    let path = "/lobby?code=" + curLobby.code + "&playerDone=1";
+    console.log("\n\nBREAK\n\n");
+    console.log(curState);
+    window.location.replace(path);
+  }
+
   return (
     <div className="absolute inset-0 z-[2000]">
       <Leaflet className="h-full w-full">
@@ -115,7 +123,7 @@ export default function EndDialog({
           </form>
         )}
         {curLobby && (
-          <form action={goHome}>
+          <form action={viewMultiplayerLeaderboard}>
             <MotionButton
               className="rounded-full bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
               type="submit"

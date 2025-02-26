@@ -104,7 +104,7 @@ export default async function Lobby({ searchParams }) {
     redirect(`/lobby?code=${lobby.code}`);
   }
 
-  async function secretRevalidateShhh(pth) {
+  async function pollForLeaderboard(pth) {
     "use server";
     return revalidatePath(pth);
   }
@@ -115,7 +115,7 @@ export default async function Lobby({ searchParams }) {
       <LobbyLeaderboard
         path={path}
         games={games}
-        secretRevalidateShhh={secretRevalidateShhh}
+        pollForLeaderboard={pollForLeaderboard}
       />
     );
   } else {
