@@ -67,7 +67,7 @@ export default async function Join() {
                 htmlFor="code"
                 className="mx-2 mb-1 text-center text-lg font-medium"
               >
-                Join with the PIN on your host's screen!
+                Join with the PIN on your host&apos;s screen!
               </label>
               <input
                 name="code"

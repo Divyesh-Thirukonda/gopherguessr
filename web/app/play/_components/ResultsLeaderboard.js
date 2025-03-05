@@ -48,7 +48,9 @@ export default function ResultsLeaderboard({
       );
     } else if (place > scoreData.length) {
       return (
-        <b className="text-2xl">Nice score! You'll be number 1 in no time.</b>
+        <b className="text-2xl">
+          Nice score! You&apos;ll be number 1 in no time.
+        </b>
       );
     }
 

@@ -2,7 +2,7 @@ import prisma from "../_utils/db";
 import { authorizeUserRoute } from "../_utils/userSession";
 import GameStatsCarousel from "./_components/GameStatsCarousel";
 
-export default async function ProfileIndex({userId, publicView=false}) {
+export default async function ProfileIndex({ userId, publicView = false }) {
   const { session } = await authorizeUserRoute();
   let idToFetch = null;
 
@@ -19,13 +19,13 @@ export default async function ProfileIndex({userId, publicView=false}) {
     where: { id: idToFetch },
   });
 
-
   if (!userInDB) {
     return (
-      <main className="h-screen flex items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800">
-          <h1 className="text-center text-white text-3xl md:text-4xl font-bold p-6">
-              🔍 Hmm... <br /> The Profile You Are Looking For <br /> Does Not Exist...
-          </h1>
+      <main className="flex h-screen items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800">
+        <h1 className="p-6 text-center text-3xl font-bold text-white md:text-4xl">
+          🔍 Hmm... <br /> The Profile You Are Looking For <br /> Does Not
+          Exist...
+        </h1>
       </main>
     );
   }
@@ -72,7 +72,9 @@ export default async function ProfileIndex({userId, publicView=false}) {
     });
 
     const calculateAverage = (scores) =>
-      scores.length ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
+      scores.length
+        ? scores.reduce((sum, score) => sum + score, 0) / scores.length
+        : 0;
 
     return {
       easy: {
@@ -92,8 +94,7 @@ export default async function ProfileIndex({userId, publicView=false}) {
       },
     };
   }
-  
-  
+
   async function calculateStreaksAndFirstGame(userId) {
     // Fetch all games played by the user, sorted by date
     const games = await prisma.gameState.findMany({
@@ -162,17 +163,19 @@ export default async function ProfileIndex({userId, publicView=false}) {
       {/* User Section */}
 
       {publicView && (
-        <h1 className="relative mx-auto w-fit rounded-xl px-6 py-3 text-center text-3xl font-bold tracking-wide mb-4 shadow-[0_4px_12px_rgba(0,0,0,0.3)] backdrop-blur-lg text-white" 
-            style={{
-              backgroundImage: "linear-gradient(0deg, #ffffff, #bbbbbb)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              textShadow: "0 6px 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(121, 121, 121, 0.3)"
-            }}>
-          {name.replace(/ .*/, "")}'s Profile
+        <h1
+          className="relative mx-auto mb-4 w-fit rounded-xl px-6 py-3 text-center text-3xl font-bold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] backdrop-blur-lg"
+          style={{
+            backgroundImage: "linear-gradient(0deg, #ffffff, #bbbbbb)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            textShadow:
+              "0 6px 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(121, 121, 121, 0.3)",
+          }}
+        >
+          {name.replace(/ .*/, "")}&apos;s Profile
         </h1>
       )}
-
 
       {/* Dashes ... cool but not needed*/}
       {/* <div className="flex items-center gap-4">
