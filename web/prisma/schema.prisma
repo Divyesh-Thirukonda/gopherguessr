@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DiffEnum {
+  ONE
+  TWO
+  THREE
+}
+
+enum CampusEnum {
+  WestBank
+  EastBankCore
+  EastBankOuter
+  Dinkytown
+  StPaul
+}
+
+enum GameModeEnum {
+  Easy
+  Medium
+  Hard
+  Minneapolis
+  StPaul
+  All
+}
+
+model Photo {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imageId String 
+  buildingName String 
+  description String?
+  latitude Float
+  longitude Float
+  diffRating DiffEnum?
+  campus CampusEnum?
+  indoors Boolean?
+  isApproved Boolean @default(true)
+  uploader User @relation(fields: [uploaderId], references: [id])
+  uploaderId Int
+  guesses Guess[]
+  isTest Boolean @default(false)
+}
+
+model User {
+  id       Int     @id @default(autoincrement()) 
+  name     String
+  email    String  @unique
+  photos   Photo[]
+  isAdmin  Boolean @default(false)
+  highScore Int @default(0)
+  games GameState[]
+}
+
+model GameState {
+  id Int @id @default(autoincrement()) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  guesses Guess[]
+  round Int @default(1)
+  points Int @default(0)
+  started Boolean @default(false)
+  complete Boolean @default(false)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int @default(29) // default user
+  lobby Lobby? @relation(fields: [lobbyId], references: [id])
+  lobbyId Int?
+  gameMode GameModeEnum?
+  lobbyUsername String?
+  ip String?
+}
+
+model Guess {
+  id Int @id @default(autoincrement()) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  gameStateId Int
+  gameState GameState @relation(fields: [gameStateId], references: [id], onDelete: Cascade)
+  photoId Int
+  photo Photo @relation(fields: [photoId], references: [id])
+  guessComplete Boolean @default(false)
+  latitude Float?
+  longitude Float?
+  distance Float?
+  points Float?
+}
+
+model Lobby {
+  id Int @id @default(autoincrement()) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  games GameState[]
+  completeBy DateTime
+  photoIds Int[]
+  code Int @unique
+}
