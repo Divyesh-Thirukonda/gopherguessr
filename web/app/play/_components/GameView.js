@@ -266,7 +266,10 @@ export default function GameView({
         {getOpenMap()}
 
         <MapWrapper
-          submitGuess={submitGuess}
+          submitGuess={(...args) => {
+            setHangTimer(true); // Set hang timer first
+            submitGuess(...args); // Then call the original submitGuess function
+          }}
           onDialogContinue={() => {
             setViewMap(false);
             resetTime();

@@ -12,9 +12,14 @@ export default function ResultsLeaderboard({
   const LeaderBoard = scoreData.map((item, index) => {
     return (
       <tr className="text-xl" key={index}>
-        <td className="text-left text-sm">{index + 1}.</td>
-        <td className="text-right text-sm">{item.name}</td>
-        <td className="text-sm">{item.highScore}</td>
+        <td className="text-left">{index + 1}.</td>
+        <td className="text-right" style={{ cursor: 'pointer', color: 'white' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = 'orange'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
+          onClick={() => { window.location.href = `/profile/${item.id}` }}>
+          {item.name}
+        </td>
+        <td>{item.highScore}</td>
       </tr>
     );
   });
