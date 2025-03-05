@@ -5,7 +5,12 @@ export default function Table({ scoreData, isLoggedIn }) {
     return (
       <tr className="text-xl" key={index}>
         <td className="text-left">{index + 1}.</td>
-        <td className="text-right">{item.name}</td>
+        <td className="text-right" style={{ cursor: 'pointer', color: 'white' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = 'orange'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
+          onClick={() => { window.location.href = `/profile/${item.id}` }}>
+          {item.name}
+        </td>
         <td>{item.highScore}</td>
       </tr>
     );
