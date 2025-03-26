@@ -4,6 +4,7 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import * as motion from "framer-motion/client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import MultiplayerReturnLink from "./MultiplayerReturnLink";
 
 export default function LobbyLeaderboard({ games, path, pollForLeaderboard }) {
   const [secondsSinceRefresh, setSecondsSinceRefresh] = useState(5);
@@ -68,6 +69,9 @@ export default function LobbyLeaderboard({ games, path, pollForLeaderboard }) {
                     })}
                   </tbody>
                 </table>
+              </div>
+              <div className="mt-2">
+                <MultiplayerReturnLink />
               </div>
             </div>
           }
