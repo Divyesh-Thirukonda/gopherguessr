@@ -1,16 +1,31 @@
 // from: https://docs.expo.dev/router/installation/#quick-start
 
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera"
+import { useState, useRef, useEffect } from "react"
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import axios from "axios"
+import * as Location from "expo-location"
 
 export default function App() {
-  const [facing, setFacing] = useState("back");
-  const [permission, requestPermission] = useCameraPermissions();
+  const [facing, setFacing] = useState("back")
+  const [permission, requestPermission] = useCameraPermissions()
+  const cameraRef = useRef(null)
+
+  useEffect(() => {
+    async function getLocationPermissions() {
+      let { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied")
+        return
+      }
+    }
+
+    getLocationPermissions()
+  }, [])
 
   if (!permission) {
     // Camera permissions are still loading.
-    return <View />;
+    return <View />
   }
 
   if (!permission.granted) {
@@ -22,24 +37,51 @@ export default function App() {
         </Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
-    );
+    )
   }
 
   function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
+    setFacing((current) => (current === "back" ? "front" : "back"))
+  }
+
+  async function upload() {
+    try {
+      console.log("running...")
+      const location = await Location.getCurrentPositionAsync({})
+      const picture = await cameraRef.current.takePictureAsync({
+        base64: true,
+      })
+      const form = new FormData()
+      // TODO: CHANGE THIS BEFORE PUBLISH BECAUSE IT WILL BE IN PLAIN TEXT IN THE APP BUNDLE
+      form.append("appAuthKey", process.env.EXPO_PUBLIC_APP_AUTH_KEY)
+      form.append("name", "TEST FROM APP")
+      form.append("campus", "EastBankCore")
+      form.append("difficulty", "ONE")
+      form.append("indoors", "Yes")
+      form.append("base64", picture.base64)
+      form.append("latitude", location.coords.latitude)
+      form.append("longitude", location.coords.longitude)
+      const req = await axios.post(
+        "https://gopher.nimbus.page/api_upload",
+        form
+      )
+      console.log(req)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
+      <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
+          <TouchableOpacity style={styles.button} onPress={upload}>
+            <Text style={styles.text}>Upload!</Text>
           </TouchableOpacity>
         </View>
       </CameraView>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -57,6 +99,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "transparent",
     margin: 64,
   },
@@ -70,4 +114,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-});
+})
