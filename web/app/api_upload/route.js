@@ -2,6 +2,12 @@ import sharp from "sharp";
 import { utapi } from "../_utils/ut";
 import prisma from "../_utils/db";
 
+export const config = {
+  api: {
+    responseLimit: false,
+  },
+};
+
 export async function POST(request) {
   console.log("API UPLOADER CALLED");
 
