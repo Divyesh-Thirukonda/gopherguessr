@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react"
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import axios from "axios"
 import * as Location from "expo-location"
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator"
 
 export default function App() {
   const [facing, setFacing] = useState("back")
@@ -51,6 +52,13 @@ export default function App() {
       const picture = await cameraRef.current.takePictureAsync({
         base64: true,
       })
+      const context = await ImageManipulator.manipulate(picture.uri)
+      context.resize({ width: 500 })
+      const image = await context.renderAsync()
+      const result = await image.saveAsync({
+        format: SaveFormat.JPG,
+        base64: true,
+      })
       const form = new FormData()
       // TODO: CHANGE THIS BEFORE PUBLISH BECAUSE IT WILL BE IN PLAIN TEXT IN THE APP BUNDLE
       form.append("appAuthKey", process.env.EXPO_PUBLIC_APP_AUTH_KEY)
@@ -58,7 +66,7 @@ export default function App() {
       form.append("campus", "EastBankCore")
       form.append("difficulty", "ONE")
       form.append("indoors", "Yes")
-      form.append("base64", picture.base64)
+      form.append("base64", result.base64)
       form.append("latitude", location.coords.latitude)
       form.append("longitude", location.coords.longitude)
       const req = await axios.post(
