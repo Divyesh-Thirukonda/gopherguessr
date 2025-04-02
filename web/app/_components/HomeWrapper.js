@@ -80,7 +80,7 @@ export default function HomeWrapper({
       isTimed: true,
       mode: "default",
       description: "The quicker you are, the better your score",
-      bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMxjdU0W61dJiMHu2eo6NDykUlB7vPE4fYOCIq", // TODO: change bg
+      bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMIpzkS1uFTQxZ7yGdaK8leUrtoECYq9hw2fJR",
     },
   ];
 
