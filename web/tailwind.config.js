@@ -12,13 +12,20 @@ module.exports = {
         mono: ["var(--font-geist-mono)"],
       },
       animation: {
-        'flash-red': 'flash-red 0.5s infinite',
+        "flash-red": "flash-red 0.5s infinite",
       },
       keyframes: {
-        'flash-red': {
-          '0%, 100%': { borderColor: 'rgba(255, 0, 0, 0.25)' },
-          '50%': { borderColor: 'rgba(255, 0, 0, 1)' },
+        "flash-red": {
+          "0%, 100%": { borderColor: "rgba(255, 0, 0, 0.25)" },
+          "50%": { borderColor: "rgba(255, 0, 0, 1)" },
         },
+        "fade-up": {
+          "0%": { opacity: 0, transform: "translateY(100%)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 1.2s ease-out",
       },
     },
   },
