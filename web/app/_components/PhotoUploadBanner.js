@@ -37,14 +37,14 @@ export default function PhotoUploadBanner() {
           <span className="text-lg">
             {picturePrompts[photoIndex]}
             <a
-              href="https://gopher.nimbus.page/public_upload"
+              href="/public_upload"
               className="text-md ms-0 font-medium text-rose-700 hover:underline md:ms-1 dark:text-blue-500"
             >
               Upload your photos!{" "}
               <svg
                 className="ms-2 inline-block h-3 w-3 rtl:rotate-180"
                 aria-hidden="true"
-                xmlns="https://gopher.nimbus.page/public_upload"
+                xmlns="/public_upload"
                 fill="none"
                 viewBox="0 0 14 10"
               >
