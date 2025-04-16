@@ -2,6 +2,7 @@ import { getIronSession } from "iron-session";
 import HomeWrapper from "./_components/HomeWrapper";
 import prisma from "./_utils/db";
 import { cookies } from "next/headers";
+import PhotoUploadBanner from "./_components/PhotoUploadBanner";
 
 export default async function HomePage() {
   // fetch contributors on server
@@ -47,13 +48,17 @@ export default async function HomePage() {
     cookieStore.delete("game_s");
   }
 
+  // PhotoUploadBanner may be temporary
   return (
-    <HomeWrapper
-      clearGameState={clearGameState}
-      contributors={contributors}
-      inProgressGame={inProgressGame}
-      isLoggedIn={isLoggedIn}
-      gameCompleted={gameCompleted}
-    />
+    <>
+      <HomeWrapper
+        clearGameState={clearGameState}
+        contributors={contributors}
+        inProgressGame={inProgressGame}
+        isLoggedIn={isLoggedIn}
+        gameCompleted={gameCompleted}
+      />
+      <PhotoUploadBanner />
+    </>
   );
 }

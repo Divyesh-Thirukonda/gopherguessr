@@ -1,8 +1,15 @@
-import ExifReader from "exifreader";
-import heicConvert from "heic-convert";
 import sharp from "sharp";
-import { utapi } from "@/app/_utils/ut";
-import prisma from "@/app/_utils/db";
+import { utapi } from "../_utils/ut";
+import prisma from "../_utils/db";
+
+export const config = {
+  api: {
+    responseLimit: false,
+    bodyParser: {
+      sizeLimit: "100mb",
+    },
+  },
+};
 
 export async function POST(request) {
   console.log("API UPLOADER CALLED");
@@ -15,34 +22,11 @@ export async function POST(request) {
     throw new Error("AUTH FAILED");
   }
 
-  const file = formData.get("file");
-  let buffer = await file.arrayBuffer();
+  const base64 = formData.get("base64");
+  let buffer = Buffer.from(base64, "base64");
 
-  // pull gps coords from image
-  const tags = await ExifReader.load(buffer, { expanded: true });
-  if (!tags.gps) {
-    throw Error(
-      "Uploaded photo does not contain GPS data. Please ensure camera has access to location data.",
-    );
-  }
-  const latitude = tags.gps.Latitude;
-  const longitude = tags.gps.Longitude;
-
-  // gets last 4 characters of file name
-  const fileExtension = file.name.substring(
-    file.name.length - 4,
-    file.name.length,
-  );
-
-  // if HEIC, convert buffer to PNG
-  if (fileExtension === "HEIC") {
-    // convert function accepts Uint8Array
-    const tempBuffer = new Uint8Array(buffer);
-    buffer = await heicConvert({
-      buffer: tempBuffer,
-      format: "PNG",
-    });
-  }
+  const latitude = parseFloat(formData.get("latitude"));
+  const longitude = parseFloat(formData.get("longitude"));
 
   // compress image and convert to webp
   const optimized = await sharp(buffer)
@@ -53,10 +37,11 @@ export async function POST(request) {
     .toBuffer();
   // convert to blob as the File class needs it to be a blob
   const blob = new Blob([optimized], { type: "image/webp" });
-  const newFileName = `${file.name.substring(0, file.name.lastIndexOf("."))}.webp`;
+  const newFileName = `mobile-upload${new Date().getTime()}.webp`;
   // create the new image
   const newFile = new File([blob], newFileName, { type: "image/webp" });
 
+  console.log("uploading...");
   // upload the image
   const response = await utapi.uploadFiles(newFile);
   if (response.error) {
@@ -68,6 +53,7 @@ export async function POST(request) {
     response.data.appUrl.lastIndexOf("/") + 1,
   );
 
+  console.log("saving to db...");
   // get rest of data from form and save to db
   const buildingName = formData.get("name");
   const campus = formData.get("campus");
@@ -79,7 +65,7 @@ export async function POST(request) {
       buildingName,
       latitude,
       longitude,
-      uploaderId: 29, // DEFAULT USER FOR NOW
+      uploaderId: 29,
       campus,
       diffRating,
       isApproved: false,

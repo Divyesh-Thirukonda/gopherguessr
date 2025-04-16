@@ -80,7 +80,7 @@ export default function HomeWrapper({
       isTimed: true,
       mode: "default",
       description: "The quicker you are, the better your score",
-      bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMxjdU0W61dJiMHu2eo6NDykUlB7vPE4fYOCIq", // TODO: change bg
+      bg: "https://utfs.io/a/e9dxf42twp/xHYRlR61dJiMIpzkS1uFTQxZ7yGdaK8leUrtoECYq9hw2fJR",
     },
   ];
 
@@ -109,6 +109,9 @@ export default function HomeWrapper({
         router.push("/join");
       } else if (target === "lobby") {
         router.push("/lobby");
+      } else if (target === "publicUpload") {
+        // TEMP ROUTE PROMOTING PHOTO UPLOAD
+        router.push("/public_upload");
       } else {
         console.warn("Unknown target:", target);
         setIsLoading(false); // Reset loading if the route is invalid

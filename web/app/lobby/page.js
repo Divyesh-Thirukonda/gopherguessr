@@ -7,13 +7,14 @@ import { redirect } from "next/navigation";
 import QRCode from "react-qr-code";
 import Timer from "./_components/Timer";
 import LobbyLeaderboard from "./_components/LobbyLeaderboard";
+import MultiplayerLeaderboardLink from "./_components/MultiplayerLeaderboardLink";
 import { revalidatePath } from "next/cache";
 
 export default async function Lobby({ searchParams }) {
   const params = new URLSearchParams(await searchParams);
   const code = params.get("code");
-  const playerDone = params.get("playerDone");
-  const isPlayerDone = !isNaN(parseInt(playerDone, 10));
+  const showLeaderboard = params.get("showLeaderboard");
+  const isPlayerDone = !isNaN(parseInt(showLeaderboard, 10));
 
   // get currently running lobby game
   let curLobby = null;
@@ -114,7 +115,7 @@ export default async function Lobby({ searchParams }) {
     return revalidatePath(pth);
   }
 
-  const path = "/lobby?code=" + code + "&playerDone=" + playerDone;
+  const path = "/lobby?code=" + code + "&showLeaderboard=" + showLeaderboard;
 
   if (isPlayerDone) {
     return (
@@ -196,6 +197,9 @@ export default async function Lobby({ searchParams }) {
                     completeBy={curLobby.completeBy}
                     initTimeLeft={timeLeft}
                   />
+                  <div className="mt-3">
+                    <MultiplayerLeaderboardLink />
+                  </div>
                 </div>
                 <div className="mt-3 flex w-80 flex-col items-center justify-center overflow-hidden rounded-xl border bg-white">
                   <div className="w-full bg-amber-400 py-2 text-lg font-medium">
