@@ -109,6 +109,9 @@ export default function HomeWrapper({
         router.push("/join");
       } else if (target === "lobby") {
         router.push("/lobby");
+      } else if (target === "publicUpload") {
+        // TEMP ROUTE PROMOTING PHOTO UPLOAD
+        router.push("/public_upload");
       } else {
         console.warn("Unknown target:", target);
         setIsLoading(false); // Reset loading if the route is invalid
