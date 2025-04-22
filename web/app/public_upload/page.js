@@ -8,11 +8,12 @@ import prisma from "@/app/_utils/db";
 import UploadForm from "./_components/UploadForm";
 import heicConvert from "heic-convert";
 import { DiffEnum, CampusEnum } from "@prisma/client";
-import {
-  authorizeUserAction,
-} from "@/app/_utils/userSession";
+import { authorizeUserAction } from "@/app/_utils/userSession";
+import { redirect } from "next/navigation";
 
-export default async function Uploader() {
+export default async function Uploader({ searchParams }) {
+  const success = (await searchParams).success;
+
   // this runs on the backend when the user submits the form
   async function uploadFiles(formData) {
     "use server";
@@ -90,14 +91,19 @@ export default async function Uploader() {
       },
     });
     console.log(newImageInPrisma);
-    return;
+    redirect("/public_upload?success=true");
   }
 
   return (
-    <form
-      action={uploadFiles}
-    >
-      <UploadForm CampusEnum={CampusEnum} DiffEnum={DiffEnum} />
-    </form>
+    <>
+      {success && (
+        <p className="fixed left-0 right-0 top-0 bg-green-50 px-3 py-4 text-center text-xl font-bold text-green-700">
+          Photo uploaded successfully!
+        </p>
+      )}
+      <form action={uploadFiles}>
+        <UploadForm CampusEnum={CampusEnum} DiffEnum={DiffEnum} />
+      </form>
+    </>
   );
 }
