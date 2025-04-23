@@ -1,3 +1,9 @@
+// * * * *
+// DEPRECATED, use PhotoApprovalForm instead.
+// * * * *
+
+// Sorry Divyesh. Keeping in loving memory of swipe approval 2025-2025
+
 "use client";
 
 import { useState } from "react";
@@ -46,16 +52,12 @@ export default function PhotoReview({ photos }) {
   const photo = photos[currentIndex];
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h2 className="text-2xl mb-5">
-          Swipe right to approve, left to delete
-      </h2>
-      <motion.div
-        className="relative w-80 h-80"
-      >
+    <div className="flex h-screen flex-col items-center justify-center">
+      <h2 className="mb-5 text-2xl">Swipe right to approve, left to delete</h2>
+      <motion.div className="relative h-80 w-80">
         <motion.img
           src={getFullUrl(photo.imageId)}
-          className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-lg"
+          className="absolute inset-0 h-full w-full rounded-lg object-cover shadow-lg"
           alt={photo.buildingName}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
@@ -73,7 +75,7 @@ export default function PhotoReview({ photos }) {
         <p>Indoors: {photo.indoors ? "Yes" : "No"}</p>
       </div>
       <button
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+        className="mt-4 rounded bg-blue-500 px-4 py-2 text-white"
         onClick={handleSkip}
       >
         Skip
