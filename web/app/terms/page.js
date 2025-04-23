@@ -8,9 +8,9 @@ export default function Terms() {
 
       <p>
         Welcome to <strong>GopherGuessr</strong>! These Terms of Service
-        ("Terms") govern your access to and use of our website and app. By using
-        GopherGuessr, you agree to these Terms. If you do not agree, please do
-        not use our services.
+        (&quot;Terms&quot;) govern your access to and use of our website and
+        app. By using GopherGuessr, you agree to these Terms. If you do not
+        agree, please do not use our services.
       </p>
 
       <h2>1. Who Can Use GopherGuessr</h2>
@@ -61,7 +61,7 @@ export default function Terms() {
 
       <h2>5. Service Availability</h2>
       <p>
-        We do our best to keep GopherGuessr running smoothly, but we can't
+        We do our best to keep GopherGuessr running smoothly, but we can&apos;t
         guarantee it will always be available or bug-free. We may suspend or
         modify the service at any time without notice.
       </p>
