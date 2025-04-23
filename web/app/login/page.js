@@ -13,9 +13,13 @@ export default async function UserAuth({ searchParams }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-yellow-400 to-rose-800 px-3 py-10">
       <div className="rounded-lg bg-white p-6 shadow-lg">
-        <h1 className="mb-6 text-center text-5xl font-extrabold text-rose-700">
+        <h1 className="mb-3 text-center text-5xl font-extrabold text-rose-700">
           User Login
         </h1>
+        <p className="mb-6 text-center font-medium text-gray-600">
+          You must login with a <span className="text-rose-700">umn.edu</span>{" "}
+          email address!
+        </p>
         <div
           id="g_id_onload"
           data-client_id={process.env.NEXT_PUBLIC_GOOGLE_ADMIN}
