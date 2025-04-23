@@ -9,6 +9,8 @@ import { ImageManipulator, SaveFormat } from "expo-image-manipulator"
 
 export default function App() {
   const [facing, setFacing] = useState("back")
+  const [uploaded, setUploaded] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [permission, requestPermission] = useCameraPermissions()
   const cameraRef = useRef(null)
 
@@ -47,6 +49,8 @@ export default function App() {
 
   async function upload() {
     try {
+      setUploaded(false)
+      setUploading(true)
       console.log("running...")
       const location = await Location.getCurrentPositionAsync({})
       const picture = await cameraRef.current.takePictureAsync({
@@ -74,6 +78,8 @@ export default function App() {
         form
       )
       console.log(req)
+      setUploaded(true)
+      setUploading(false)
     } catch (e) {
       console.log(e)
     }
@@ -81,6 +87,8 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      {uploaded && <Text style={styles.success}>Uploaded successfully!</Text>}
+      {uploading && <Text style={styles.inProgress}>Uploading...</Text>}
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={upload}>
@@ -121,5 +129,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
+  },
+  success: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "green",
+    padding: 8,
+    backgroundColor: "lightgreen",
+    textAlign: "center",
+  },
+  inProgress: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "blue",
+    padding: 8,
+    backgroundColor: "lightblue",
+    textAlign: "center",
   },
 })
