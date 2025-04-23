@@ -31,6 +31,9 @@ const geistMono = localFont({
 export const metadata = {
   title: "Gopher Guessr",
   description: "A Geoguessr like game for the UMN Twin Cities campus.",
+  verification: {
+    google: "yq2e44lu7MiAx4VEYIYuWgBlNypf68sTJtbdXsHmppY",
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -283,7 +283,7 @@ export default function HomeWrapper({
         </div>
 
         {/* Contributors Section */}
-        <div className="relative left-0 right-0 top-0 w-dvw px-3 pb-3 pt-10 text-center text-white">
+        <div className="relative left-0 right-0 top-0 w-dvw px-3 pb-16 pt-10 text-center text-white">
           <div className="flex items-center gap-4">
             <hr className="w-full border-dashed border-gray-400" />
             <span className="shrink-0">
