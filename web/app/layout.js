@@ -29,7 +29,7 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "Gopher Guessr",
+  title: "GopherGuessr",
   description: "A Geoguessr like game for the UMN Twin Cities campus.",
   verification: {
     google: "yq2e44lu7MiAx4VEYIYuWgBlNypf68sTJtbdXsHmppY",
