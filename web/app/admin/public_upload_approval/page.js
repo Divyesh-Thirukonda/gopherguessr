@@ -26,7 +26,7 @@ export default async function PublicUploadApproval() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
         <img src="/sadgopher.png"></img>
-        <h1 className="mt-6 text-3xl">That's all, folks!</h1>
+        <h1 className="mt-6 text-3xl">That&apos;s all, folks!</h1>
       </div>
     );
   }
