@@ -154,7 +154,7 @@ export default async function Lobby({ searchParams }) {
                   Create Multiplayer Lobby
                 </h1>
                 <p className="mt-1.5 text-gray-100">
-                  Play Gopher Guessr with friends!
+                  Play GopherGuessr with friends!
                   <br /> Currently, only the Minneapolis Game Mode is available.
                 </p>
               </div>

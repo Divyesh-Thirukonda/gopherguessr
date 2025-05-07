@@ -5,10 +5,15 @@ export default function Table({ scoreData, isLoggedIn }) {
     return (
       <tr className="text-xl" key={index}>
         <td className="text-left">{index + 1}.</td>
-        <td className="text-right" style={{ cursor: 'pointer', color: 'white' }}
-          onMouseEnter={(e) => e.currentTarget.style.color = 'orange'}
-          onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
-          onClick={() => { window.location.href = `/profile/${item.id}` }}>
+        <td
+          className="text-right"
+          style={{ cursor: "pointer", color: "white" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "orange")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
+          onClick={() => {
+            window.location.href = `/profile/${item.id}`;
+          }}
+        >
           {item.name}
         </td>
         <td>{item.highScore}</td>
@@ -22,7 +27,7 @@ export default function Table({ scoreData, isLoggedIn }) {
         <h1 className="text-4xl">
           <b>High Scores</b>
         </h1>
-        <p className="mt-1">The best Gopher Guessrs.</p>
+        <p className="mt-1">The best GopherGuessrs.</p>
       </div>
       <div className="rounded-lg bg-black/50 p-6 text-center text-white shadow-2xl backdrop-blur-md">
         <table className="w-full table-auto border-separate border-spacing-y-2 md:border-spacing-y-3">
