@@ -30,6 +30,7 @@ import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { publishMultiplayerGuess } from "../api_leaderboard/kafka/kafkaClient.mjs";
 
 export const dynamic = "force-dynamic";
 
@@ -351,6 +352,15 @@ export default async function Play({ searchParams }) {
           complete: curState.round === 5,
         },
       });
+
+      if (curLobby) {
+        publishMultiplayerGuess(
+          "multiplayer_guesses",
+          curLobby.id,
+          curState.lobbyUsername,
+          curState.points + roundPoints,
+        );
+      }
 
       // NOTE:
       // Eventually, we will want specific high scores for game modes / difficulties

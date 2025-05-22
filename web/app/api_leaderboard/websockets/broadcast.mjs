@@ -12,8 +12,10 @@ function initWebSocketServer(port = 8080) {
     });
   });
 
-  console.log("%cOK", "color: green;");
-  // console.log("leaderboard socket server running on port", port);
+  console.log(
+    "\x1b[32m[ OK ]\x1b[0m Web socket service initialized on port ",
+    port,
+  );
 }
 
 function broadcastToClients(message) {

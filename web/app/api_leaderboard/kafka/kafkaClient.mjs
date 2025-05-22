@@ -93,12 +93,12 @@ async function establishSubscriberClient(rawConfig) {
 // Kafka producer for multiplayer guess
 async function publishMultiplayerGuess(
   topic,
-  rawConfig,
   lobbyId,
   lobbyUsername,
-  currentPoints
+  currentPoints,
 ) {
-  await establishProducerClient(rawConfig); // Incase connection lost
+  const rawConfig = readConfig("client.properties");
+  await establishProducerClient(rawConfig);
   const value = JSON.stringify({
     lobbyUsername: lobbyUsername,
     points: currentPoints,
@@ -134,7 +134,9 @@ async function startKafkaService() {
   // Set up Kafkas client
   const config = readConfig("client.properties");
   await subscribeToMultiplayerGuesses(config);
-  console.log("[ OK ] Kafka service initialized");
+  console.log(
+    "\x1b[32m[ OK ]\x1b[0m Kafka service initialized for leaderboards",
+  );
 }
 
 export { startKafkaService, publishMultiplayerGuess };
