@@ -4,7 +4,7 @@ import { WebSocketServer } from "ws";
 
 let wss = null;
 
-function initWebSocketServer(port = 8080) {
+function initWebSocketServer(port = 5521) {
   wss = new WebSocketServer({ port });
 
   wss.on("connection", (ws) => {

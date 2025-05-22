@@ -30,7 +30,7 @@ import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { publishMessage } from "../api_leaderboard/kafkas/kafkas.mjs";
+import { publishMessage } from "../api_leaderboard/kafkas/kafkas.js";
 
 export const dynamic = "force-dynamic";
 

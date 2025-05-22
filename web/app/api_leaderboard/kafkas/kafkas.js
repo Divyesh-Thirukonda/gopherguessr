@@ -1,6 +1,6 @@
 "use server";
 
-import { broadcastToClients } from "../websockets/server.mjs";
+import { broadcastToClients } from "../websockets/server.js";
 import fs from "fs";
 import path from "path";
 import { Kafka, logLevel } from "kafkajs";
