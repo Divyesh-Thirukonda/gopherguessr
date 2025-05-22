@@ -7,19 +7,19 @@ import { useState, useEffect } from "react";
 import MultiplayerReturnLink from "./MultiplayerReturnLink";
 
 export default function LobbyLeaderboard({ games, path, pollForLeaderboard }) {
-  const [secondsSinceRefresh, setSecondsSinceRefresh] = useState(5);
-
-  // Update timer and handle revalidation
   useEffect(() => {
-    const updateInterval = setInterval(() => {
-      pollForLeaderboard(path);
-      setSecondsSinceRefresh((prev) => prev + 1);
-    }, 6000); // Reloads the multiplayer leaderboard every 6 seconds. Can be lowered/raised based on performance
+    const socket = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
 
-    return () => {
-      clearInterval(updateInterval);
+    socket.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type == "NEW_GUESS") {
+        console.log(`New guess received from ${msg.data.lobbyUsername}.`);
+        pollForLeaderboard(path);
+      }
     };
-  }, [path, pollForLeaderboard]);
+
+    return () => socket.close();
+  }, []);
 
   return (
     <div className="fixed inset-0 overflow-y-scroll bg-gradient-to-br from-yellow-400 to-rose-800">
