@@ -30,7 +30,7 @@ import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { publishMultiplayerGuess } from "../api_leaderboard/kafka/kafkaClient.mjs";
+import { publishMessage } from "../api_leaderboard/kafkas/kafkas.mjs";
 
 export const dynamic = "force-dynamic";
 
@@ -354,12 +354,14 @@ export default async function Play({ searchParams }) {
       });
 
       if (curLobby) {
-        publishMultiplayerGuess(
-          "multiplayer_guesses",
-          curLobby.id,
-          curState.lobbyUsername,
-          curState.points + roundPoints,
-        );
+        const value = JSON.stringify({
+          lobbyUsername: curState.lobbyUsername,
+          points: curState.points + roundPoints,
+        });
+
+        console.log("HERE");
+
+        publishMessage("multiplayer_guesses", curLobby.id.toString(), value);
       }
 
       // NOTE:
