@@ -359,8 +359,6 @@ export default async function Play({ searchParams }) {
           points: curState.points + roundPoints,
         });
 
-        console.log("HERE");
-
         publishMessage("multiplayer_guesses", curLobby.id.toString(), value);
       }
 

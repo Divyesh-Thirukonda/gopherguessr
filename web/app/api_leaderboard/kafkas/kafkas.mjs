@@ -1,3 +1,5 @@
+"use server";
+
 import { broadcastToClients } from "../websockets/server.mjs";
 import fs from "fs";
 import path from "path";
@@ -54,7 +56,7 @@ async function connectPublisher(rawConfig) {
   }
 
   const kafka = getKafkaClient(rawConfig);
-  const publisher = kafka.publisher();
+  const publisher = kafka.producer();
   await publisher.connect();
   cachedPublisher = publisher;
 }
@@ -103,7 +105,7 @@ async function publishMessage(topic, key, value) {
     console.log(`Failed to publish message to ${topic}.`);
   }
 
-  console.log(`Publiished message to ${topic}.`);
+  console.log(`Published message to ${topic}.`);
 }
 
 // Subscribe to multiplayer guesses

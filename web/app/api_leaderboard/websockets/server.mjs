@@ -1,3 +1,5 @@
+"use server";
+
 import { WebSocketServer } from "ws";
 
 let wss = null;
