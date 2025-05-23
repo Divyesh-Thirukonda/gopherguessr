@@ -39,5 +39,7 @@ tsconfig.json
 
 #kafkas / ws
 client.properties
-runner.ps1
-dockerfile
+Dockerfile
+local.ps1
+publish.ps1
+test.ps1

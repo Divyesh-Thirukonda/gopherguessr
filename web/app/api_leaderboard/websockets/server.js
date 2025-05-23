@@ -3,14 +3,15 @@
 import { WebSocketServer } from "ws";
 
 let wss = null;
+let defaultpPort = process.env.PORT || 5521;
 
-function initWebSocketServer(port = 5521) {
+function initWebSocketServer(port = defaultpPort) {
   wss = new WebSocketServer({ port });
 
   wss.on("connection", (ws) => {
-    console.log("Connected");
+    console.log("Client connected");
     ws.on("close", () => {
-      console.log("Disconnected");
+      console.log("Client disconnected");
     });
   });
 
