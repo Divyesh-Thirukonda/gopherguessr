@@ -30,6 +30,7 @@ import { getUserSession } from "../_utils/userSession";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { publishMessage } from "../api_leaderboard/kafkas/kafkas.js";
 
 export const dynamic = "force-dynamic";
 
@@ -351,6 +352,15 @@ export default async function Play({ searchParams }) {
           complete: curState.round === 5,
         },
       });
+
+      if (curLobby) {
+        const value = JSON.stringify({
+          lobbyUsername: curState.lobbyUsername,
+          points: curState.points + roundPoints,
+        });
+
+        publishMessage("multiplayer_guesses", curLobby.id.toString(), value);
+      }
 
       // NOTE:
       // Eventually, we will want specific high scores for game modes / difficulties

@@ -36,8 +36,6 @@ export default function EndDialog({
   function viewMultiplayerLeaderboard() {
     console.log(curLobby);
     let path = "/lobby?code=" + curLobby.code + "&showLeaderboard=1";
-    console.log("\n\nBREAK\n\n");
-    console.log(curState);
     window.location.replace(path);
   }
 

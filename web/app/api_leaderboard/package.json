@@ -1,0 +1,10 @@
+{
+  "name": "gopherguessr-kafkas-ws",
+  "private": true,
+  "dependencies": {
+    "http": "^0.0.1-security",
+    "kafkajs": "^2.2.4",
+    "ws": "^8.18.2"
+  },
+  "type": "module"
+}

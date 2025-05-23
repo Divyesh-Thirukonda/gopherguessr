@@ -123,6 +123,7 @@ export default async function Lobby({ searchParams }) {
         path={path}
         games={games}
         pollForLeaderboard={pollForLeaderboard}
+        lobbyId={curLobby.id}
       />
     );
   } else {
