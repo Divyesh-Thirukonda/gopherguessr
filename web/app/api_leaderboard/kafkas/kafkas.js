@@ -120,7 +120,8 @@ async function subscribeToMultiplayerGuesses(rawConfig) {
     subscriber.run({
       eachMessage: async ({ topic, message }) => {
         const parsed = JSON.parse(message.value.toString());
-        broadcastToClients({ type: "NEW_GUESS", data: parsed });
+        const typeParam = "GUESS_IN_" + message.key.toString();
+        broadcastToClients({ type: typeParam, data: parsed });
       },
     });
   }

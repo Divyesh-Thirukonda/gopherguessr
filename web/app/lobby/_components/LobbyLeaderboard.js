@@ -6,13 +6,19 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import MultiplayerReturnLink from "./MultiplayerReturnLink";
 
-export default function LobbyLeaderboard({ games, path, pollForLeaderboard }) {
+export default function LobbyLeaderboard({
+  games,
+  path,
+  pollForLeaderboard,
+  lobbyId,
+}) {
   useEffect(() => {
     const socket = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
 
     socket.onmessage = (event) => {
       const msg = JSON.parse(event.data);
-      if (msg.type == "NEW_GUESS") {
+      const typeParam = "GUESS_IN_" + lobbyId.toString();
+      if (msg.type == typeParam) {
         console.log(`New guess received from ${msg.data.lobbyUsername}.`);
         pollForLeaderboard(path);
       }
