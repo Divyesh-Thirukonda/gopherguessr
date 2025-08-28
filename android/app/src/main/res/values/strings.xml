@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GopherGuessr</string>
+    <string name="home">Home</string>
+    <string name="take_picture">Take Picture</string>
+</resources>
